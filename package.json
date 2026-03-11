@@ -2,16 +2,19 @@
   "name": "its-ischia-transfer-service",
   "version": "1.0.0",
   "description": "A modern single-page website for I.T.S. Ischia Transfer Service S.r.l.",
-  "main": "src/index.html",
+  "main": "server.js",
   "scripts": {
     "build": "tailwindcss build src/styles/tailwind.css -o src/styles/generated.css",
     "watch": "tailwindcss build src/styles/tailwind.css -o src/styles/generated.css --watch",
-    "start": "live-server src"
+    "start": "node server.js",
+    "test": "node tools/smoke-test.js",
+    "lint": "eslint . --ext .js"
   },
   "dependencies": {
     "tailwindcss": "^2.2.19"
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
     "live-server": "^1.2.1"
   },
   "author": "I.T.S. Ischia Transfer Service S.r.l.",

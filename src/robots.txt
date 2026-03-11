@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: sostituire con dominio reale in produzione
+Sitemap: https://REPLACE_WITH_PRODUCTION_DOMAIN/sitemap.xml

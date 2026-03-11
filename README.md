@@ -1,64 +1,68 @@
 # I.T.S. Ischia Transfer Service S.r.l.
 
-Welcome to the I.T.S. Ischia Transfer Service S.r.l. project! This repository contains the source code for a modern single-page website designed for the Ischia Transfer Service, featuring a luxurious aesthetic inspired by the 'Ischia Luxury' color palette.
+Beta foundation for a modern Ischia Transfer Service website with a minimal operational backend:
+- public website in `src/`
+- API for authentication and booking flow
+- JSON persistence in `data/db.json`
 
 ## Project Structure
 
 ```
-its-ischia-transfer-service
-├── src
-│   ├── index.html          # Main HTML document for the website
-│   ├── styles
-│   │   └── tailwind.css    # Tailwind CSS styles
-│   ├── scripts
-│   │   └── main.js         # JavaScript for smooth scrolling and interactivity
-│   └── assets
-│       └── fonts
-│           └── Montserrat.ttf # Montserrat font file
-├── tailwind.config.js      # Tailwind CSS configuration
-├── package.json            # npm configuration and dependencies
-└── README.md               # Project documentation
+its-sito
+├── src/
+│   ├── index.html
+│   ├── assets/
+│   ├── scripts/main.js
+│   └── styles/
+├── server.js
+├── data/db.json           # created automatically at first start
+├── tailwind.config.js
+├── package.json
+└── .env.example
 ```
 
-## Color Palette
+## Setup
 
-- **Night Blue**: #1e3a8a
-- **Marble White**: #f8fafc
-- **Lemon Yellow**: #facc15
-
-## Setup Instructions
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/its-ischia-transfer-service.git
-   cd its-ischia-transfer-service
-   ```
-
-2. **Install dependencies**:
-   Make sure you have Node.js installed, then run:
+1. Install dependencies:
    ```bash
    npm install
    ```
-
-3. **Build the project**:
-   To generate the Tailwind CSS styles, run:
+2. Optional env file:
    ```bash
-   npx tailwindcss -i ./src/styles/tailwind.css -o ./dist/styles.css --watch
+   copy .env.example .env
    ```
+3. Build CSS:
+   ```bash
+   npm run build
+   ```
+4. Start app (website + API):
+   ```bash
+   npm start
+   ```
+5. Run smoke test:
+   ```bash
+   npm test
+   ```
+6. Open:
+   - Website: `http://localhost:4000`
+   - Health: `http://localhost:4000/api/health`
+   - Ops dashboard: `http://localhost:4000/ops.html`
 
-4. **Open the website**:
-   You can open `src/index.html` in your browser to view the website.
+## API (beta)
 
-## Usage Guidelines
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `POST /api/bookings`
+- `GET /api/bookings` (auth required)
+- `POST /api/bookings/:id/confirm` (role `operator` or `admin`)
 
-- The website features smooth scrolling navigation for a seamless user experience.
-- The Montserrat font is used throughout the site for a modern and elegant look.
-- Customize the content in `src/index.html` to fit your specific needs.
+## Security Notes
 
-## Contributing
+- Set `.env` from `.env.example` before deployment.
+- In `NODE_ENV=production`, server startup fails if default auth secrets are still used.
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+## Demo Credentials
 
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+- Operator: `operator@its.local` / `operator123`
+- Admin: `admin@its.local` / `admin123`
+- Agency: `agency.demo@its.local` / `agency123`

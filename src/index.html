@@ -7,7 +7,19 @@
         name="description"
         content="I.T.S. Ischia Transfer Service S.r.l. offre trasferimenti premium via terra e via mare dal 2006, con assistenza dedicata per soggiorni e spostamenti su Ischia."
     >
+    <meta property="og:title" content="I.T.S. Ischia Transfer Service S.r.l. | Ischia Luxury Transfers">
+    <meta property="og:description" content="Transfer premium da Napoli a Ischia con supporto operativo e disponibilita 24h.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/assets/ischia-bg.jpg.jpg">
+    <meta property="og:url" content="https://REPLACE_WITH_PRODUCTION_DOMAIN/">
+    <meta property="og:locale" content="it_IT">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- TODO: sostituire con dominio reale in produzione -->
+    <link rel="canonical" href="https://REPLACE_WITH_PRODUCTION_DOMAIN/">
     <title>I.T.S. Ischia Transfer Service S.r.l. | Ischia Luxury Transfers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
     <link href="styles/generated.css" rel="stylesheet">
 </head>
 <body class="bg-marbleWhite text-gray-900">
@@ -111,7 +123,7 @@
                             <span class="rounded-full bg-lemonYellow px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-nightBlue">Operativi 24h</span>
                         </div>
 
-                        <div class="mt-8 space-y-4">
+                        <form id="hero-booking-form" class="mt-8 space-y-4">
                             <label class="booking-field">
                                 <span>Servizio</span>
                                 <select name="hero-service">
@@ -120,6 +132,17 @@
                                     <option>Taxi 24h sull'Isola</option>
                                 </select>
                             </label>
+
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <label class="booking-field">
+                                    <span>Nome</span>
+                                    <input type="text" name="hero-name" placeholder="Nome e cognome" required>
+                                </label>
+                                <label class="booking-field">
+                                    <span>Email</span>
+                                    <input type="email" name="hero-email" placeholder="nome@email.com" required>
+                                </label>
+                            </div>
 
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="booking-field">
@@ -136,14 +159,16 @@
                                 <span>Tratta o indirizzo</span>
                                 <input type="text" name="hero-route" placeholder="Es. Capodichino > Porto di Ischia">
                             </label>
-                        </div>
+                            <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+                        </form>
 
                         <div class="mt-8 flex flex-col gap-4 border-t border-nightBlue/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
                             <p class="max-w-sm text-sm leading-7 text-gray-600">
                                 Servizi disponibili per arrivi da Napoli e mobilita continua sull'isola, con coordinamento diretto.
                             </p>
-                            <a href="#contatti" class="btn-primary justify-center">Richiedi Preventivo</a>
+                            <button id="hero-booking-submit" type="submit" form="hero-booking-form" class="btn-primary justify-center border-0">Invia richiesta rapida</button>
                         </div>
+                        <p id="hero-booking-feedback" class="mt-4 text-sm text-gray-600" aria-live="polite"></p>
                     </div>
                 </div>
             </div>
@@ -230,11 +255,12 @@
             <div class="mx-auto grid max-w-7xl gap-8 px-6 lg:px-8">
                 <article class="fleet-card lg:grid-cols-[1.05fr_0.95fr]">
                     <div class="fleet-image-shell">
-                        <img
-                            src="assets/ischia-bg.jpg.jpg"
-                            alt="Mercedes E 270 per transfer premium a Ischia"
-                            class="fleet-image fleet-image-sedan"
-                        >
+                            <img
+                                src="assets/ischia-bg.jpg.jpg"
+                                alt="Mercedes E 270 per transfer premium a Ischia"
+                                loading="lazy"
+                                class="fleet-image fleet-image-sedan"
+                            >
                         <span class="fleet-badge">Luxury Transfer</span>
                     </div>
                     <div class="fleet-copy">
@@ -257,6 +283,7 @@
                             <img
                                 src="assets/ischia-bg.jpg.jpg"
                                 alt="Minivan per gruppi e famiglie a Ischia"
+                                loading="lazy"
                                 class="fleet-image fleet-image-van"
                             >
                             <span class="fleet-badge">Group Shuttle</span>
@@ -280,6 +307,7 @@
                             <img
                                 src="assets/ischia-bg.jpg.jpg"
                                 alt="Autobus per gruppi numerosi ed eventi a Ischia"
+                                loading="lazy"
                                 class="fleet-image fleet-image-bus"
                             >
                             <span class="fleet-badge">Large Groups</span>
@@ -408,35 +436,37 @@
                     </div>
                 </div>
 
-                <form class="contact-card">
+                <form id="contact-form" class="contact-card">
                     <div class="grid gap-5 sm:grid-cols-2">
                         <label class="form-field">
                             <span>Nome</span>
-                            <input type="text" name="name" placeholder="Nome e cognome">
+                            <input type="text" name="name" placeholder="Nome e cognome" required>
                         </label>
                         <label class="form-field">
                             <span>Email</span>
-                            <input type="email" name="email" placeholder="nome@email.com">
+                            <input type="email" name="email" placeholder="nome@email.com" required>
                         </label>
                     </div>
                     <div class="grid gap-5 sm:grid-cols-2">
                         <label class="form-field">
                             <span>Tratta</span>
-                            <input type="text" name="route" placeholder="Aeroporto, porto, hotel...">
+                            <input type="text" name="route" placeholder="Aeroporto, porto, hotel..." required>
                         </label>
                         <label class="form-field">
                             <span>Data</span>
-                            <input type="date" name="date">
+                            <input type="date" name="date" required>
                         </label>
                     </div>
                     <label class="form-field">
                         <span>Dettagli</span>
                         <textarea name="details" rows="5" placeholder="Descrivi la tua richiesta di transfer"></textarea>
                     </label>
+                    <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <p class="text-sm leading-7 text-gray-500">Questa form e pronta come interfaccia visuale e puo essere collegata al vostro canale di contatto preferito.</p>
+                        <p class="text-sm leading-7 text-gray-500">Richiesta inviata direttamente al gestionale beta e in attesa di conferma operatore.</p>
                         <button type="submit" class="btn-primary justify-center border-0">Invia richiesta</button>
                     </div>
+                    <p id="contact-feedback" class="mt-4 text-sm text-blue-100" aria-live="polite"></p>
                 </form>
             </div>
         </section>

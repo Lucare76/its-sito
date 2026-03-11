@@ -3,8 +3,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    const heroBookingForm = document.getElementById('hero-booking-form');
+    const heroBookingSubmit = document.getElementById('hero-booking-submit');
+    const heroBookingFeedback = document.getElementById('hero-booking-feedback');
+    const contactForm = document.getElementById('contact-form');
+    const contactFeedback = document.getElementById('contact-feedback');
     const whatsappPhone = '393334372831';
     const whatsappMessage = "Ciao Ischia Transfer Service, vorrei informazioni per un transfer dal Porto di Ischia a [destinazione].";
+
+    const setFeedback = (element, message, type) => {
+        if (!element) {
+            return;
+        }
+
+        element.textContent = message;
+        element.classList.remove('text-red-500', 'text-green-600', 'text-blue-100', 'text-gray-600');
+        if (type === 'error') {
+            element.classList.add('text-red-500');
+            return;
+        }
+        if (type === 'success') {
+            element.classList.add('text-green-600');
+            return;
+        }
+        element.classList.add('text-gray-600');
+    };
+
+    const postBooking = async (payload) => {
+        const response = await fetch('/api/bookings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Errore durante il salvataggio della prenotazione');
+        }
+
+        return data.booking;
+    };
 
     const createWhatsAppFloat = () => {
         const whatsappLink = document.createElement('a');
@@ -70,6 +110,93 @@ document.addEventListener('DOMContentLoaded', () => {
             closeMobileMenu();
         });
     });
+
+    if (heroBookingForm) {
+        heroBookingForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(heroBookingForm);
+            const service = String(formData.get('hero-service') || '').trim();
+            const name = String(formData.get('hero-name') || '').trim();
+            const email = String(formData.get('hero-email') || '').trim();
+            const date = String(formData.get('hero-date') || '').trim();
+            const time = String(formData.get('hero-time') || '').trim();
+            const route = String(formData.get('hero-route') || '').trim();
+            const website = String(formData.get('website') || '').trim();
+
+            if (!service || !name || !email || !date || !route) {
+                setFeedback(heroBookingFeedback, 'Compila nome, email, servizio, data e tratta per inviare la richiesta.', 'error');
+                return;
+            }
+
+            setFeedback(heroBookingFeedback, 'Invio richiesta in corso...', 'info');
+            if (heroBookingSubmit) {
+                heroBookingSubmit.disabled = true;
+            }
+
+            try {
+                const booking = await postBooking({
+                    service,
+                    route,
+                    date,
+                    time,
+                    name,
+                    email,
+                    details: 'Richiesta rapida inviata da widget hero.',
+                    source: 'PUBLIC_HERO_WIDGET',
+                    website,
+                });
+
+                setFeedback(
+                    heroBookingFeedback,
+                    `Ecco fatto! Abbiamo ricevuto la tua richiesta (${booking.reference}). Il nostro team ti rispondera a breve per confermare il transfer.`,
+                    'success',
+                );
+                heroBookingForm.reset();
+            } catch (error) {
+                setFeedback(heroBookingFeedback, error.message, 'error');
+            } finally {
+                if (heroBookingSubmit) {
+                    heroBookingSubmit.disabled = false;
+                }
+            }
+        });
+    }
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(contactForm);
+            const payload = {
+                name: String(formData.get('name') || '').trim(),
+                email: String(formData.get('email') || '').trim(),
+                route: String(formData.get('route') || '').trim(),
+                date: String(formData.get('date') || '').trim(),
+                details: String(formData.get('details') || '').trim(),
+                website: String(formData.get('website') || '').trim(),
+                service: 'Richiesta Transfer da Form Contatti',
+                source: 'PUBLIC_CONTACT_FORM',
+            };
+
+            if (!payload.name || !payload.email || !payload.route || !payload.date) {
+                setFeedback(contactFeedback, 'Compila tutti i campi obbligatori prima di inviare.', 'error');
+                return;
+            }
+
+            setFeedback(contactFeedback, 'Invio richiesta in corso...', 'info');
+
+            try {
+                const booking = await postBooking(payload);
+                setFeedback(
+                    contactFeedback,
+                    `Ecco fatto! Abbiamo ricevuto la tua richiesta (${booking.reference}). Il nostro team ti rispondera a breve per confermare il transfer.`,
+                    'success',
+                );
+                contactForm.reset();
+            } catch (error) {
+                setFeedback(contactFeedback, error.message, 'error');
+            }
+        });
+    }
 
     createWhatsAppFloat();
     syncNavState();
