@@ -34,6 +34,21 @@ const ROOT_DIR = __dirname;
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 const DB_PATH = path.join(DATA_DIR, 'db.json');
+const STATIC_DIRS = [ROOT_DIR, SRC_DIR];
+const BLOCKED_STATIC_SEGMENTS = new Set(['.git', '.pnpm-store', 'node_modules', 'data', 'tools']);
+const BLOCKED_ROOT_STATIC_FILES = new Set([
+  '.env',
+  '.env.example',
+  '.eslintignore',
+  '.eslintrc.cjs',
+  '.gitignore',
+  'package.json',
+  'package-lock.json',
+  'pnpm-lock.yaml',
+  'server.js',
+  'tailwind.config.js',
+  'README.md'
+]);
 
 const PORT = Number(process.env.PORT || 4000);
 const AUTH_SECRET = process.env.AUTH_SECRET || 'its-beta-change-this-secret';
@@ -526,16 +541,32 @@ function resolveStaticPath(pathname) {
     ? [requested]
     : [requested, `${requested}.html`, path.join(requested, 'index.html')];
 
-  for (const candidate of candidates) {
-    const normalized = path.normalize(candidate);
-    const filePath = path.resolve(SRC_DIR, normalized);
-    const sourcePrefix = `${SRC_DIR}${path.sep}`;
-    if (filePath !== SRC_DIR && !filePath.startsWith(sourcePrefix)) {
-      continue;
-    }
+  for (const staticDir of STATIC_DIRS) {
+    for (const candidate of candidates) {
+      const normalized = path.normalize(candidate);
+      const filePath = path.resolve(staticDir, normalized);
+      const sourcePrefix = `${staticDir}${path.sep}`;
+      if (filePath !== staticDir && !filePath.startsWith(sourcePrefix)) {
+        continue;
+      }
 
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-      return filePath;
+      const relativeToRoot = path.relative(ROOT_DIR, filePath);
+      const pathParts = relativeToRoot.split(path.sep);
+      const hasBlockedSegment = pathParts.some((part) => BLOCKED_STATIC_SEGMENTS.has(part));
+      if (hasBlockedSegment) {
+        continue;
+      }
+
+      if (
+        path.dirname(filePath) === ROOT_DIR &&
+        BLOCKED_ROOT_STATIC_FILES.has(path.basename(filePath))
+      ) {
+        continue;
+      }
+
+      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        return filePath;
+      }
     }
   }
 

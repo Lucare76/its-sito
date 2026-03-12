@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITS Beta Ops</title>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --panel: #ffffff;
+      --ink: #0f172a;
+      --muted: #5b6475;
+      --brand: #1e3a8a;
+      --ok: #0f9d58;
+      --warn: #9b2c2c;
+      --line: #dbe3f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Segoe UI, Arial, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #dbeafe, var(--bg));
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 22px rgba(30, 58, 138, 0.08);
+    }
+    h1 { margin: 0 0 6px; color: var(--brand); }
+    p { margin: 0; color: var(--muted); }
+    .row { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 13px; color: var(--muted); }
+    input, select, button, textarea {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    button {
+      background: var(--brand);
+      color: #fff;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.secondary { background: #475569; }
+    button.warn { background: var(--warn); }
+    .toolbar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .s-pending { background: #fff3cd; color: #7a5b00; }
+    .s-confirmed { background: #d1fae5; color: #065f46; }
+    .s-cancelled { background: #fee2e2; color: #991b1b; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 10px 8px; vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .small { font-size: 12px; color: var(--muted); }
+    #feedback { margin-top: 8px; font-size: 13px; }
+    #feedback.ok { color: var(--ok); }
+    #feedback.err { color: var(--warn); }
+    @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>ITS Ops Dashboard (beta)</h1>
+      <p>Accesso operator/admin per vedere, confermare o annullare prenotazioni.</p>
+      <form id="login-form">
+        <div class="row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" value="operator@its.local" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" value="operator123" required>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="submit">Login</button>
+          </div>
+        </div>
+      </form>
+      <div class="toolbar">
+        <button id="refresh-btn" class="secondary" type="button" disabled>Aggiorna elenco</button>
+        <button id="logout-btn" class="warn" type="button" disabled>Logout</button>
+      </div>
+      <div id="feedback"></div>
+    </div>
+
+    <div class="card">
+      <strong>Utente corrente:</strong>
+      <span id="user-label" class="small">non autenticato</span>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Cliente</th>
+            <th>Servizio</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="bookings-body">
+          <tr><td colspan="6" class="small">Nessun dato</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      token: null,
+      user: null,
+    };
+
+    const loginForm = document.getElementById('login-form');
+    const feedback = document.getElementById('feedback');
+    const userLabel = document.getElementById('user-label');
+    const bookingsBody = document.getElementById('bookings-body');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    function setFeedback(message, type = '') {
+      feedback.textContent = message;
+      feedback.className = '';
+      if (type) feedback.classList.add(type);
+    }
+
+    function statusClass(status) {
+      const val = String(status || '').toLowerCase();
+      if (val === 'confirmed') return 'status s-confirmed';
+      if (val === 'cancelled') return 'status s-cancelled';
+      return 'status s-pending';
+    }
+
+    async function api(path, options = {}) {
+      const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+      if (state.token) {
+        headers.Authorization = `Bearer ${state.token}`;
+      }
+      const res = await fetch(path, Object.assign({}, options, { headers }));
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || `Errore API (${res.status})`);
+      }
+      return data;
+    }
+
+    function renderBookings(items) {
+      if (!items.length) {
+        bookingsBody.innerHTML = '<tr><td colspan="6" class="small">Nessuna prenotazione trovata</td></tr>';
+        return;
+      }
+
+      bookingsBody.innerHTML = items.map((item) => `
+        <tr>
+          <td><strong>${item.reference}</strong><div class="small">${item.id}</div></td>
+          <td>${item.name}<div class="small">${item.email}</div></td>
+          <td>${item.service}<div class="small">${item.route}</div></td>
+          <td>${item.date}${item.time ? ' ' + item.time : ''}</td>
+          <td><span class="${statusClass(item.status)}">${item.status}</span></td>
+          <td>
+            <div class="toolbar">
+              <button data-act="confirm" data-id="${item.id}" type="button">Conferma</button>
+              <button data-act="cancel" data-id="${item.id}" class="warn" type="button">Annulla</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadBookings() {
+      const data = await api('/api/bookings', { method: 'GET' });
+      renderBookings(data.items || []);
+    }
+
+    async function updateStatus(id, status) {
+      await api(`/api/bookings/${id}/confirm`, {
+        method: 'POST',
+        body: JSON.stringify({
+          status,
+          note: `Aggiornato da dashboard OPS (${status})`
+        })
+      });
+    }
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(loginForm);
+      try {
+        const data = await api('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: String(formData.get('email') || '').trim(),
+            password: String(formData.get('password') || '')
+          })
+        });
+
+        state.token = data.token;
+        state.user = data.user;
+        userLabel.textContent = `${data.user.name} (${data.user.role})`;
+        refreshBtn.disabled = false;
+        logoutBtn.disabled = false;
+        setFeedback('Login effettuato', 'ok');
+        await loadBookings();
+      } catch (error) {
+        setFeedback(error.message, 'err');
+      }
+    });
+
+    refreshBtn.addEventListener('click', async () => {
+      try {
+        await loadBookings();
+        setFeedback('Elenco aggiornato', 'ok');
+      } catch (error) {
+        setFeedback(error.message, 'err');
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      state.token = null;
+      state.user = null;
+      userLabel.textContent = 'non autenticato';
+      refreshBtn.disabled = true;
+      logoutBtn.disabled = true;
+      bookingsBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato</td></tr>';
+      setFeedback('Logout completato');
+    });
+
+    bookingsBody.addEventListener('click', async (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) return;
+      const id = target.getAttribute('data-id');
+      const action = target.getAttribute('data-act');
+      if (!id || !action) return;
+
+      try {
+        target.disabled = true;
+        await updateStatus(id, action === 'confirm' ? 'CONFIRMED' : 'CANCELLED');
+        await loadBookings();
+        setFeedback(`Booking ${id} aggiornato`, 'ok');
+      } catch (error) {
+        setFeedback(error.message, 'err');
+      } finally {
+        target.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
+
+

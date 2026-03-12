@@ -1,7 +1,7 @@
 # I.T.S. Ischia Transfer Service S.r.l.
 
 Beta foundation for a modern Ischia Transfer Service website with a minimal operational backend:
-- public website in `src/`
+- public website in project root (GitHub Pages ready)
 - API for authentication and booking flow
 - JSON persistence in `data/db.json`
 
@@ -9,11 +9,11 @@ Beta foundation for a modern Ischia Transfer Service website with a minimal oper
 
 ```
 its-sito
-├── src/
-│   ├── index.html
-│   ├── assets/
-│   ├── scripts/main.js
-│   └── styles/
+├── index.html
+├── en/
+├── assets/
+├── scripts/main.js
+├── styles/
 ├── server.js
 ├── data/db.json           # created automatically at first start
 ├── tailwind.config.js
