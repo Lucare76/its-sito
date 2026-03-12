@@ -518,34 +518,49 @@ function handleApi(req, res, pathname) {
   return sendJson(res, 404, { error: 'Endpoint non trovato' });
 }
 
-function serveStatic(req, res, pathname) {
-  const requested = pathname === '/' ? '/index.html' : pathname;
-  const normalized = path.normalize(requested).replace(/^(\.\.[/\\])+/, '');
-  const filePath = path.join(SRC_DIR, normalized);
+function resolveStaticPath(pathname) {
+  const cleaned = String(pathname || '').replace(/^\/+/, '').replace(/\/+$/, '');
+  const requested = pathname === '/' ? 'index.html' : cleaned;
+  const hasExtension = path.extname(requested).length > 0;
+  const candidates = hasExtension
+    ? [requested]
+    : [requested, `${requested}.html`, path.join(requested, 'index.html')];
 
-  if (!filePath.startsWith(SRC_DIR)) {
-    return sendText(res, 403, 'Forbidden');
+  for (const candidate of candidates) {
+    const normalized = path.normalize(candidate);
+    const filePath = path.resolve(SRC_DIR, normalized);
+    const sourcePrefix = `${SRC_DIR}${path.sep}`;
+    if (filePath !== SRC_DIR && !filePath.startsWith(sourcePrefix)) {
+      continue;
+    }
+
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+      return filePath;
+    }
   }
 
-  fs.stat(filePath, (error, stats) => {
-    if (error || !stats.isFile()) {
-      return sendText(res, 404, 'Not Found');
-    }
+  return null;
+}
 
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-    const headers = { 'Content-Type': contentType };
+function serveStatic(req, res, pathname) {
+  const filePath = resolveStaticPath(pathname);
+  if (!filePath) {
+    return sendText(res, 404, 'Not Found');
+  }
 
-    // Avoid stale homepage/content after deploys.
-    if (ext === '.html') {
-      headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
-      headers.Pragma = 'no-cache';
-      headers.Expires = '0';
-    }
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+  const headers = { 'Content-Type': contentType };
 
-    res.writeHead(200, headers);
-    fs.createReadStream(filePath).pipe(res);
-  });
+  // Avoid stale homepage/content after deploys.
+  if (ext === '.html') {
+    headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
+    headers.Pragma = 'no-cache';
+    headers.Expires = '0';
+  }
+
+  res.writeHead(200, headers);
+  fs.createReadStream(filePath).pipe(res);
 }
 
 function validateProductionConfig() {
