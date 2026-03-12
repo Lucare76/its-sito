@@ -8,7 +8,8 @@
     "watch": "tailwindcss build styles/tailwind.css -o styles/generated.css --watch",
     "start": "node server.js",
     "test": "node tools/smoke-test.js",
-    "lint": "eslint . --ext .js"
+    "lint": "pnpm run lint:js",
+    "lint:js": "eslint . --ext .js"
   },
   "dependencies": {
     "tailwindcss": "^2.2.19"

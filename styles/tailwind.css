@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src:
+        local('Montserrat'),
+        url('../assets/fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
 @layer base {
     html {
         scroll-behavior: smooth;
@@ -40,7 +50,8 @@
     }
 
     .btn-primary {
-        @apply inline-flex items-center gap-2 rounded-full bg-lemonYellow px-6 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+        @apply inline-flex items-center gap-2 rounded-full bg-lemonYellow px-7 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+        min-height: 3rem;
         box-shadow: 0 10px 30px rgba(250, 204, 21, 0.08);
     }
 
@@ -49,7 +60,7 @@
     }
 
     .btn-secondary {
-        @apply inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:bg-white;
+        @apply inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:bg-white;
         border-color: rgba(30, 58, 138, 0.15);
         background-color: rgba(255, 255, 255, 0.75);
     }
@@ -89,8 +100,34 @@
         @apply absolute inset-0;
         z-index: -20;
         background:
-            linear-gradient(110deg, rgba(9, 18, 46, 0.88) 0%, rgba(9, 18, 46, 0.72) 42%, rgba(9, 18, 46, 0.45) 100%),
-            linear-gradient(180deg, rgba(30, 58, 138, 0.18) 0%, rgba(30, 58, 138, 0.45) 100%);
+            linear-gradient(110deg, rgba(9, 18, 46, 0.76) 0%, rgba(9, 18, 46, 0.58) 42%, rgba(9, 18, 46, 0.34) 100%),
+            linear-gradient(180deg, rgba(30, 58, 138, 0.16) 0%, rgba(30, 58, 138, 0.38) 100%);
+    }
+
+    .hero-trust {
+        @apply grid gap-3 text-sm font-medium text-blue-100 sm:grid-cols-3;
+    }
+
+    .hero-trust li {
+        @apply rounded-full border px-4 py-2 text-center;
+        border-color: rgba(255, 255, 255, 0.18);
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-trust li::before {
+        content: '✓ ';
+        color: #facc15;
+        font-weight: 700;
+    }
+
+    .hero-badges {
+        @apply flex flex-col gap-3 text-xs text-blue-100 sm:flex-row;
+    }
+
+    .hero-badges span {
+        @apply inline-flex items-center justify-center rounded-full border px-4 py-2 font-medium;
+        border-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.06);
     }
 
     .hero-glow {
@@ -144,10 +181,21 @@
     }
 
     .booking-card {
-        @apply rounded-[2rem] border p-6 shadow-2xl backdrop-blur sm:p-8 lg:mt-8;
+        @apply rounded-[2rem] border p-6 shadow-2xl backdrop-blur sm:p-9 lg:mt-8;
         border-color: rgba(255, 255, 255, 0.3);
         background-color: rgba(255, 255, 255, 0.92);
         box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
+    }
+
+    .booking-steps {
+        @apply mt-6 grid gap-2 text-xs uppercase text-gray-500 sm:grid-cols-3;
+        letter-spacing: 0.12em;
+    }
+
+    .booking-steps li {
+        @apply rounded-xl border px-3 py-2 text-center;
+        border-color: rgba(30, 58, 138, 0.08);
+        background-color: rgba(248, 250, 252, 0.9);
     }
 
     .booking-label {
@@ -181,7 +229,11 @@
     }
 
     .section-shell {
-        @apply py-20 sm:py-24;
+        @apply py-24 sm:py-28;
+    }
+
+    .section-shell-soft {
+        background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.82) 38%, rgba(248, 250, 252, 0) 100%);
     }
 
     .section-heading {
@@ -220,19 +272,33 @@
         border-radius: 2rem;
         border-color: rgba(30, 58, 138, 0.1);
         box-shadow: 0 20px 45px rgba(30, 58, 138, 0.05);
+        position: relative;
+        overflow: hidden;
     }
 
-    .service-icon {
-        @apply inline-flex h-14 w-14 items-center justify-center rounded-2xl text-nightBlue;
-        background: linear-gradient(135deg, rgba(250, 204, 21, 0.22), rgba(30, 58, 138, 0.08));
+    .service-card::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto auto 0;
+        height: 4px;
+        width: 100%;
+        background: linear-gradient(90deg, rgba(30, 58, 138, 0.9), rgba(250, 204, 21, 0.9));
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
-    .service-icon svg {
-        @apply h-6 w-6;
+    .service-card:hover::before {
+        opacity: 1;
+    }
+
+    .service-kicker {
+        @apply text-xs font-semibold uppercase text-nightBlue;
+        letter-spacing: 0.18em;
+        opacity: 0.75;
     }
 
     .service-card h3 {
-        @apply mt-6 text-2xl font-semibold text-nightBlue;
+        @apply mt-4 text-2xl font-semibold text-nightBlue;
     }
 
     .service-card p {
@@ -357,12 +423,58 @@
         box-shadow: 0 16px 40px rgba(30, 58, 138, 0.05);
     }
 
+    .benefit-icon {
+        @apply inline-flex h-10 w-10 items-center justify-center rounded-full text-base font-bold text-nightBlue;
+        background-color: rgba(250, 204, 21, 0.22);
+    }
+
     .benefit-card h3 {
-        @apply text-xl font-semibold text-nightBlue;
+        @apply mt-4 text-xl font-semibold text-nightBlue;
     }
 
     .benefit-card p {
         @apply mt-3 text-sm leading-7 text-gray-600;
+    }
+
+    .trust-panel {
+        @apply rounded-[2rem] border p-8 shadow-lg;
+        border-color: rgba(30, 58, 138, 0.1);
+        background-color: #fff;
+        box-shadow: 0 16px 42px rgba(30, 58, 138, 0.08);
+    }
+
+    .trust-kicker {
+        @apply text-xs font-semibold uppercase text-nightBlue;
+        letter-spacing: 0.24em;
+    }
+
+    .trust-panel h3 {
+        @apply mt-5 text-3xl font-semibold text-nightBlue;
+    }
+
+    .trust-stats {
+        @apply mt-8 grid gap-4 sm:grid-cols-3;
+    }
+
+    .trust-stats div {
+        @apply rounded-2xl border px-4 py-4 text-center;
+        border-color: rgba(30, 58, 138, 0.08);
+        background-color: rgba(248, 250, 252, 0.94);
+    }
+
+    .trust-stats strong {
+        @apply block text-2xl font-semibold text-nightBlue;
+    }
+
+    .trust-stats span {
+        @apply mt-1 block text-xs uppercase text-gray-500;
+        letter-spacing: 0.12em;
+    }
+
+    .trust-panel blockquote {
+        @apply mt-5 rounded-2xl border px-5 py-4 text-sm leading-7 text-gray-700;
+        border-color: rgba(30, 58, 138, 0.08);
+        background-color: rgba(248, 250, 252, 0.9);
     }
 
     .utility-card {
@@ -473,6 +585,69 @@
     .whatsapp-float svg {
         @apply h-5 w-5;
     }
+
+    .cta-banner {
+        @apply rounded-[2.2rem] border px-6 py-12 text-center shadow-2xl sm:px-10 sm:py-14;
+        border-color: rgba(30, 58, 138, 0.12);
+        background: linear-gradient(145deg, rgba(30, 58, 138, 0.96), rgba(15, 23, 42, 0.94));
+        box-shadow: 0 28px 68px rgba(15, 23, 42, 0.24);
+    }
+
+    .cta-kicker {
+        @apply text-xs font-semibold uppercase text-lemonYellow;
+        letter-spacing: 0.26em;
+    }
+
+    .cta-banner h2 {
+        @apply mt-5 text-4xl font-semibold text-white sm:text-5xl;
+    }
+
+    .cta-banner p {
+        @apply mx-auto mt-5 max-w-3xl text-base leading-8 text-blue-100 sm:text-lg;
+    }
+
+    .cta-primary {
+        @apply px-8 py-4 text-base;
+    }
+
+    .site-footer {
+        @apply border-t text-white;
+        border-color: rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, #0f172a 0%, #0b1225 100%);
+    }
+
+    .footer-brand {
+        @apply text-xl font-semibold;
+    }
+
+    .footer-title {
+        @apply text-xs font-semibold uppercase text-blue-200;
+        letter-spacing: 0.2em;
+    }
+
+    .footer-text {
+        @apply mt-4 max-w-md text-sm leading-7 text-blue-100;
+    }
+
+    .footer-link {
+        @apply mt-3 block text-sm text-blue-100 transition hover:text-lemonYellow;
+    }
+
+    .footer-copy {
+        @apply border-t px-6 py-4 text-center text-xs text-blue-200;
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @layer utilities {
@@ -486,6 +661,35 @@
         50% {
             transform: scale(1.04);
             box-shadow: 0 20px 46px rgba(37, 211, 102, 0.34);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+            min-height: 3.25rem;
+        }
+
+        .whatsapp-float {
+            right: 1rem;
+            bottom: 1rem;
+            padding: 0.8rem 1rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .reveal.is-visible,
+        .whatsapp-float,
+        .btn-primary,
+        .btn-secondary,
+        .service-card {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+            opacity: 1 !important;
         }
     }
 }

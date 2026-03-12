@@ -13,6 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatsappMessage = language === 'en'
         ? 'Hello Ischia Transfer Service, I would like information about a private transfer from [pickup] to [destination].'
         : "Ciao Ischia Transfer Service, vorrei informazioni per un transfer privato da [partenza] a [destinazione].";
+    const messages = language === 'en'
+        ? {
+            bookingUnavailable: 'Online booking is unavailable on this static page. Contact us on WhatsApp for immediate assistance.',
+            bookingSaveError: 'An error occurred while sending your request. Please try again.',
+            heroRequired: 'Please fill in name, email, service, date and route before sending your request.',
+            contactRequired: 'Please complete all required fields before sending.',
+            sending: 'Sending your request...',
+            heroSuccess: (reference) => `Request sent successfully (${reference}). We will contact you shortly to confirm every transfer detail.`,
+            contactSuccess: (reference) => `Request sent successfully (${reference}). Our team will get back to you shortly with confirmation and next steps.`,
+        }
+        : {
+            bookingUnavailable: 'Prenotazione online non disponibile su questa pagina statica. Contattaci su WhatsApp per assistenza immediata.',
+            bookingSaveError: 'Si e verificato un errore durante l invio della richiesta. Riprova tra poco.',
+            heroRequired: 'Compila nome, email, servizio, data e tratta prima di inviare la richiesta.',
+            contactRequired: 'Compila tutti i campi obbligatori prima di inviare.',
+            sending: 'Invio richiesta in corso...',
+            heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Ti contatteremo a breve per confermare ogni dettaglio del transfer.`,
+            contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Il nostro team ti rispondera a breve con conferma e prossimi passaggi.`,
+        };
 
     const setFeedback = (element, message, type) => {
         if (!element) {
@@ -44,15 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload),
             });
         } catch (error) {
-            const fallbackMessage = language === 'en'
-                ? 'Online booking is unavailable on this static page. Contact us on WhatsApp for immediate assistance.'
-                : 'Prenotazione online non disponibile su questa pagina statica. Contattaci su WhatsApp per assistenza immediata.';
-            throw new Error(fallbackMessage);
+            throw new Error(messages.bookingUnavailable);
         }
 
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.error || 'Errore durante il salvataggio della prenotazione');
+            throw new Error(data.error || messages.bookingSaveError);
         }
 
         return data.booking;
@@ -94,13 +110,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mobileMenu.classList.add('hidden');
         menuToggle.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('keydown', trapMenuFocus);
+    };
+
+    const getFocusableElements = (container) => {
+        if (!container) {
+            return [];
+        }
+        return Array.from(
+            container.querySelectorAll(
+                'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            ),
+        );
+    };
+
+    const trapMenuFocus = (event) => {
+        if (!mobileMenu || mobileMenu.classList.contains('hidden')) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeMobileMenu();
+            if (menuToggle) {
+                menuToggle.focus();
+            }
+            return;
+        }
+
+        if (event.key !== 'Tab') {
+            return;
+        }
+
+        const focusable = getFocusableElements(mobileMenu);
+        if (!focusable.length) {
+            return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && active === first) {
+            event.preventDefault();
+            last.focus();
+            return;
+        }
+
+        if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+        }
     };
 
     if (menuToggle && mobileMenu) {
         menuToggle.addEventListener('click', () => {
             const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-            menuToggle.setAttribute('aria-expanded', String(!isExpanded));
-            mobileMenu.classList.toggle('hidden', isExpanded);
+            if (isExpanded) {
+                closeMobileMenu();
+                return;
+            }
+
+            menuToggle.setAttribute('aria-expanded', 'true');
+            mobileMenu.classList.remove('hidden');
+            document.addEventListener('keydown', trapMenuFocus);
+            const focusable = getFocusableElements(mobileMenu);
+            if (focusable.length) {
+                focusable[0].focus();
+            }
         });
     }
 
@@ -139,11 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const website = String(formData.get('website') || '').trim();
 
             if (!service || !name || !email || !date || !route) {
-                setFeedback(heroBookingFeedback, 'Compila nome, email, servizio, data e tratta per inviare la richiesta.', 'error');
+                setFeedback(heroBookingFeedback, messages.heroRequired, 'error');
                 return;
             }
 
-            setFeedback(heroBookingFeedback, 'Invio richiesta in corso...', 'info');
+            setFeedback(heroBookingFeedback, messages.sending, 'info');
             if (heroBookingSubmit) {
                 heroBookingSubmit.disabled = true;
             }
@@ -163,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 setFeedback(
                     heroBookingFeedback,
-                    `Ecco fatto! Abbiamo ricevuto la tua richiesta (${booking.reference}). Il nostro team ti rispondera a breve per confermare il transfer.`,
+                    messages.heroSuccess(booking.reference),
                     'success',
                 );
                 heroBookingForm.reset();
@@ -193,17 +270,17 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (!payload.name || !payload.email || !payload.route || !payload.date) {
-                setFeedback(contactFeedback, 'Compila tutti i campi obbligatori prima di inviare.', 'error');
+                setFeedback(contactFeedback, messages.contactRequired, 'error');
                 return;
             }
 
-            setFeedback(contactFeedback, 'Invio richiesta in corso...', 'info');
+            setFeedback(contactFeedback, messages.sending, 'info');
 
             try {
                 const booking = await postBooking(payload);
                 setFeedback(
                     contactFeedback,
-                    `Ecco fatto! Abbiamo ricevuto la tua richiesta (${booking.reference}). Il nostro team ti rispondera a breve per confermare il transfer.`,
+                    messages.contactSuccess(booking.reference),
                     'success',
                 );
                 contactForm.reset();
@@ -211,6 +288,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 setFeedback(contactFeedback, error.message, 'error');
             }
         });
+    }
+
+    const revealTargets = Array.from(
+        document.querySelectorAll('main section:not(#hero), .booking-card, .service-card, .fleet-card, .benefit-card, .utility-card, .contact-card, .cta-banner, .site-footer'),
+    );
+
+    if (revealTargets.length) {
+        revealTargets.forEach((element) => element.classList.add('reveal'));
+        const observer = new IntersectionObserver((entries, currentObserver) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+                entry.target.classList.add('is-visible');
+                currentObserver.unobserve(entry.target);
+            });
+        }, {
+            threshold: 0.12,
+            rootMargin: '0px 0px -8% 0px',
+        });
+
+        revealTargets.forEach((element) => observer.observe(element));
     }
 
     createWhatsAppFloat();

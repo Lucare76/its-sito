@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /ops.html
-
-Sitemap: https://www.ischiatransferservice.it/sitemap.xml
-

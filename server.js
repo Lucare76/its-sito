@@ -31,10 +31,9 @@ function loadEnvFile() {
 loadEnvFile();
 
 const ROOT_DIR = __dirname;
-const SRC_DIR = path.join(ROOT_DIR, 'src');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 const DB_PATH = path.join(DATA_DIR, 'db.json');
-const STATIC_DIRS = [ROOT_DIR, SRC_DIR];
+const STATIC_DIRS = [ROOT_DIR];
 const BLOCKED_STATIC_SEGMENTS = new Set(['.git', '.pnpm-store', 'node_modules', 'data', 'tools']);
 const BLOCKED_ROOT_STATIC_FILES = new Set([
   '.env',
