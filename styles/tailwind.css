@@ -101,7 +101,7 @@
     }
 
     .hero-section {
-        @apply relative isolate overflow-hidden;
+        @apply relative isolate overflow-x-hidden;
         min-height: 100svh;
         padding-top: calc(var(--hero-safe-offset) + env(safe-area-inset-top, 0px));
     }
@@ -234,6 +234,18 @@
 
     .reserved-access-link {
         @apply mt-4;
+    }
+
+    .reserved-top-link {
+        @apply inline-flex items-center justify-center rounded-full border px-5 py-2 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5;
+        width: fit-content;
+        border-color: rgba(30, 58, 138, 0.12);
+        background-color: rgba(250, 204, 21, 0.18);
+    }
+
+    .reserved-top-link:hover {
+        border-color: rgba(250, 204, 21, 0.75);
+        background-color: rgba(250, 204, 21, 0.25);
     }
 
     .booking-label {

@@ -899,7 +899,7 @@ img {
 .hero-section {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow-x: hidden;
   min-height: 100svh;
   padding-top: calc(var(--hero-safe-offset) + env(safe-area-inset-top, 0px));
 }
@@ -1162,6 +1162,44 @@ img {
 
 .reserved-access-link {
   margin-top: 1rem;
+}
+
+.reserved-top-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border-width: 1px;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgba(30, 58, 138, var(--tw-text-opacity));
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  transition-duration: 300ms;
+}
+
+.reserved-top-link:hover {
+  --tw-translate-y: -0.125rem;
+  transform: var(--tw-transform);
+}
+
+.reserved-top-link {
+  width: -moz-fit-content;
+  width: fit-content;
+  border-color: rgba(30, 58, 138, 0.12);
+  background-color: rgba(250, 204, 21, 0.18);
+}
+
+.reserved-top-link:hover {
+  border-color: rgba(250, 204, 21, 0.75);
+  background-color: rgba(250, 204, 21, 0.25);
 }
 
 .booking-label {
@@ -2881,6 +2919,10 @@ img {
 @media (min-width: 1024px) {
   .lg\:flex {
     display: flex;
+  }
+
+  .lg\:inline-flex {
+    display: inline-flex;
   }
 
   .lg\:hidden {
