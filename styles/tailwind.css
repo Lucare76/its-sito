@@ -217,6 +217,25 @@
         background-color: rgba(248, 250, 252, 0.9);
     }
 
+    .reserved-access {
+        @apply rounded-2xl border px-4 py-4;
+        border-color: rgba(30, 58, 138, 0.1);
+        background-color: rgba(248, 250, 252, 0.8);
+    }
+
+    .reserved-access-kicker {
+        @apply text-xs font-semibold uppercase text-nightBlue;
+        letter-spacing: 0.18em;
+    }
+
+    .reserved-access-copy {
+        @apply mt-2 text-sm leading-7 text-gray-600;
+    }
+
+    .reserved-access-link {
+        @apply mt-4;
+    }
+
     .booking-label {
         @apply text-sm font-semibold uppercase;
         color: rgba(30, 58, 138, 0.6);

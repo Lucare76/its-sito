@@ -1130,6 +1130,40 @@ img {
   background-color: rgba(248, 250, 252, 0.9);
 }
 
+.reserved-access {
+  border-radius: 1rem;
+  border-width: 1px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-color: rgba(30, 58, 138, 0.1);
+  background-color: rgba(248, 250, 252, 0.8);
+}
+
+.reserved-access-kicker {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  --tw-text-opacity: 1;
+  color: rgba(30, 58, 138, var(--tw-text-opacity));
+  letter-spacing: 0.18em;
+}
+
+.reserved-access-copy {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  line-height: 1.75rem;
+  --tw-text-opacity: 1;
+  color: rgba(75, 85, 99, var(--tw-text-opacity));
+}
+
+.reserved-access-link {
+  margin-top: 1rem;
+}
+
 .booking-label {
   font-size: 0.875rem;
   line-height: 1.25rem;
