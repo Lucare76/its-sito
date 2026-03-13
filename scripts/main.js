@@ -102,6 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
         nav.classList.toggle('scrolled', window.scrollY > 24);
     };
 
+    const syncHeroOffset = () => {
+        if (!nav) {
+            return;
+        }
+
+        const navHeight = Math.ceil(nav.getBoundingClientRect().height || 0);
+        const extraOffset = window.innerWidth < 640 ? 18 : 24;
+        const safeOffset = Math.max(96, navHeight + extraOffset);
+        document.documentElement.style.setProperty('--hero-safe-offset', `${safeOffset}px`);
+    };
+
     const closeMobileMenu = () => {
         if (!menuToggle || !mobileMenu) {
             return;
@@ -313,11 +324,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     createWhatsAppFloat();
+    syncHeroOffset();
     syncNavState();
     window.addEventListener('scroll', syncNavState, { passive: true });
     window.addEventListener('resize', () => {
+        syncHeroOffset();
         if (window.innerWidth >= 1024) {
             closeMobileMenu();
         }
     });
+
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncHeroOffset, { passive: true });
+    }
 });
