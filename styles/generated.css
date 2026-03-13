@@ -2244,12 +2244,16 @@ img {
   gap: 0.5rem;
 }
 
-.gap-12 {
-  gap: 3rem;
+.gap-10 {
+  gap: 2.5rem;
 }
 
 .gap-4 {
   gap: 1rem;
+}
+
+.gap-12 {
+  gap: 3rem;
 }
 
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
@@ -2367,8 +2371,12 @@ img {
   padding-top: 2.5rem;
 }
 
-.pb-24 {
-  padding-bottom: 6rem;
+.pt-28 {
+  padding-top: 7rem;
+}
+
+.pt-8 {
+  padding-top: 2rem;
 }
 
 .pt-6 {
@@ -2381,6 +2389,10 @@ img {
 
 .pt-0 {
   padding-top: 0px;
+}
+
+.pb-24 {
+  padding-bottom: 6rem;
 }
 
 .text-sm {
@@ -2398,14 +2410,9 @@ img {
   line-height: 1rem;
 }
 
-.text-5xl {
-  font-size: 3rem;
-  line-height: 1;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
 .text-base {
@@ -2413,14 +2420,24 @@ img {
   line-height: 1.5rem;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
 }
 
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
 }
 
 .font-semibold {
@@ -2553,11 +2570,65 @@ img {
 }
 
 @media (max-width: 768px) {
+  .nav-shell {
+    margin-top: 0.75rem;
+    border-radius: 1.5rem;
+  }
+
+  #site-nav > div {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .btn-primary,
         .btn-secondary {
     width: 100%;
     justify-content: center;
     min-height: 3.25rem;
+    font-size: 0.95rem;
+  }
+
+  .mobile-link {
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .section-shell {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  .section-heading {
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .service-card,
+        .fleet-copy,
+        .trust-panel,
+        .utility-card,
+        .contact-card {
+    padding: 1.5rem;
+  }
+
+  .fleet-image-shell {
+    min-height: 240px;
+  }
+
+  .booking-card {
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+  }
+
+  .booking-steps {
+    letter-spacing: 0.08em;
+  }
+
+  .service-link,
+        .utility-link {
+    width: 100%;
   }
 
   .whatsapp-float {
@@ -2571,7 +2642,7 @@ img {
 @media (max-width: 480px) {
   .hero-section h1 {
     font-size: clamp(2rem, 9vw, 2.55rem);
-    line-height: 1.12;
+    line-height: 1.18;
   }
 
   .hero-section p {
@@ -2579,9 +2650,50 @@ img {
     line-height: 1.65;
   }
 
+  .hero-overlay {
+    background:
+                linear-gradient(110deg, rgba(9, 18, 46, 0.9) 0%, rgba(9, 18, 46, 0.72) 45%, rgba(9, 18, 46, 0.52) 100%),
+                linear-gradient(180deg, rgba(30, 58, 138, 0.24) 0%, rgba(30, 58, 138, 0.5) 100%);
+  }
+
+  .hero-section .stat-card dd {
+    font-size: 1.4rem;
+  }
+
+  .hero-section .stat-card {
+    padding: 0.9rem;
+  }
+
   .section-heading h2 {
     font-size: clamp(1.7rem, 7.6vw, 2.1rem);
     line-height: 1.18;
+  }
+
+  .section-heading p,
+        .service-card p,
+        .fleet-copy p,
+        .utility-card p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .eyebrow {
+    letter-spacing: 0.18em;
+    font-size: 0.65rem;
+    padding: 0.42rem 0.75rem;
+  }
+
+  .booking-label {
+    letter-spacing: 0.14em;
+  }
+
+  .fleet-image-shell {
+    min-height: 220px;
+  }
+
+  #mobile-menu {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
   }
 
   .site-brand-copy {
@@ -2630,6 +2742,18 @@ img {
 }
 
 @media (min-width: 640px) {
+  .sm\:mt-6 {
+    margin-top: 1.5rem;
+  }
+
+  .sm\:mt-10 {
+    margin-top: 2.5rem;
+  }
+
+  .sm\:mt-12 {
+    margin-top: 3rem;
+  }
+
   .sm\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2658,8 +2782,37 @@ img {
     justify-content: space-between;
   }
 
+  .sm\:gap-12 {
+    gap: 3rem;
+  }
+
+  .sm\:gap-4 {
+    gap: 1rem;
+  }
+
+  .sm\:gap-5 {
+    gap: 1.25rem;
+  }
+
   .sm\:p-10 {
     padding: 2.5rem;
+  }
+
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .sm\:pt-32 {
+    padding-top: 8rem;
+  }
+
+  .sm\:pb-24 {
+    padding-bottom: 6rem;
+  }
+
+  .sm\:pt-10 {
+    padding-top: 2.5rem;
   }
 
   .sm\:text-base {
@@ -2675,6 +2828,11 @@ img {
   .sm\:text-xl {
     font-size: 1.25rem;
     line-height: 1.75rem;
+  }
+
+  .sm\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 
   .sm\:text-4xl {
