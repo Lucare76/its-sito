@@ -1,0 +1,48 @@
+SEO REPORT – Ischia Transfer Service
+March 16, 2026
+
+1. Summary of Actions Completed
+- Full technical SEO audit of the site
+- Added structured data (JSON-LD: LocalBusiness, TransportService, TouristService, Service, Breadcrumb, FAQPage) to all main landings
+- Verified and improved meta tags: title, description, og, canonical, robots
+- Implemented hreflang and x-default for IT/EN cross-linking
+- Updated sitemap.xml and robots.txt for optimal indexing
+- Created new landing pages: transfer-napoli-aeroporto-porto (IT/EN)
+- Enriched content and FAQ sections for main landings (IT/EN)
+- Improved heading structure (H1, H2, H3) for clarity and SEO
+- Optimized internal linking: menu, section, contextual links between landings and contacts
+- Verified and improved alt text for all images
+- Aligned and enriched EN content for transfer-ischia, transfer-privato-ischia, naples-airport-to-ischia-transfer
+
+2. Detailed File Interventions
+- transfer-ischia.html / en/transfer-ischia.html: content, FAQ, heading, links, structured data
+- transfer-privato-ischia.html / en/transfer-privato-ischia.html: content, FAQ, heading, links, structured data
+- naples-airport-to-ischia-transfer.html / en/naples-airport-to-ischia-transfer.html: content, FAQ, heading, links, structured data
+- index.html / en/index.html: meta tags, structured data
+- sitemap.xml: updated for all main landings
+- robots.txt: optimized for crawl and sitemap
+
+3. Best Practices Applied
+- Use of schema.org structured data for Google Travel and rich results
+- Consistent meta tags and canonical URLs
+- Hreflang for multilingual targeting
+- FAQPage schema for enhanced answers in SERP
+- Contextual internal linking for user navigation and SEO
+- Descriptive alt text for accessibility and image SEO
+- Editorial consistency between IT and EN versions
+
+4. Recommendations & Next Steps
+- Continue content enrichment for EN/IT minor landings (Capri, Procida, Amalfi, hotel, stazione, gruppi, ecc.)
+- Monitor Google Search Console for indexing, rich results, and errors
+- Periodically review and update FAQ and structured data
+- Maintain editorial and technical SEO best practices
+- Consider adding testimonials, reviews, or case studies for trust signals
+- Expand FAQ and service details for long-tail queries
+- Check for new Google Travel requirements and adapt
+
+5. Pending/Optional Activities
+- Further enrichment and alignment of EN content for all landings
+- Add new landing pages for emerging routes/services if needed
+- Monitor performance and update based on analytics
+
+Prepared by: GitHub Copilot (GPT-4.1)

@@ -1,0 +1,46 @@
+SEO AUDIT – Ischia Transfer Service
+March 16, 2026
+
+1. Technical SEO Overview
+- Static HTML site, IT/EN, tourist transfer niche
+- Structured data: LocalBusiness, TransportService, TouristService, FAQPage, Service, Breadcrumb (JSON-LD)
+- Meta tags: title, description, og, canonical, robots
+- Hreflang: IT/EN/x-default, correct cross-linking
+- Sitemap.xml: complete, updated, priorities set
+- robots.txt: allows all except ops.html, sitemap declared
+- Internal linking: menu, sections, contextual links
+- Alt text: present, descriptive
+
+2. Content & Editorial
+- EN landings now enriched: transfer-ischia, transfer-privato-ischia, naples-airport-to-ischia-transfer
+- FAQ present and translated
+- Heading structure improved (H1, H2, H3)
+- Contextual links between landings and contacts
+- Consistency between IT/EN versions
+
+3. Structured Data
+- JSON-LD for all main landings
+- FAQPage schema for key pages
+- Breadcrumb schema for navigation
+- Service schema for transfer offerings
+
+4. Internal Linking
+- Menu links, section links, contextual links in main paragraphs
+- Links to related landings and contacts
+
+5. Meta & Indexing
+- Meta title/description optimized for each page
+- Canonical tags present
+- Robots meta: index, follow
+- Sitemap.xml covers all main landings
+
+6. Recommendations
+- Continue content enrichment for EN/IT minor landings
+- Monitor Google Search Console for indexing and rich results
+- Periodically review FAQ and structured data for updates
+- Maintain editorial consistency and technical SEO best practices
+
+7. Completed Interventions
+- Audit, new landing creation, content/FAQ enrichment, heading structure, internal linking, alt text optimization, structured data additions, EN alignment
+
+Prepared by: GitHub Copilot (GPT-4.1)
