@@ -1,0 +1,46 @@
+SITE AUDIT – Ischia Transfer Service
+March 16, 2026
+
+1. Struttura tecnica
+- Static HTML multilingua (IT/EN), organizzazione chiara in root e sottocartelle
+- Backend Node.js minimal per API booking/autenticazione, persistenza JSON
+- Assets ottimizzati (immagini AVIF/WEBP/JPG, font)
+- CSS generato con Tailwind, build script presente
+- Sitemap.xml e robots.txt corretti
+
+2. Contenuti
+- Landing principali e secondarie, EN/IT, arricchite con FAQ, vantaggi, info utili, CTA
+- FAQPage schema, meta tag, heading structure, internal linking
+- EN allineate alle IT, alcune pagine minori da arricchire
+
+3. Accessibilità e usabilità
+- Testi leggibili, heading chiari, link e CTA evidenti
+- Alt text presente per immagini
+- Layout responsive, font accessibile
+
+4. Performance
+- Immagini ottimizzate (AVIF/WEBP), CSS minificato
+- Static serving, no JS pesante
+- Cache-control su HTML per evitare contenuti obsoleti
+
+5. Sicurezza e privacy
+- API protetta da rate limit e autenticazione
+- Configurazione demo, richiede secret/salt sicuri in produzione
+- Nessun dato sensibile esposto
+
+6. Segnali di fiducia
+- CTA, FAQ, trasparenza, assistenza reale
+- Mancano recensioni, partner, testimonianze (da inserire in futuro)
+
+7. Organizzazione pagine
+- Ogni landing ha struttura SEO, contenuti, FAQ, CTA
+- Possibilità di nuove pagine per transfer Capri, Procida, Amalfi, gruppi, hotel
+
+8. Raccomandazioni operative
+- Arricchire pagine minori (EN/IT)
+- Inserire segnali di fiducia (recensioni, partner, numeri operativi)
+- Monitorare Search Console, performance, accessibilità
+- Aggiornare backend con secret/salt sicuri
+- Espandere FAQ e landing per copertura long-tail
+
+Prepared by: GitHub Copilot (GPT-4.1)
