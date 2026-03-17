@@ -60,9 +60,4 @@ its-sito
 
 - Set `.env` from `.env.example` before deployment.
 - In `NODE_ENV=production`, server startup fails if default auth secrets are still used.
-
-## Demo Credentials
-
-- Operator: `operator@its.local` / `operator123`
-- Admin: `admin@its.local` / `admin123`
-- Agency: `agency.demo@its.local` / `agency123`
+- Configure at least one bootstrap account using environment variables (`BOOTSTRAP_*`) before first run.

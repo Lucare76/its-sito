@@ -1,3 +1,7 @@
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -13,7 +17,16 @@ async function call(baseUrl, path, options = {}) {
 
 async function run() {
   const port = 4100 + Math.floor(Math.random() * 300);
+  const tempDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'its-smoke-'));
+  const smokeOperatorEmail = process.env.SMOKE_TEST_OPERATOR_EMAIL || 'smoke.operator@its.local';
+  const smokeOperatorPassword = process.env.SMOKE_TEST_OPERATOR_PASSWORD || 'smoke-operator-password';
+
   process.env.PORT = String(port);
+  process.env.DATA_DIR = tempDataDir;
+  process.env.DB_PATH = path.join(tempDataDir, 'db.json');
+  process.env.BOOTSTRAP_OPERATOR_EMAIL = smokeOperatorEmail;
+  process.env.BOOTSTRAP_OPERATOR_PASSWORD = smokeOperatorPassword;
+
   const baseUrl = `http://localhost:${port}`;
   const { startServer } = require('../server');
   const server = startServer(port);
@@ -26,8 +39,8 @@ async function run() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'operator@its.local',
-        password: 'operator123',
+        email: smokeOperatorEmail,
+        password: smokeOperatorPassword,
       }),
     });
 
@@ -66,6 +79,7 @@ async function run() {
     console.log('SMOKE_TEST_OK');
   } finally {
     await new Promise((resolve) => server.close(resolve));
+    fs.rmSync(tempDataDir, { recursive: true, force: true });
   }
 }
 

@@ -2,7 +2,6 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const url = require('url');
 
 function loadEnvFile() {
   const envPath = path.join(__dirname, '.env');
@@ -31,8 +30,8 @@ function loadEnvFile() {
 loadEnvFile();
 
 const ROOT_DIR = __dirname;
-const DATA_DIR = path.join(ROOT_DIR, 'data');
-const DB_PATH = path.join(DATA_DIR, 'db.json');
+const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(ROOT_DIR, 'data'));
+const DB_PATH = path.resolve(process.env.DB_PATH || path.join(DATA_DIR, 'db.json'));
 const STATIC_DIRS = [ROOT_DIR];
 const BLOCKED_STATIC_SEGMENTS = new Set(['.git', '.pnpm-store', 'node_modules', 'data', 'tools']);
 const BLOCKED_ROOT_STATIC_FILES = new Set([
@@ -56,6 +55,12 @@ const BOOKING_RATE_LIMIT_MAX = Number(process.env.BOOKING_RATE_LIMIT_MAX || 20);
 const BOOKING_RATE_LIMIT_WINDOW_MS = Number(process.env.BOOKING_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000);
 const LOGIN_RATE_LIMIT_MAX = Number(process.env.LOGIN_RATE_LIMIT_MAX || 25);
 const LOGIN_RATE_LIMIT_WINDOW_MS = Number(process.env.LOGIN_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000);
+const BOOTSTRAP_OPERATOR_EMAIL = String(process.env.BOOTSTRAP_OPERATOR_EMAIL || '').trim();
+const BOOTSTRAP_OPERATOR_PASSWORD = String(process.env.BOOTSTRAP_OPERATOR_PASSWORD || '');
+const BOOTSTRAP_ADMIN_EMAIL = String(process.env.BOOTSTRAP_ADMIN_EMAIL || '').trim();
+const BOOTSTRAP_ADMIN_PASSWORD = String(process.env.BOOTSTRAP_ADMIN_PASSWORD || '');
+const BOOTSTRAP_AGENCY_EMAIL = String(process.env.BOOTSTRAP_AGENCY_EMAIL || '').trim();
+const BOOTSTRAP_AGENCY_PASSWORD = String(process.env.BOOTSTRAP_AGENCY_PASSWORD || '');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -188,43 +193,91 @@ function sanitizeUser(user) {
   };
 }
 
+function buildBootstrapUsers() {
+  const users = [];
+
+  function addBootstrapUser(config) {
+    if (!config.email || !config.password) {
+      return;
+    }
+
+    users.push({
+      id: config.id,
+      name: config.name,
+      email: config.email,
+      role: config.role,
+      agencyId: config.agencyId || null,
+      passwordHash: hashPassword(config.password)
+    });
+  }
+
+  addBootstrapUser({
+    id: 'usr_operator_1',
+    name: 'Operatore ITS',
+    email: BOOTSTRAP_OPERATOR_EMAIL,
+    role: 'operator',
+    password: BOOTSTRAP_OPERATOR_PASSWORD
+  });
+
+  addBootstrapUser({
+    id: 'usr_admin_1',
+    name: 'Admin ITS',
+    email: BOOTSTRAP_ADMIN_EMAIL,
+    role: 'admin',
+    password: BOOTSTRAP_ADMIN_PASSWORD
+  });
+
+  addBootstrapUser({
+    id: 'usr_agency_1',
+    name: 'Agenzia',
+    email: BOOTSTRAP_AGENCY_EMAIL,
+    role: 'agency',
+    agencyId: 'agency_bootstrap',
+    password: BOOTSTRAP_AGENCY_PASSWORD
+  });
+
+  return users;
+}
+
 function ensureDb() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
 
   if (!fs.existsSync(DB_PATH)) {
+    const bootstrapUsers = buildBootstrapUsers();
     const seed = {
-      users: [
-        {
-          id: 'usr_operator_1',
-          name: 'Operatore ITS',
-          email: 'operator@its.local',
-          role: 'operator',
-          agencyId: null,
-          passwordHash: hashPassword('operator123')
-        },
-        {
-          id: 'usr_admin_1',
-          name: 'Admin ITS',
-          email: 'admin@its.local',
-          role: 'admin',
-          agencyId: null,
-          passwordHash: hashPassword('admin123')
-        },
-        {
-          id: 'usr_agency_1',
-          name: 'Agenzia Demo',
-          email: 'agency.demo@its.local',
-          role: 'agency',
-          agencyId: 'agency_demo',
-          passwordHash: hashPassword('agency123')
-        }
-      ],
+      users: bootstrapUsers,
       bookings: []
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(seed, null, 2), 'utf8');
-    log('DB inizializzato con utenti demo in data/db.json');
+    log(`DB inizializzato in ${DB_PATH}`);
+    if (!bootstrapUsers.length) {
+      log('Nessun utente bootstrap configurato: imposta variabili BOOTSTRAP_* per abilitare login iniziale');
+    }
+    return;
+  }
+
+  const bootstrapUsers = buildBootstrapUsers();
+  if (!bootstrapUsers.length) {
+    return;
+  }
+
+  try {
+    const existing = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+    const hasUsers = Array.isArray(existing.users) && existing.users.length > 0;
+    if (hasUsers) {
+      return;
+    }
+
+    const merged = {
+      users: bootstrapUsers,
+      bookings: Array.isArray(existing.bookings) ? existing.bookings : []
+    };
+    fs.writeFileSync(DB_PATH, JSON.stringify(merged, null, 2), 'utf8');
+    log(`Utenti bootstrap inseriti in ${DB_PATH}`);
+  } catch (error) {
+    log(`Impossibile aggiornare utenti bootstrap in ${DB_PATH}: ${error.message}`);
   }
 }
 
@@ -604,8 +657,8 @@ function validateProductionConfig() {
 
 function createAppServer() {
   return http.createServer((req, res) => {
-    const parsedUrl = url.parse(req.url, true);
-    const pathname = parsedUrl.pathname || '/';
+    const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+    const pathname = requestUrl.pathname || '/';
 
     if (pathname.startsWith('/api/')) {
       return handleApi(req, res, pathname);
@@ -621,8 +674,6 @@ function startServer(port = PORT) {
   const server = createAppServer();
   server.listen(port, () => {
     log(`Server avviato su http://localhost:${port}`);
-    log('Demo login operator: operator@its.local / operator123');
-    log('Demo login agency: agency.demo@its.local / agency123');
   });
   return server;
 }

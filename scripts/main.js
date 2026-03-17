@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             heroRequired: 'Please fill in name, email, service, date and route before sending your request.',
             contactRequired: 'Please complete all required fields before sending.',
             sending: 'Sending your request...',
-            heroSuccess: (reference) => `Request sent successfully (${reference}). We will contact you shortly to confirm every transfer detail.`,
-            contactSuccess: (reference) => `Request sent successfully (${reference}). Our team will get back to you shortly with confirmation and next steps.`,
+            heroSuccess: (reference) => `Request sent successfully (${reference}). Next step: our team checks route and timing, then sends confirmation and pickup details.`,
+            contactSuccess: (reference) => `Request sent successfully (${reference}). Next step: we verify availability and contact you shortly with operational confirmation.`,
         }
         : {
             bookingUnavailable: 'Prenotazione online non disponibile su questa pagina statica. Contattaci su WhatsApp per assistenza immediata.',
@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
             heroRequired: 'Compila nome, email, servizio, data e tratta prima di inviare la richiesta.',
             contactRequired: 'Compila tutti i campi obbligatori prima di inviare.',
             sending: 'Invio richiesta in corso...',
-            heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Ti contatteremo a breve per confermare ogni dettaglio del transfer.`,
-            contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Il nostro team ti rispondera a breve con conferma e prossimi passaggi.`,
+            heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: verifichiamo tratta e orari, poi ricevi conferma operativa e dettagli pickup.`,
+            contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: controlliamo disponibilita e ti rispondiamo a breve con conferma operativa.`,
         };
 
     const setFeedback = (element, message, type) => {
