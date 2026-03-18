@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
   <title>ITS Beta Ops</title>
   <style>
     :root {
@@ -71,7 +72,28 @@
     #feedback { margin-top: 8px; font-size: 13px; }
     #feedback.ok { color: var(--ok); }
     #feedback.err { color: var(--warn); }
+    .metrics { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 12px; }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #f8fbff;
+    }
+    .metric strong { display: block; font-size: 24px; color: var(--brand); }
+    .funnel-table td strong { color: var(--brand); }
+    .hint {
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fbff;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .trend-up { color: var(--ok); }
+    .trend-down { color: var(--warn); }
     @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .metrics { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -124,12 +146,191 @@
         </tbody>
       </table>
     </div>
+
+    <div class="card">
+      <strong>Analytics eventi</strong>
+      <p class="small">Export rapido JSON/CSV e ultimi eventi del funnel.</p>
+      <div class="toolbar">
+        <button id="analytics-refresh-btn" class="secondary" type="button" disabled>Aggiorna analytics</button>
+        <button id="analytics-export-json-btn" class="secondary" type="button" disabled>Export JSON</button>
+        <button id="analytics-export-csv-btn" class="secondary" type="button" disabled>Export CSV</button>
+        <button id="analytics-export-insights-btn" class="secondary" type="button" disabled>Export Insights</button>
+      </div>
+      <div class="metrics">
+        <div class="metric"><span class="small">Totale eventi</span><strong id="analytics-total">0</strong></div>
+        <div class="metric"><span class="small">CTA click</span><strong id="analytics-cta">0</strong></div>
+        <div class="metric"><span class="small">Form submit</span><strong id="analytics-submit">0</strong></div>
+        <div class="metric"><span class="small">WhatsApp click</span><strong id="analytics-whatsapp">0</strong></div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Quando</th>
+            <th>Evento</th>
+            <th>Pagina</th>
+            <th>Form/Label</th>
+            <th>UTM</th>
+          </tr>
+        </thead>
+        <tbody id="analytics-body">
+          <tr><td colspan="5" class="small">Nessun dato</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <strong>Drop-off Funnel</strong>
+      <p class="small">Percorso base: CTA click → Form open → Form submit → WhatsApp.</p>
+      <table class="funnel-table">
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Totale</th>
+            <th>Passaggio da step precedente</th>
+            <th>Drop-off</th>
+          </tr>
+        </thead>
+        <tbody id="funnel-body">
+          <tr><td colspan="4" class="small">Nessun dato</td></tr>
+        </tbody>
+      </table>
+      <div id="funnel-summary" class="hint">Nessun dato funnel disponibile.</div>
+      <div id="funnel-trend" class="hint">Trend non disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Funnel per UTM</strong>
+      <p class="small">Raggruppamento rapido per `source / campaign` quando disponibili.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Canale</th>
+            <th>CTA</th>
+            <th>Open</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+            <th>Conversione finale</th>
+          </tr>
+        </thead>
+        <tbody id="utm-funnel-body">
+          <tr><td colspan="6" class="small">Nessun dato UTM</td></tr>
+        </tbody>
+      </table>
+      <div id="utm-summary" class="hint">Nessun confronto canali disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Top Pagine per Conversione</strong>
+      <p class="small">Confronto rapido tra landing in base al funnel finale WhatsApp / CTA.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Pagina</th>
+            <th>CTA</th>
+            <th>Open</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+            <th>Conv. finale</th>
+          </tr>
+        </thead>
+        <tbody id="page-ranking-body">
+          <tr><td colspan="6" class="small">Nessun dato pagine</td></tr>
+        </tbody>
+      </table>
+      <div id="page-ranking-summary" class="hint">Nessun ranking disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Health Score Landing</strong>
+      <p class="small">Punteggio sintetico per capire quali pagine stanno performando meglio nel funnel.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Pagina</th>
+            <th>Score</th>
+            <th>Stato</th>
+            <th>CTA</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+          </tr>
+        </thead>
+        <tbody id="health-score-body">
+          <tr><td colspan="6" class="small">Nessun dato score</td></tr>
+        </tbody>
+      </table>
+      <div id="health-score-summary" class="hint">Nessun Health Score disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Top Canali UTM</strong>
+      <p class="small">Ranking dei canali `source / medium / campaign` in base alla conversione finale del funnel.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Canale UTM</th>
+            <th>CTA</th>
+            <th>Open</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+            <th>Conv. finale</th>
+          </tr>
+        </thead>
+        <tbody id="utm-ranking-body">
+          <tr><td colspan="6" class="small">Nessun dato UTM</td></tr>
+        </tbody>
+      </table>
+      <div id="utm-ranking-summary" class="hint">Nessun ranking UTM disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Pagina + Canale</strong>
+      <p class="small">Incrocio tra landing e UTM per trovare le combinazioni che convertono meglio.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Pagina</th>
+            <th>Canale UTM</th>
+            <th>CTA</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+            <th>Conv. finale</th>
+          </tr>
+        </thead>
+        <tbody id="page-utm-body">
+          <tr><td colspan="6" class="small">Nessun dato combinato</td></tr>
+        </tbody>
+      </table>
+      <div id="page-utm-summary" class="hint">Nessuna combinazione disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Alert Criticità</strong>
+      <p class="small">Segnalazioni automatiche su pagine o combinazioni con traffico ma bassa conversione.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Priorità</th>
+            <th>Ambito</th>
+            <th>Criticità</th>
+            <th>Dettaglio</th>
+            <th>Suggerimento</th>
+          </tr>
+        </thead>
+        <tbody id="alerts-body">
+          <tr><td colspan="5" class="small">Nessuna criticità rilevata.</td></tr>
+        </tbody>
+      </table>
+      <div id="alerts-summary" class="hint">Nessun alert disponibile.</div>
+    </div>
   </div>
 
   <script>
     const state = {
       token: null,
       user: null,
+      analytics: [],
+      analyticsRange: '30d',
+      analyticsPage: 'all',
     };
 
     const loginForm = document.getElementById('login-form');
@@ -138,6 +339,96 @@
     const bookingsBody = document.getElementById('bookings-body');
     const refreshBtn = document.getElementById('refresh-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const analyticsRefreshBtn = document.getElementById('analytics-refresh-btn');
+    const analyticsExportJsonBtn = document.getElementById('analytics-export-json-btn');
+    const analyticsExportCsvBtn = document.getElementById('analytics-export-csv-btn');
+    const analyticsExportInsightsBtn = document.getElementById('analytics-export-insights-btn');
+    const analyticsBody = document.getElementById('analytics-body');
+    const analyticsTotal = document.getElementById('analytics-total');
+    const analyticsCta = document.getElementById('analytics-cta');
+    const analyticsSubmit = document.getElementById('analytics-submit');
+    const analyticsWhatsapp = document.getElementById('analytics-whatsapp');
+    const funnelBody = document.getElementById('funnel-body');
+    const funnelSummary = document.getElementById('funnel-summary');
+    const funnelTrend = document.getElementById('funnel-trend');
+    const utmFunnelBody = document.getElementById('utm-funnel-body');
+    const utmSummary = document.getElementById('utm-summary');
+    const pageRankingBody = document.getElementById('page-ranking-body');
+    const pageRankingSummary = document.getElementById('page-ranking-summary');
+    const healthScoreBody = document.getElementById('health-score-body');
+    const healthScoreSummary = document.getElementById('health-score-summary');
+    const utmRankingBody = document.getElementById('utm-ranking-body');
+    const utmRankingSummary = document.getElementById('utm-ranking-summary');
+    const pageUtmBody = document.getElementById('page-utm-body');
+    const pageUtmSummary = document.getElementById('page-utm-summary');
+    const alertsBody = document.getElementById('alerts-body');
+    const alertsSummary = document.getElementById('alerts-summary');
+
+    const funnelSteps = [
+      { event: 'cta_click', label: 'CTA click' },
+      { event: 'form_open', label: 'Form open' },
+      { event: 'form_submit', label: 'Form submit' },
+      { event: 'whatsapp_click', label: 'WhatsApp' },
+    ];
+
+    function ensureAnalyticsFilters() {
+      const toolbar = analyticsRefreshBtn.parentElement;
+      if (!toolbar) return;
+
+      if (!document.getElementById('analytics-range')) {
+        const rangeSelect = document.createElement('select');
+        rangeSelect.id = 'analytics-range';
+        rangeSelect.innerHTML = `
+          <option value="1d">Oggi</option>
+          <option value="7d">Ultimi 7 giorni</option>
+          <option value="30d" selected>Ultimi 30 giorni</option>
+          <option value="all">Tutto</option>
+        `;
+        toolbar.insertBefore(rangeSelect, analyticsRefreshBtn);
+        rangeSelect.addEventListener('change', () => {
+          state.analyticsRange = rangeSelect.value;
+          renderAnalytics(state.analytics);
+        });
+      }
+
+      if (!document.getElementById('analytics-page')) {
+        const pageSelect = document.createElement('select');
+        pageSelect.id = 'analytics-page';
+        pageSelect.innerHTML = '<option value="all">Tutte le pagine</option>';
+        toolbar.insertBefore(pageSelect, analyticsRefreshBtn);
+        pageSelect.addEventListener('change', () => {
+          state.analyticsPage = pageSelect.value;
+          renderAnalytics(state.analytics);
+        });
+      }
+    }
+
+    function updatePageFilterOptions(items) {
+      const select = document.getElementById('analytics-page');
+      if (!select) return;
+
+      const pages = Array.from(new Set(
+        items
+          .map((item) => String(item.pagePath || '').trim())
+          .filter(Boolean)
+      )).sort((a, b) => a.localeCompare(b));
+
+      const previousValue = state.analyticsPage;
+      select.innerHTML = '<option value="all">Tutte le pagine</option>';
+      pages.forEach((page) => {
+        const option = document.createElement('option');
+        option.value = page;
+        option.textContent = page;
+        select.appendChild(option);
+      });
+
+      if (previousValue !== 'all' && pages.includes(previousValue)) {
+        select.value = previousValue;
+      } else {
+        select.value = 'all';
+        state.analyticsPage = 'all';
+      }
+    }
 
     function setFeedback(message, type = '') {
       feedback.textContent = message;
@@ -193,6 +484,800 @@
       renderBookings(data.items || []);
     }
 
+    function countEvents(items, eventName) {
+      return items.filter((item) => item.event === eventName).length;
+    }
+
+    function formatPercent(value) {
+      if (!Number.isFinite(value)) return '-';
+      return `${Math.round(value)}%`;
+    }
+
+    function filterAnalyticsByRange(items) {
+      if (state.analyticsRange === 'all') {
+        return items;
+      }
+
+      const now = Date.now();
+      const windows = {
+        '1d': 24 * 60 * 60 * 1000,
+        '7d': 7 * 24 * 60 * 60 * 1000,
+        '30d': 30 * 24 * 60 * 60 * 1000,
+      };
+      const limit = windows[state.analyticsRange];
+      if (!limit) {
+        return items;
+      }
+
+      return items.filter((item) => {
+        const createdAt = Date.parse(item.createdAt || '');
+        return Number.isFinite(createdAt) && (now - createdAt) <= limit;
+      });
+    }
+
+    function filterAnalyticsByPage(items) {
+      if (state.analyticsPage === 'all') {
+        return items;
+      }
+
+      return items.filter((item) => String(item.pagePath || '').trim() === state.analyticsPage);
+    }
+
+    function getPreviousRangeItems(items) {
+      if (state.analyticsRange === 'all') {
+        return [];
+      }
+
+      const now = Date.now();
+      const windows = {
+        '1d': 24 * 60 * 60 * 1000,
+        '7d': 7 * 24 * 60 * 60 * 1000,
+        '30d': 30 * 24 * 60 * 60 * 1000,
+      };
+      const limit = windows[state.analyticsRange];
+      if (!limit) {
+        return [];
+      }
+
+      return items.filter((item) => {
+        const createdAt = Date.parse(item.createdAt || '');
+        if (!Number.isFinite(createdAt)) {
+          return false;
+        }
+        const age = now - createdAt;
+        return age > limit && age <= (limit * 2);
+      });
+    }
+
+    function formatDelta(current, previous) {
+      if (previous === 0) {
+        if (current === 0) return '0%';
+        return '+100%';
+      }
+
+      const delta = ((current - previous) / previous) * 100;
+      const rounded = Math.round(delta);
+      return `${rounded > 0 ? '+' : ''}${rounded}%`;
+    }
+
+    function renderTrend(currentItems, previousItems) {
+      if (state.analyticsRange === 'all') {
+        funnelTrend.className = 'hint';
+        funnelTrend.textContent = state.analyticsPage === 'all'
+          ? 'Trend non disponibile su intervallo "Tutto".'
+          : `Trend non disponibile su intervallo "Tutto" per ${state.analyticsPage}.`;
+        return;
+      }
+
+      const currentStats = buildFunnelStats(currentItems);
+      const previousStats = buildFunnelStats(previousItems);
+      const currentFinal = currentStats[0].total > 0 ? (currentStats[3].total / currentStats[0].total) * 100 : 0;
+      const previousFinal = previousStats[0].total > 0 ? (previousStats[3].total / previousStats[0].total) * 100 : 0;
+      const currentSubmitRate = currentStats[1].total > 0 ? (currentStats[2].total / currentStats[1].total) * 100 : 0;
+      const previousSubmitRate = previousStats[1].total > 0 ? (previousStats[2].total / previousStats[1].total) * 100 : 0;
+      const ctaDelta = formatDelta(currentStats[0].total, previousStats[0].total);
+      const finalDelta = formatDelta(currentFinal, previousFinal);
+      const submitDelta = formatDelta(currentSubmitRate, previousSubmitRate);
+      const isPositive = currentFinal >= previousFinal;
+      const scopeLabel = state.analyticsPage === 'all' ? 'tutte le pagine' : state.analyticsPage;
+
+      funnelTrend.className = `hint ${isPositive ? 'trend-up' : 'trend-down'}`;
+      funnelTrend.textContent = `Trend vs periodo precedente (${scopeLabel}): CTA ${ctaDelta}, conversione finale ${finalDelta}, passaggio Form open → Form submit ${submitDelta}.`;
+    }
+
+    function buildFunnelStats(items) {
+      return funnelSteps.map((step, index) => {
+        const total = countEvents(items, step.event);
+        const previousTotal = index === 0 ? total : countEvents(items, funnelSteps[index - 1].event);
+        const conversion = index === 0 ? 100 : (previousTotal > 0 ? (total / previousTotal) * 100 : 0);
+        const dropoff = index === 0 ? 0 : Math.max(previousTotal - total, 0);
+        return {
+          label: step.label,
+          total,
+          conversion,
+          dropoff,
+        };
+      });
+    }
+
+    function getCurrentAnalyticsScope(items) {
+      const pageScopedItems = filterAnalyticsByPage(items);
+      const filteredItems = filterAnalyticsByRange(pageScopedItems);
+      const previousItems = filterAnalyticsByPage(getPreviousRangeItems(items));
+      return { filteredItems, previousItems };
+    }
+
+    function renderFunnel(items) {
+      const stats = buildFunnelStats(items);
+      const hasData = stats.some((item) => item.total > 0);
+
+      if (!hasData) {
+        funnelBody.innerHTML = '<tr><td colspan="4" class="small">Nessun dato</td></tr>';
+        funnelSummary.textContent = 'Nessun dato funnel disponibile.';
+        return;
+      }
+
+      funnelBody.innerHTML = stats.map((item, index) => `
+        <tr>
+          <td><strong>${item.label}</strong></td>
+          <td>${item.total}</td>
+          <td>${index === 0 ? '100%' : formatPercent(item.conversion)}</td>
+          <td>${index === 0 ? '-' : item.dropoff}</td>
+        </tr>
+      `).join('');
+
+      let criticalIndex = 1;
+      for (let index = 2; index < stats.length; index += 1) {
+        if (stats[index].conversion < stats[criticalIndex].conversion) {
+          criticalIndex = index;
+        }
+      }
+
+      const criticalStep = stats[criticalIndex];
+      const previousStep = stats[criticalIndex - 1];
+      funnelSummary.textContent = `Perdita maggiore tra ${previousStep.label} e ${criticalStep.label}: ${criticalStep.dropoff} utenti persi, passaggio ${formatPercent(criticalStep.conversion)}.`;
+    }
+
+    function getUtmKey(item) {
+      const source = item.utm && item.utm.source ? item.utm.source : '';
+      const campaign = item.utm && item.utm.campaign ? item.utm.campaign : '';
+      if (!source && !campaign) return '';
+      return `${source || '(source n/d)'} / ${campaign || '(campaign n/d)'}`;
+    }
+
+    function renderUtmFunnel(items) {
+      const grouped = new Map();
+
+      items.forEach((item) => {
+        const key = getUtmKey(item);
+        if (!key) return;
+        if (!grouped.has(key)) {
+          grouped.set(key, []);
+        }
+        grouped.get(key).push(item);
+      });
+
+      const rows = Array.from(grouped.entries()).map(([key, groupItems]) => {
+        const stats = buildFunnelStats(groupItems);
+        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        return {
+          key,
+          cta: stats[0].total,
+          open: stats[1].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion);
+
+      if (!rows.length) {
+        utmFunnelBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
+        utmSummary.textContent = 'Nessun confronto canali disponibile.';
+        return;
+      }
+
+      utmFunnelBody.innerHTML = rows.map((row) => `
+        <tr>
+          <td><strong>${row.key}</strong></td>
+          <td>${row.cta}</td>
+          <td>${row.open}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+          <td>${formatPercent(row.finalConversion)}</td>
+        </tr>
+      `).join('');
+
+      const best = rows[0];
+      const worst = rows[rows.length - 1];
+      utmSummary.textContent = `Canale migliore: ${best.key} (${formatPercent(best.finalConversion)}). Canale più debole: ${worst.key} (${formatPercent(worst.finalConversion)}).`;
+    }
+
+    function renderPageRanking(items) {
+      const grouped = new Map();
+
+      items.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        if (!pagePath) return;
+        if (!grouped.has(pagePath)) {
+          grouped.set(pagePath, []);
+        }
+        grouped.get(pagePath).push(item);
+      });
+
+      const rows = Array.from(grouped.entries()).map(([pagePath, pageItems]) => {
+        const stats = buildFunnelStats(pageItems);
+        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        return {
+          pagePath,
+          cta: stats[0].total,
+          open: stats[1].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion,
+        };
+      })
+        .filter((item) => item.cta > 0 || item.open > 0 || item.submit > 0 || item.whatsapp > 0)
+        .sort((a, b) => {
+          if (b.finalConversion !== a.finalConversion) {
+            return b.finalConversion - a.finalConversion;
+          }
+          return b.whatsapp - a.whatsapp;
+        });
+
+      if (!rows.length) {
+        pageRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato pagine</td></tr>';
+        pageRankingSummary.textContent = 'Nessun ranking disponibile.';
+        return;
+      }
+
+      pageRankingBody.innerHTML = rows.slice(0, 10).map((row) => `
+        <tr>
+          <td><strong>${row.pagePath}</strong></td>
+          <td>${row.cta}</td>
+          <td>${row.open}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+          <td>${formatPercent(row.finalConversion)}</td>
+        </tr>
+      `).join('');
+
+      const best = rows[0];
+      const worst = rows[rows.length - 1];
+      pageRankingSummary.textContent = `Pagina migliore: ${best.pagePath} (${formatPercent(best.finalConversion)}). Pagina più debole: ${worst.pagePath} (${formatPercent(worst.finalConversion)}).`;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function getHealthLabel(score) {
+      if (score >= 75) return 'Buono';
+      if (score >= 45) return 'Medio';
+      return 'Critico';
+    }
+
+    function computeHealthScore(stats) {
+      const cta = stats[0].total;
+      const open = stats[1].total;
+      const submit = stats[2].total;
+      const whatsapp = stats[3].total;
+      const openRate = cta > 0 ? (open / cta) * 100 : 0;
+      const submitRate = open > 0 ? (submit / open) * 100 : 0;
+      const whatsappRate = submit > 0 ? (whatsapp / submit) * 100 : 0;
+      const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+
+      const weighted = (
+        (openRate * 0.2) +
+        (submitRate * 0.3) +
+        (whatsappRate * 0.2) +
+        (finalRate * 0.3)
+      );
+
+      return Math.round(clamp(weighted, 0, 100));
+    }
+
+    function renderHealthScore(items) {
+      const grouped = new Map();
+
+      items.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        if (!pagePath) return;
+        if (!grouped.has(pagePath)) {
+          grouped.set(pagePath, []);
+        }
+        grouped.get(pagePath).push(item);
+      });
+
+      const rows = Array.from(grouped.entries()).map(([pagePath, pageItems]) => {
+        const stats = buildFunnelStats(pageItems);
+        return {
+          pagePath,
+          score: computeHealthScore(stats),
+          label: getHealthLabel(computeHealthScore(stats)),
+          cta: stats[0].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+        };
+      })
+        .filter((item) => item.cta > 0 || item.submit > 0 || item.whatsapp > 0)
+        .sort((a, b) => b.score - a.score);
+
+      if (!rows.length) {
+        healthScoreBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato score</td></tr>';
+        healthScoreSummary.textContent = 'Nessun Health Score disponibile.';
+        return;
+      }
+
+      healthScoreBody.innerHTML = rows.slice(0, 10).map((row) => `
+        <tr>
+          <td><strong>${row.pagePath}</strong></td>
+          <td>${row.score}/100</td>
+          <td>${row.label}</td>
+          <td>${row.cta}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+        </tr>
+      `).join('');
+
+      const best = rows[0];
+      const worst = rows[rows.length - 1];
+      healthScoreSummary.textContent = `Landing più sana: ${best.pagePath} (${best.score}/100). Landing più critica: ${worst.pagePath} (${worst.score}/100).`;
+    }
+
+    function getFullUtmKey(item) {
+      const source = item.utm && item.utm.source ? item.utm.source : '(source n/d)';
+      const medium = item.utm && item.utm.medium ? item.utm.medium : '(medium n/d)';
+      const campaign = item.utm && item.utm.campaign ? item.utm.campaign : '(campaign n/d)';
+      if (
+        source === '(source n/d)' &&
+        medium === '(medium n/d)' &&
+        campaign === '(campaign n/d)'
+      ) {
+        return '';
+      }
+      return `${source} / ${medium} / ${campaign}`;
+    }
+
+    function renderUtmRanking(items) {
+      const grouped = new Map();
+
+      items.forEach((item) => {
+        const key = getFullUtmKey(item);
+        if (!key) return;
+        if (!grouped.has(key)) {
+          grouped.set(key, []);
+        }
+        grouped.get(key).push(item);
+      });
+
+      const rows = Array.from(grouped.entries()).map(([key, utmItems]) => {
+        const stats = buildFunnelStats(utmItems);
+        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        return {
+          key,
+          cta: stats[0].total,
+          open: stats[1].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion,
+        };
+      })
+        .filter((item) => item.cta > 0 || item.open > 0 || item.submit > 0 || item.whatsapp > 0)
+        .sort((a, b) => {
+          if (b.finalConversion !== a.finalConversion) {
+            return b.finalConversion - a.finalConversion;
+          }
+          return b.whatsapp - a.whatsapp;
+        });
+
+      if (!rows.length) {
+        utmRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
+        utmRankingSummary.textContent = 'Nessun ranking UTM disponibile.';
+        return;
+      }
+
+      utmRankingBody.innerHTML = rows.slice(0, 10).map((row) => `
+        <tr>
+          <td><strong>${row.key}</strong></td>
+          <td>${row.cta}</td>
+          <td>${row.open}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+          <td>${formatPercent(row.finalConversion)}</td>
+        </tr>
+      `).join('');
+
+      const best = rows[0];
+      const worst = rows[rows.length - 1];
+      utmRankingSummary.textContent = `Canale UTM migliore: ${best.key} (${formatPercent(best.finalConversion)}). Canale UTM più debole: ${worst.key} (${formatPercent(worst.finalConversion)}).`;
+    }
+
+    function renderPageUtmRanking(items) {
+      const grouped = new Map();
+
+      items.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        const utmKey = getFullUtmKey(item);
+        if (!pagePath || !utmKey) return;
+        const key = `${pagePath}__${utmKey}`;
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            pagePath,
+            utmKey,
+            items: [],
+          });
+        }
+        grouped.get(key).items.push(item);
+      });
+
+      const rows = Array.from(grouped.values()).map((entry) => {
+        const stats = buildFunnelStats(entry.items);
+        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        return {
+          pagePath: entry.pagePath,
+          utmKey: entry.utmKey,
+          cta: stats[0].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion,
+        };
+      })
+        .filter((item) => item.cta > 0 || item.submit > 0 || item.whatsapp > 0)
+        .sort((a, b) => {
+          if (b.finalConversion !== a.finalConversion) {
+            return b.finalConversion - a.finalConversion;
+          }
+          return b.whatsapp - a.whatsapp;
+        });
+
+      if (!rows.length) {
+        pageUtmBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato combinato</td></tr>';
+        pageUtmSummary.textContent = 'Nessuna combinazione disponibile.';
+        return;
+      }
+
+      pageUtmBody.innerHTML = rows.slice(0, 10).map((row) => `
+        <tr>
+          <td><strong>${row.pagePath}</strong></td>
+          <td>${row.utmKey}</td>
+          <td>${row.cta}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+          <td>${formatPercent(row.finalConversion)}</td>
+        </tr>
+      `).join('');
+
+      const best = rows[0];
+      const worst = rows[rows.length - 1];
+      pageUtmSummary.textContent = `Combinazione migliore: ${best.pagePath} + ${best.utmKey} (${formatPercent(best.finalConversion)}). Combinazione più debole: ${worst.pagePath} + ${worst.utmKey} (${formatPercent(worst.finalConversion)}).`;
+    }
+
+    function buildAlert(priority, scope, issue, detail, suggestion) {
+      return { priority, scope, issue, detail, suggestion };
+    }
+
+    function getPriorityLabel(priority) {
+      if (priority >= 90) return 'Alta';
+      if (priority >= 70) return 'Media';
+      return 'Bassa';
+    }
+
+    function renderAlerts(items) {
+      const alerts = [];
+      const pageGroups = new Map();
+      const comboGroups = new Map();
+
+      items.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        if (pagePath) {
+          if (!pageGroups.has(pagePath)) {
+            pageGroups.set(pagePath, []);
+          }
+          pageGroups.get(pagePath).push(item);
+        }
+
+        const utmKey = getFullUtmKey(item);
+        if (pagePath && utmKey) {
+          const comboKey = `${pagePath}__${utmKey}`;
+          if (!comboGroups.has(comboKey)) {
+            comboGroups.set(comboKey, {
+              pagePath,
+              utmKey,
+              items: [],
+            });
+          }
+          comboGroups.get(comboKey).items.push(item);
+        }
+      });
+
+      pageGroups.forEach((pageItems, pagePath) => {
+        const stats = buildFunnelStats(pageItems);
+        const cta = stats[0].total;
+        const open = stats[1].total;
+        const submit = stats[2].total;
+        const whatsapp = stats[3].total;
+        const openRate = cta > 0 ? (open / cta) * 100 : 0;
+        const submitRate = open > 0 ? (submit / open) * 100 : 0;
+        const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+
+        if (cta >= 20 && openRate < 35) {
+          alerts.push(buildAlert(95, pagePath, 'CTA forte ma poco accesso al form', `CTA ${cta}, form open ${open}, passaggio ${formatPercent(openRate)}.`, 'Rendi la CTA più coerente con il blocco successivo e verifica che il passaggio al form sia immediato e chiaro.'));
+        }
+        if (open >= 15 && submitRate < 35) {
+          alerts.push(buildAlert(88, pagePath, 'Utenti aprono il form ma non inviano', `Form open ${open}, submit ${submit}, passaggio ${formatPercent(submitRate)}.`, 'Semplifica il form, riduci attrito nei campi iniziali e chiarisci cosa succede dopo l invio.'));
+        }
+        if (cta >= 20 && finalRate < 15) {
+          alerts.push(buildAlert(82, pagePath, 'Conversione finale bassa', `CTA ${cta}, WhatsApp ${whatsapp}, conversione finale ${formatPercent(finalRate)}.`, 'Rinforza fiducia, tempi di risposta, prova sociale e continuità tra promessa della pagina e step finale.'));
+        }
+      });
+
+      comboGroups.forEach((entry) => {
+        const stats = buildFunnelStats(entry.items);
+        const cta = stats[0].total;
+        const whatsapp = stats[3].total;
+        const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+
+        if (cta >= 10 && finalRate < 10) {
+          alerts.push(buildAlert(
+            75,
+            `${entry.pagePath} + ${entry.utmKey}`,
+            'Campagna con rendimento debole su landing specifica',
+            `CTA ${cta}, WhatsApp ${whatsapp}, conversione finale ${formatPercent(finalRate)}.`,
+            'Allinea meglio creatività, targeting o messaggio della campagna al contenuto della landing.',
+          ));
+        }
+      });
+
+      alerts.sort((a, b) => b.priority - a.priority);
+
+      if (!alerts.length) {
+        alertsBody.innerHTML = '<tr><td colspan="5" class="small">Nessuna criticità rilevata.</td></tr>';
+        alertsSummary.textContent = 'Nessun alert disponibile.';
+        return;
+      }
+
+      alertsBody.innerHTML = alerts.slice(0, 12).map((alert) => `
+        <tr>
+          <td><strong>${getPriorityLabel(alert.priority)}</strong></td>
+          <td>${alert.scope}</td>
+          <td>${alert.issue}</td>
+          <td>${alert.detail}</td>
+          <td>${alert.suggestion}</td>
+        </tr>
+      `).join('');
+
+      alertsSummary.textContent = `Criticità principali trovate: ${alerts.length}. Priorità massima su "${alerts[0].scope}" per "${alerts[0].issue}". Azione consigliata: ${alerts[0].suggestion}`;
+    }
+
+    function buildInsightsReport(items) {
+      const { filteredItems, previousItems } = getCurrentAnalyticsScope(items);
+      const funnel = buildFunnelStats(filteredItems).map((step, index) => ({
+        step: step.label,
+        total: step.total,
+        conversionFromPrevious: index === 0 ? 100 : Math.round(step.conversion),
+        dropoffFromPrevious: index === 0 ? 0 : step.dropoff,
+      }));
+      const previousPeriodFunnel = buildFunnelStats(previousItems).map((step) => ({
+        step: step.label,
+        total: step.total,
+      }));
+
+      const pageGroups = new Map();
+      const utmGroups = new Map();
+      const pageUtmGroups = new Map();
+      const alerts = [];
+
+      filteredItems.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        const utmKey = getFullUtmKey(item);
+
+        if (pagePath) {
+          if (!pageGroups.has(pagePath)) {
+            pageGroups.set(pagePath, []);
+          }
+          pageGroups.get(pagePath).push(item);
+        }
+
+        if (utmKey) {
+          if (!utmGroups.has(utmKey)) {
+            utmGroups.set(utmKey, []);
+          }
+          utmGroups.get(utmKey).push(item);
+        }
+
+        if (pagePath && utmKey) {
+          const comboKey = `${pagePath}__${utmKey}`;
+          if (!pageUtmGroups.has(comboKey)) {
+            pageUtmGroups.set(comboKey, { pagePath, utmKey, items: [] });
+          }
+          pageUtmGroups.get(comboKey).items.push(item);
+        }
+      });
+
+      const topPages = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
+        const stats = buildFunnelStats(pageItems);
+        return {
+          pagePath,
+          cta: stats[0].total,
+          open: stats[1].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion: stats[0].total > 0 ? Math.round((stats[3].total / stats[0].total) * 100) : 0,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion).slice(0, 10);
+
+      const healthScore = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
+        const stats = buildFunnelStats(pageItems);
+        const score = computeHealthScore(stats);
+        return {
+          pagePath,
+          score,
+          status: getHealthLabel(score),
+          cta: stats[0].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+        };
+      }).sort((a, b) => b.score - a.score).slice(0, 10);
+
+      const topUtm = Array.from(utmGroups.entries()).map(([key, utmItems]) => {
+        const stats = buildFunnelStats(utmItems);
+        return {
+          key,
+          cta: stats[0].total,
+          open: stats[1].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion: stats[0].total > 0 ? Math.round((stats[3].total / stats[0].total) * 100) : 0,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion).slice(0, 10);
+
+      const topPageUtm = Array.from(pageUtmGroups.values()).map((entry) => {
+        const stats = buildFunnelStats(entry.items);
+        return {
+          pagePath: entry.pagePath,
+          utmKey: entry.utmKey,
+          cta: stats[0].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion: stats[0].total > 0 ? Math.round((stats[3].total / stats[0].total) * 100) : 0,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion).slice(0, 10);
+
+      pageGroups.forEach((pageItems, pagePath) => {
+        const stats = buildFunnelStats(pageItems);
+        const cta = stats[0].total;
+        const open = stats[1].total;
+        const submit = stats[2].total;
+        const whatsapp = stats[3].total;
+        const openRate = cta > 0 ? (open / cta) * 100 : 0;
+        const submitRate = open > 0 ? (submit / open) * 100 : 0;
+        const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+
+        if (cta >= 20 && openRate < 35) {
+          alerts.push(buildAlert(95, pagePath, 'CTA forte ma poco accesso al form', `CTA ${cta}, form open ${open}, passaggio ${formatPercent(openRate)}.`, 'Rendi la CTA più coerente con il blocco successivo e verifica che il passaggio al form sia immediato e chiaro.'));
+        }
+        if (open >= 15 && submitRate < 35) {
+          alerts.push(buildAlert(88, pagePath, 'Utenti aprono il form ma non inviano', `Form open ${open}, submit ${submit}, passaggio ${formatPercent(submitRate)}.`, 'Semplifica il form, riduci attrito nei campi iniziali e chiarisci cosa succede dopo l invio.'));
+        }
+        if (cta >= 20 && finalRate < 15) {
+          alerts.push(buildAlert(82, pagePath, 'Conversione finale bassa', `CTA ${cta}, WhatsApp ${whatsapp}, conversione finale ${formatPercent(finalRate)}.`, 'Rinforza fiducia, tempi di risposta, prova sociale e continuità tra promessa della pagina e step finale.'));
+        }
+      });
+
+      return {
+        exportedAt: new Date().toISOString(),
+        filters: {
+          range: state.analyticsRange,
+          page: state.analyticsPage,
+        },
+        totals: {
+          events: filteredItems.length,
+          cta: countEvents(filteredItems, 'cta_click'),
+          formOpen: countEvents(filteredItems, 'form_open'),
+          formSubmit: countEvents(filteredItems, 'form_submit'),
+          whatsapp: countEvents(filteredItems, 'whatsapp_click'),
+        },
+        funnel,
+        previousPeriodFunnel,
+        topPages,
+        healthScore,
+        topUtm,
+        topPageUtm,
+        alerts: alerts.sort((a, b) => b.priority - a.priority).slice(0, 12),
+      };
+    }
+
+    function downloadJson(filename, payload) {
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderAnalytics(items) {
+      updatePageFilterOptions(items);
+      const { filteredItems, previousItems } = getCurrentAnalyticsScope(items);
+      analyticsTotal.textContent = String(filteredItems.length);
+      analyticsCta.textContent = String(countEvents(filteredItems, 'cta_click'));
+      analyticsSubmit.textContent = String(countEvents(filteredItems, 'form_submit'));
+      analyticsWhatsapp.textContent = String(countEvents(filteredItems, 'whatsapp_click'));
+      renderFunnel(filteredItems);
+      renderUtmFunnel(filteredItems);
+      renderTrend(filteredItems, previousItems);
+      renderPageRanking(filteredItems);
+      renderHealthScore(filteredItems);
+      renderUtmRanking(filteredItems);
+      renderPageUtmRanking(filteredItems);
+      renderAlerts(filteredItems);
+
+      if (!filteredItems.length) {
+        analyticsBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato</td></tr>';
+        return;
+      }
+
+      analyticsBody.innerHTML = filteredItems.slice(0, 20).map((item) => {
+        const utm = [
+          item.utm && item.utm.source ? `src:${item.utm.source}` : '',
+          item.utm && item.utm.medium ? `med:${item.utm.medium}` : '',
+          item.utm && item.utm.campaign ? `cmp:${item.utm.campaign}` : '',
+        ].filter(Boolean).join(' | ') || '-';
+        const detail = item.formId || item.label || item.errorType || '-';
+        return `
+          <tr>
+            <td>${item.createdAt || '-'}</td>
+            <td><strong>${item.event || '-'}</strong><div class="small">${item.funnelStep || '-'}</div></td>
+            <td>${item.pagePath || '-'}</td>
+            <td>${detail}</td>
+            <td>${utm}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadAnalytics() {
+      const data = await api('/api/analytics-events', { method: 'GET' });
+      state.analytics = data.items || [];
+      renderAnalytics(state.analytics);
+    }
+
+    function downloadWithAuth(path) {
+      if (!state.token) {
+        setFeedback('Login richiesto per export analytics', 'err');
+        return;
+      }
+
+      fetch(path, {
+        headers: {
+          Authorization: `Bearer ${state.token}`
+        }
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || `Errore export (${res.status})`);
+          }
+
+          const blob = await res.blob();
+          const disposition = res.headers.get('Content-Disposition') || '';
+          const match = disposition.match(/filename=\"?([^"]+)\"?/);
+          const fileName = match ? match[1] : 'analytics-export';
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          URL.revokeObjectURL(url);
+        })
+        .catch((error) => setFeedback(error.message, 'err'));
+    }
+
     async function updateStatus(id, status) {
       await api(`/api/bookings/${id}/confirm`, {
         method: 'POST',
@@ -220,8 +1305,13 @@
         userLabel.textContent = `${data.user.name} (${data.user.role})`;
         refreshBtn.disabled = false;
         logoutBtn.disabled = false;
+        analyticsRefreshBtn.disabled = false;
+        analyticsExportJsonBtn.disabled = false;
+        analyticsExportCsvBtn.disabled = false;
+        analyticsExportInsightsBtn.disabled = false;
         setFeedback('Login effettuato', 'ok');
         await loadBookings();
+        await loadAnalytics();
       } catch (error) {
         setFeedback(error.message, 'err');
       }
@@ -239,12 +1329,61 @@
     logoutBtn.addEventListener('click', () => {
       state.token = null;
       state.user = null;
+      state.analytics = [];
       userLabel.textContent = 'non autenticato';
       refreshBtn.disabled = true;
       logoutBtn.disabled = true;
+      analyticsRefreshBtn.disabled = true;
+      analyticsExportJsonBtn.disabled = true;
+      analyticsExportCsvBtn.disabled = true;
+      analyticsExportInsightsBtn.disabled = true;
       bookingsBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato</td></tr>';
+      analyticsBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato</td></tr>';
+      funnelBody.innerHTML = '<tr><td colspan="4" class="small">Nessun dato</td></tr>';
+      utmFunnelBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
+      pageRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato pagine</td></tr>';
+      healthScoreBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato score</td></tr>';
+      utmRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
+      pageUtmBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato combinato</td></tr>';
+      alertsBody.innerHTML = '<tr><td colspan="5" class="small">Nessuna criticità rilevata.</td></tr>';
+      analyticsTotal.textContent = '0';
+      analyticsCta.textContent = '0';
+      analyticsSubmit.textContent = '0';
+      analyticsWhatsapp.textContent = '0';
+      funnelSummary.textContent = 'Nessun dato funnel disponibile.';
+      funnelTrend.textContent = 'Trend non disponibile.';
+      funnelTrend.className = 'hint';
+      utmSummary.textContent = 'Nessun confronto canali disponibile.';
+      pageRankingSummary.textContent = 'Nessun ranking disponibile.';
+      healthScoreSummary.textContent = 'Nessun Health Score disponibile.';
+      utmRankingSummary.textContent = 'Nessun ranking UTM disponibile.';
+      pageUtmSummary.textContent = 'Nessuna combinazione disponibile.';
+      alertsSummary.textContent = 'Nessun alert disponibile.';
       setFeedback('Logout completato');
     });
+
+    analyticsRefreshBtn.addEventListener('click', async () => {
+      try {
+        await loadAnalytics();
+        setFeedback('Analytics aggiornati', 'ok');
+      } catch (error) {
+        setFeedback(error.message, 'err');
+      }
+    });
+
+    analyticsExportJsonBtn.addEventListener('click', () => {
+      downloadWithAuth('/api/analytics-events/export?format=json');
+    });
+
+    analyticsExportCsvBtn.addEventListener('click', () => {
+      downloadWithAuth('/api/analytics-events/export?format=csv');
+    });
+
+    analyticsExportInsightsBtn.addEventListener('click', () => {
+      downloadJson('analytics-insights.json', buildInsightsReport(state.analytics));
+    });
+
+    ensureAnalyticsFilters();
 
     bookingsBody.addEventListener('click', async (event) => {
       const target = event.target;

@@ -150,7 +150,7 @@
                     <a class="nav-link" href="#contatti">Contatti</a>
                     <a class="nav-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="nav-link" href="en/index.html">EN</a>
-                    <a class="btn-primary" href="#contatti">Verifica disponibilità transfer<br><span class="text-xs block">Riceverai una risposta in breve tempo.</span></a>
+                    <a class="btn-primary" href="#contatti">Richiedi transfer</a>
                 </div>
             </div>
 
@@ -181,33 +181,30 @@
             <div class="hero-glow hero-glow-right"></div>
             <div class="hero-glow hero-glow-left"></div>
 
-            <div class="mx-auto grid max-w-7xl gap-10 px-4 pb-20 pt-8 sm:gap-12 sm:px-6 sm:pb-24 sm:pt-10 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:pb-28">
+            <div class="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-10 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:pb-28">
                 <div class="flex flex-col justify-center">
                     <span class="eyebrow !bg-white/10 !text-lemonYellow">Transfer Ischia dal 2006</span>
-                    <h1 class="mt-5 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:mt-6 sm:text-6xl lg:text-7xl">Aeroporto, stazione, porto, hotel: il tuo transfer per Ischia inizia qui.</h1>
-                    <p class="mt-5 max-w-2xl text-base leading-8 text-blue-50 sm:mt-6 sm:text-xl">Dal 2006 coordiniamo arrivi e partenze verso Ischia con autisti professionali, assistenza dedicata e conoscenza reale dei tempi dell'isola.</p>
+                    <h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">Arriva a Ischia senza stress.</h1>
+                    <p class="mt-6 max-w-2xl text-lg leading-8 text-blue-50 sm:text-xl">Organizziamo il tuo arrivo a Ischia con transfer chiari, puntuali e ben coordinati da aeroporto, stazione e porto, fino all hotel o alla struttura scelta.</p>
 
                     <ul class="hero-trust mt-5">
-                        <li>Pianificazione operativa per arrivi e partenze</li>
-                        <li>Coordinamento transfer aeroporto-stazione-porto-hotel</li>
-                        <li>Contatto diretto e risposta rapida</li>
-                        <li>Conoscenza approfondita del territorio</li>
-                        <li>Gestione bagagli e supporto pratico</li>
-                        <li>Autisti professionali e assistenza dedicata</li>
-                    </div>
+                        <li>Coordinamento diretto tra aeroporto, stazione, porto e hotel</li>
+                        <li>Assistenza rapida prima e durante il viaggio</li>
+                        <li>Conoscenza reale di Ischia e delle coincidenze</li>
+                    </ul>
 
-                    <dl class="mt-10 grid gap-4 sm:mt-12 sm:gap-5 sm:grid-cols-3">
+                    <dl class="mt-12 grid gap-5 sm:grid-cols-3">
                         <div class="stat-card stat-card-dark">
-                            <dt>Esperienza</dt>
-                            <dd>Dal 2006, esperienza e affidabilità per ogni transfer</dd>
+                            <dt>Anni di attività</dt>
+                            <dd>20+</dd>
                         </div>
                         <div class="stat-card stat-card-dark">
                             <dt>Supporto</dt>
                             <dd>24/7</dd>
                         </div>
                         <div class="stat-card stat-card-dark">
-                            <dt>Copertura</dt>
-                            <dd>Aeroporto, Stazione, Porto, Hotel</dd>
+                            <dt>Lingue</dt>
+                            <dd>IT/EN</dd>
                         </div>
                     </dl>
                 </div>
@@ -217,9 +214,9 @@
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <p class="booking-label">Richiesta transfer</p>
-                                <h2 class="mt-2 text-2xl font-semibold text-nightBlue sm:text-3xl">Richiedi disponibilita transfer</h2>
+                                <h2 class="mt-2 text-3xl font-semibold text-nightBlue">Ricevi una conferma rapida</h2>
                             </div>
-                            <span class="rounded-full bg-lemonYellow px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-nightBlue">Operativi 24h</span>
+                            <span class="rounded-full bg-lemonYellow px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-nightBlue">Servizio 24h</span>
                         </div>
                         <a href="https://ischia-transfer.vercel.app/login" class="reserved-top-link mt-4 hidden lg:inline-flex">Accedi all'area riservata</a>
 
@@ -256,6 +253,17 @@
                                 </label>
                             </div>
 
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <label class="booking-field">
+                                    <span>Numero persone</span>
+                                    <input type="number" name="hero-people" min="1" step="1" placeholder="Es. 2" required>
+                                </label>
+                                <label class="booking-field">
+                                    <span>Note</span>
+                                    <input type="text" name="hero-notes" placeholder="Bagagli, bambini, richieste speciali">
+                                </label>
+                            </div>
+
                             <label class="booking-field">
                                 <span>Tratta o indirizzo</span>
                                 <input type="text" name="hero-route" placeholder="Es. Napoli aeroporto > Porto di Ischia">
@@ -263,19 +271,12 @@
                             <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
                         </form>
 
-                        <div class="mt-8 flex flex-col gap-4 border-t border-nightBlue/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                            <p class="max-w-sm text-sm leading-7 text-gray-600">Risposta rapida con disponibilità e supporto dedicato in italiano e inglese.</p>
-                            <button id="hero-booking-submit" type="submit" form="hero-booking-form" class="btn-primary justify-center border-0">Richiedi disponibilita</button>
-                        </div>
-                        <ol class="booking-steps">
-                            <li>Invia la richiesta</li>
-                            <li>Ricevi conferma e dettagli</li>
-                            <li>Viaggia in totale relax</li>
-                        </ol>
-                        <div class="reserved-access mt-6">
-                            <p class="reserved-access-kicker">Area riservata</p>
-                            <p class="reserved-access-copy">Sei un operatore o partner? Accedi al pannello dedicato.</p>
-                            <a href="https://ischia-transfer.vercel.app/login" class="btn-secondary reserved-access-link justify-center">Accedi all'area riservata</a>
+                        <div class="mt-8 flex flex-col gap-4 border-t border-nightBlue/10 pt-6">
+                            <p class="max-w-sm text-sm leading-7 text-gray-600">Compila i dettagli essenziali e ti rispondiamo con disponibilita e istruzioni operative.</p>
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                <button id="hero-booking-submit" type="submit" form="hero-booking-form" class="btn-primary justify-center border-0">Richiedi disponibilita</button>
+                                <a href="https://wa.me/393334372831" target="_blank" rel="noreferrer" class="btn-secondary justify-center">Parla su WhatsApp</a>
+                            </div>
                         </div>
                         <p id="hero-booking-feedback" class="mt-4 text-sm text-gray-600" aria-live="polite"></p>
                     </div>
@@ -285,28 +286,20 @@
 
         <section id="destinazioni-seo" class="section-shell pb-0">
             <div class="section-heading">
-                <span class="eyebrow">SEO Destinazioni</span>
-                <h2>Destinazioni SEO per chi cerca transfer a Ischia</h2>
-                <p>Pagine create per intercettare ricerche ad alta intenzione: transfer Napoli Ischia, transfer porto Ischia, transfer aeroporto Napoli Ischia, transfer hotel Ischia, transfer privato e transfer per gruppi.</p>
+                <span class="eyebrow">Percorsi Più Richiesti</span>
+                <h2>Scopri le tratte principali per Ischia e dintorni</h2>
+                <p>Abbiamo raccolto le pagine dedicate ai percorsi più richiesti: arrivi da Napoli, transfer da aeroporto o stazione, collegamenti porto-hotel, servizi privati e soluzioni per gruppi.</p>
             </div>
             <div class="mx-auto grid max-w-7xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-8">
                 <a class="service-link" href="transfer-napoli-ischia.html">Transfer Napoli Ischia</a>
-                <a class="service-link" href="transfer-aeroporto-napoli-ischia.html">Transfer Aeroporto Napoli Ischia</a>
-                <a class="service-link" href="transfer-ischia-hotel.html">Transfer Hotel Ischia</a>
+                <a class="service-link" href="transfer-napoli-aeroporto.html">Transfer Aeroporto Napoli Ischia</a>
+                <a class="service-link" href="transfer-stazione-napoli-ischia.html">Transfer Stazione Napoli Ischia</a>
+                <a class="service-link" href="transfer-porto-ischia-hotel.html">Transfer Porto Ischia Hotel</a>
                 <a class="service-link" href="transfer-privato-ischia.html">Transfer Privato Ischia</a>
                 <a class="service-link" href="transfer-gruppi-ischia.html">Transfer Gruppi Ischia</a>
-                <a class="service-link" href="transfer-ischia.html">Transfer Ischia</a>
                 <a class="service-link" href="transfer-capri.html">Transfer Capri</a>
                 <a class="service-link" href="transfer-procida.html">Transfer Procida</a>
                 <a class="service-link" href="transfer-costiera-amalfitana.html">Transfer Costiera Amalfitana</a>
-                <a class="service-link" href="transfer-napoli-aeroporto.html">Transfer Napoli Aeroporto</a>
-                <a class="service-link" href="transfer-stazione-napoli.html">Transfer Stazione Napoli</a>
-                <a class="service-link" href="transfer-stazione-napoli-ischia.html">Transfer dalla stazione di Napoli a Ischia</a>
-                <a class="service-link" href="transfer-ischia-hotel.html">Transfer Ischia Hotel</a>
-                <a class="service-link" href="transfer-porto-ischia-hotel.html">Transfer Porto Ischia Hotel</a>
-                <a class="service-link" href="naples-airport-to-ischia-transfer.html">Aeroporto di Napoli per Ischia</a>
-                <a class="service-link" href="naples-airport-transfer-capri.html">Transfer Aeroporto Napoli Capri</a>
-                <a class="service-link" href="naples-airport-transfer-amalfi-coast.html">Transfer Aeroporto Napoli Costiera Amalfitana</a>
             </div>
         </section>
 
@@ -317,13 +310,13 @@
                 <p>Soluzioni su misura per coppie, famiglie e gruppi che desiderano un servizio affidabile, elegante e senza attese.</p>
             </div>
 
-            <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 xl:grid-cols-3 lg:px-8">
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:px-8">
                 <article class="service-card">
                     <p class="service-kicker">Accoglienza premium</p>
                     <span class="feature-index">01</span>
                     <h3>Transfer Porto Ischia Hotel</h3>
                     <p>Accoglienza al porto e arrivo diretto in hotel o villa privata, con gestione bagagli e tempi coordinati.</p>
-                    <a href="transfer-ischia.html" class="service-link">Richiedi disponibilita</a>
+                    <a href="transfer-porto-ischia-hotel.html" class="service-link">Richiedi disponibilita</a>
                 </article>
                 <article class="service-card">
                     <p class="service-kicker">Assistenza aeroportuale</p>
@@ -335,30 +328,16 @@
                 <article class="service-card">
                     <p class="service-kicker">Arrivo in stazione</p>
                     <span class="feature-index">03</span>
-                    <h3>Transfer Napoli Stazione Ischia</h3>
-                    <p>Servizio dedicato da Napoli Centrale ai porti di partenza, perfetto per chi vuole un flusso rapido e senza imprevisti.</p>
-                    <a href="transfer-stazione-napoli.html" class="service-link">Scopri il servizio</a>
+                    <h3>Transfer Stazione Napoli Ischia Hotel</h3>
+                    <p>Percorso completo da Napoli Centrale fino all hotel a Ischia, con coordinamento porto e coincidenza marittima.</p>
+                    <a href="transfer-stazione-napoli-ischia.html" class="service-link">Scopri il servizio</a>
                 </article>
                 <article class="service-card">
-                    <p class="service-kicker">Islands experience</p>
+                    <p class="service-kicker">Servizi dedicati</p>
                     <span class="feature-index">04</span>
-                    <h3>Capri e Procida transfer service</h3>
-                    <p>Transfer privati per escursioni giornaliere e spostamenti tra porti, hotel e punti strategici su Capri e Procida.</p>
-                    <a href="transfer-capri.html" class="service-link">Pianifica il transfer</a>
-                </article>
-                <article class="service-card">
-                    <p class="service-kicker">Coast premium route</p>
-                    <span class="feature-index">05</span>
-                    <h3>Transfer privato Costiera Amalfitana</h3>
-                    <p>Tratte premium verso Positano, Amalfi e Ravello con mezzi confortevoli e autisti esperti del territorio.</p>
-                    <a href="transfer-costiera-amalfitana.html" class="service-link">Richiedi quotazione</a>
-                </article>
-                <article class="service-card">
-                    <p class="service-kicker">Supporto internazionale</p>
-                    <span class="feature-index">06</span>
-                    <h3>Servizio multilingua ITA/ENG</h3>
-                    <p>Assistenza in italiano e inglese per viaggiatori internazionali, agenzie e strutture ricettive del golfo di Napoli.</p>
-                    <a href="en/index.html" class="service-link">Passa alla versione EN</a>
+                    <h3>Transfer privati e gruppi</h3>
+                    <p>Soluzioni dedicate per famiglie, piccoli gruppi e richieste su misura, con supporto chiaro in italiano e inglese.</p>
+                    <a href="transfer-privato-ischia.html" class="service-link">Vedi i servizi dedicati</a>
                 </article>
             </div>
         </section>
@@ -430,7 +409,7 @@
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Prenotazione semplice</h3><p>Richiesta rapida da smartphone con conferma chiara e supporto dedicato.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Assistenza clienti</h3><p>Supporto operativo continuo per cambi orario, bagagli e logistica.</p></div>
             </div>
-            <div class="mx-auto mt-10 grid max-w-7xl gap-6 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
+            <div class="mx-auto mt-10 max-w-7xl px-6 lg:px-8">
                 <article class="trust-panel">
                     <p class="trust-kicker">Affidabilita</p>
                     <h3>Esperienza nel settore transfer turistici dal 2006.</h3>
@@ -440,73 +419,27 @@
                         <div><strong>7/7</strong><span>Assistenza pre-partenza e arrivo</span></div>
                     </div>
                 </article>
-                <article class="trust-panel">
-                    <p class="trust-kicker">Recensioni clienti</p>
-                    <blockquote>"Servizio impeccabile: arrivo in aeroporto, coordinamento porto e transfer hotel senza nessuno stress."</blockquote>
-                    <blockquote>"Autista puntualissimo e assistenza WhatsApp sempre disponibile. Esperienza premium."</blockquote>
-                </article>
             </div>
         </section>
 
-        <section id="info-utili" class="section-shell pt-0">
+        <section id="recensioni" class="section-shell pt-0">
             <div class="section-heading">
-                <span class="eyebrow">Info Utili</span>
-                <h2>Riferimenti per chi viaggia tra Napoli e isole</h2>
-                <p>Risorse utili per verificare meteo, traghetti e arrivi volo prima del transfer.</p>
+                <span class="eyebrow">Recensioni</span>
+                <h2>Cosa dicono i clienti</h2>
+                <p>Feedback reali di viaggiatori che hanno scelto i nostri transfer tra Napoli e Ischia.</p>
             </div>
-            <div class="mx-auto grid max-w-7xl gap-6 px-6 lg:grid-cols-3 lg:px-8">
-                <article class="utility-card">
-                    <h3>Meteo Ischia</h3>
-                    <p>Consulta le previsioni aggiornate prima di partire.</p>
-                    <a href="https://www.meteo.it/meteo/ischia-63037" target="_blank" rel="noreferrer" class="utility-link">Apri Meteo Ischia</a>
-                </article>
-                <article class="utility-card">
-                    <h3>Orari aliscafi e traghetti</h3>
-                    <p>Controlla tratte da Napoli a Ischia, Capri e Procida.</p>
-                    <div class="utility-links">
-                        <a href="https://easy.caremar.it/it/orari-tratta/Napoli-Ischia/" target="_blank" rel="noreferrer" class="utility-link">Caremar</a>
-                        <a href="https://www.alilauro.it/it/tratte/napoli-beverello-ischia-ischia-napoli-beverello/" target="_blank" rel="noreferrer" class="utility-link">Alilauro</a>
-                    </div>
-                </article>
-                <article class="utility-card">
-                    <h3>Status voli Napoli Capodichino</h3>
-                    <p>Verifica gli arrivi in tempo reale per sincronizzare il transfer.</p>
-                    <a href="https://www.aeroportodinapoli.it/arrival" target="_blank" rel="noreferrer" class="utility-link">Apri Status Voli</a>
-                </article>
-            </div>
-        </section>
-
-        <section id="mappa-localita" class="section-shell pt-0">
-            <div class="section-heading">
-                <span class="eyebrow">Google Maps</span>
-                <h2>Mappa localita servite per transfer turistici</h2>
-                <p>Copertura geografica tra Ischia Porto, Casamicciola, Forio, Napoli Centrale, Napoli Beverello e Aeroporto di Napoli Capodichino con tratte dedicate anche per Capri, Procida e Costiera Amalfitana.</p>
-            </div>
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="overflow-hidden rounded-[2rem] border border-nightBlue/10 shadow-xl shadow-nightBlue/10">
-                    <iframe title="Mappa transfer turistici Golfo di Napoli" src="https://maps.google.com/maps?q=Ischia%20Porto,Casamicciola,Forio,Napoli%20Beverello,Napoli%20Capodichino%20Airport,Capri,Procida,Amalfi&t=&z=9&ie=UTF8&iwloc=&output=embed" class="h-[380px] w-full" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq-transfer" class="section-shell pt-0">
-            <div class="section-heading">
-                <span class="eyebrow">FAQ SEO</span>
-                <h2>Domande frequenti dei turisti</h2>
-                <p>Risposte rapide per chi pianifica transfer tra aeroporto, stazione, porto e hotel nel golfo di Napoli.</p>
-            </div>
-            <div class="mx-auto grid max-w-7xl gap-6 px-6 lg:grid-cols-3 lg:px-8">
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-3 lg:px-8">
                 <article class="service-card">
-                    <h3>Come raggiungo Ischia dall'aeroporto di Napoli?</h3>
-                    <p>Prenota un transfer privato da Napoli Capodichino al porto di Napoli Beverello, poi prosegui verso Ischia con assistenza dedicata.</p>
+                    <h3>Giulia</h3>
+                    <p>"Siamo arrivati a Napoli e il passaggio aeroporto-porto-Ischia è stato semplice e puntuale. Nessuna attesa e assistenza concreta con i bagagli fino all hotel."</p>
                 </article>
                 <article class="service-card">
-                    <h3>È disponibile un transfer privato dall'aeroporto di Napoli al porto?</h3>
-                    <p>Sì, il servizio collega direttamente aeroporto e terminal traghetti, riducendo attese e tempi morti.</p>
+                    <h3>Marco</h3>
+                    <p>"Con due bambini avevamo bisogno di un servizio lineare: orari rispettati, supporto diretto nei cambi e viaggio comodo dall arrivo in stazione fino a Ischia."</p>
                 </article>
                 <article class="service-card">
-                    <h3>Posso prenotare un transfer verso il mio hotel a Ischia?</h3>
-                    <p>Sì, sono disponibili transfer privati da Ischia Porto, Casamicciola e Forio verso hotel, strutture turistiche e appartamenti.</p>
+                    <h3>Emily</h3>
+                    <p>"Da turista straniera cercavo istruzioni chiare: tutto coordinato bene, dal porto all hotel. Mi hanno aiutata anche con le valigie senza complicazioni."</p>
                 </article>
             </div>
         </section>
@@ -514,9 +447,9 @@
         <section id="contatti" class="section-shell pb-24">
             <div class="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
                 <div class="rounded-[2rem] border border-nightBlue/10 bg-white p-8 shadow-xl shadow-nightBlue/10 sm:p-10">
-                    <span class="eyebrow">Contatti SEO</span>
-                    <h2 class="mt-6 text-3xl font-semibold text-nightBlue sm:text-4xl">Contatti transfer Ischia e golfo di Napoli</h2>
-                <p class="mt-4 text-base leading-8 text-gray-600">Servizio transfer attivo dal 2006 per localita turistiche, stazioni, porti e aeroporti con copertura su Ischia, Capri, Procida, Napoli e Costiera Amalfitana.</p>
+                    <span class="eyebrow">Contatti e Assistenza</span>
+                    <h2 class="mt-6 text-3xl font-semibold text-nightBlue sm:text-4xl">Parla con il nostro team operativo</h2>
+                <p class="mt-4 text-base leading-8 text-gray-600">Ti aiutiamo a organizzare transfer da aeroporto, stazione, porto e hotel con copertura su Ischia, Capri, Procida, Napoli e Costiera Amalfitana.</p>
                     <div class="contact-info-list mt-8">
                         <div class="contact-info-item"><span class="contact-info-label">Telefono / WhatsApp</span><a href="https://wa.me/393334372831" target="_blank" rel="noreferrer">+39 081 3331053</a></div>
                         <div class="contact-info-item"><span class="contact-info-label">Email</span><p>booking@ischiatransferservice.com</p></div>
@@ -537,7 +470,7 @@
                     <label class="form-field"><span>Dettagli</span><textarea name="details" rows="5" placeholder="Descrivi la tua richiesta di transfer"></textarea></label>
                     <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <p class="text-sm leading-7 text-gray-200">Richiesta inviata al gestionale operativo.</p>
+                        <p class="text-sm leading-7 text-gray-200">La richiesta arriva direttamente al nostro team operativo.</p>
                         <button type="submit" class="btn-primary justify-center border-0">Richiedi disponibilita</button>
                     </div>
                     <p id="contact-feedback" class="mt-4 text-sm text-blue-100" aria-live="polite"></p>
@@ -549,13 +482,78 @@
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="cta-banner">
                     <p class="cta-kicker">Contatto diretto</p>
-                    <h2>Hai gia volo o traghetto? Coordinamo noi il transfer.</h2>
-                    <p>Scrivici su WhatsApp per una risposta rapida, oppure invia la richiesta completa dal modulo contatti.</p>
+                    <h2>Hai già volo o traghetto? Coordiniamo noi il transfer.</h2>
+                    <p>Scrivici su WhatsApp per una risposta veloce, oppure inviaci i dettagli dal modulo contatti per ricevere una conferma più completa.</p>
                     <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
                         <a href="https://wa.me/393334372831" target="_blank" rel="noreferrer" class="btn-primary cta-primary justify-center">Parla con noi su WhatsApp</a>
                         <a href="#contatti" class="btn-secondary justify-center">Vai al modulo completo</a>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section id="info-utili" class="section-shell pt-0">
+            <div class="section-heading">
+                <span class="eyebrow">Info Utili</span>
+                <h2>Riferimenti per chi viaggia tra Napoli e isole</h2>
+                <p>Risorse utili da consultare dopo la richiesta per verificare meteo, traghetti e arrivi volo.</p>
+            </div>
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 lg:grid-cols-3 lg:px-8">
+                <article class="utility-card">
+                    <h3>Meteo Ischia</h3>
+                    <p>Consulta le previsioni aggiornate prima di partire.</p>
+                    <a href="https://www.meteo.it/meteo/ischia-63037" target="_blank" rel="noreferrer" class="utility-link">Apri Meteo Ischia</a>
+                </article>
+                <article class="utility-card">
+                    <h3>Orari aliscafi e traghetti</h3>
+                    <p>Controlla tratte da Napoli a Ischia, Capri e Procida.</p>
+                    <div class="utility-links utility-links-2col">
+                        <a href="https://easy.caremar.it/it/orari-tratta/Napoli-Ischia/" target="_blank" rel="noreferrer" class="utility-link">Caremar</a>
+                        <a href="https://www.alilauro.it/it/tratte/napoli-beverello-ischia-ischia-napoli-beverello/" target="_blank" rel="noreferrer" class="utility-link">Alilauro</a>
+                        <a href="https://www.snav.it/orari-e-tratte" target="_blank" rel="noreferrer" class="utility-link">SNAV</a>
+                        <a href="https://en.medmargroup.it/tabella-orari" target="_blank" rel="noreferrer" class="utility-link">Medmar</a>
+                    </div>
+                </article>
+                <article class="utility-card">
+                    <h3>Status voli Napoli Capodichino</h3>
+                    <p>Verifica gli arrivi in tempo reale per sincronizzare il transfer.</p>
+                    <a href="https://www.aeroportodinapoli.it/arrival" target="_blank" rel="noreferrer" class="utility-link">Apri Status Voli</a>
+                </article>
+            </div>
+        </section>
+
+        <section id="mappa-localita" class="section-shell pt-0">
+            <div class="section-heading">
+                <span class="eyebrow">Google Maps</span>
+                <h2>Mappa localita servite per transfer turistici</h2>
+                <p>Copertura geografica tra Ischia Porto, Casamicciola, Forio, Napoli Centrale, Napoli Beverello e Aeroporto di Napoli Capodichino.</p>
+            </div>
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="overflow-hidden rounded-[2rem] border border-nightBlue/10 shadow-xl shadow-nightBlue/10">
+                    <iframe title="Mappa transfer turistici Golfo di Napoli" src="https://maps.google.com/maps?q=Ischia%20Porto,Casamicciola,Forio,Napoli%20Beverello,Napoli%20Capodichino%20Airport,Capri,Procida,Amalfi&t=&z=9&ie=UTF8&iwloc=&output=embed" class="h-[380px] w-full" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq-transfer" class="section-shell pt-0">
+            <div class="section-heading">
+                <span class="eyebrow">FAQ Utili</span>
+                <h2>Domande frequenti dei turisti</h2>
+                <p>Risposte rapide alle domande piu comuni prima della conferma del transfer.</p>
+            </div>
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 lg:grid-cols-3 lg:px-8">
+                <article class="service-card">
+                    <h3>Come raggiungo Ischia dall'aeroporto di Napoli?</h3>
+                    <p>Prenota un transfer privato da Napoli Capodichino al porto di Napoli Beverello, poi prosegui verso Ischia con assistenza dedicata.</p>
+                </article>
+                <article class="service-card">
+                    <h3>È disponibile un transfer privato dall'aeroporto di Napoli al porto?</h3>
+                    <p>Sì, il servizio collega direttamente aeroporto e terminal traghetti, riducendo attese e tempi morti.</p>
+                </article>
+                <article class="service-card">
+                    <h3>Posso prenotare un transfer verso il mio hotel a Ischia?</h3>
+                    <p>Sì, sono disponibili transfer privati da Ischia Porto, Casamicciola e Forio verso hotel, strutture turistiche e appartamenti.</p>
+                </article>
             </div>
         </section>
     </main>

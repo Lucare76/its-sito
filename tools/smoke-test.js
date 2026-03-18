@@ -76,6 +76,37 @@ async function run() {
       }),
     });
 
+    await call(baseUrl, '/api/analytics-events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'form_submit',
+        session_id: 'smoke-session',
+        lang: 'it',
+        page_path: '/contatti.html',
+        page_title: 'Smoke Analytics',
+        form_id: 'contact-form',
+        funnel_step: 'form_submit',
+        utm: {
+          utm_source: 'smoke',
+          utm_medium: 'test',
+          utm_campaign: 'automation',
+        },
+      }),
+    });
+
+    await call(baseUrl, '/api/analytics-events', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${login.token}` },
+    });
+
+    const exportJson = await fetch(`${baseUrl}/api/analytics-events/export?format=json`, {
+      headers: { Authorization: `Bearer ${login.token}` },
+    });
+    if (!exportJson.ok) {
+      throw new Error(`/api/analytics-events/export?format=json -> ${exportJson.status}`);
+    }
+
     console.log('SMOKE_TEST_OK');
   } finally {
     await new Promise((resolve) => server.close(resolve));

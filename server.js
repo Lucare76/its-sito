@@ -53,6 +53,8 @@ const AUTH_SECRET = process.env.AUTH_SECRET || 'its-beta-change-this-secret';
 const AUTH_SALT = process.env.AUTH_SALT || 'its-beta-static-salt';
 const BOOKING_RATE_LIMIT_MAX = Number(process.env.BOOKING_RATE_LIMIT_MAX || 20);
 const BOOKING_RATE_LIMIT_WINDOW_MS = Number(process.env.BOOKING_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000);
+const ANALYTICS_RATE_LIMIT_MAX = Number(process.env.ANALYTICS_RATE_LIMIT_MAX || 120);
+const ANALYTICS_RATE_LIMIT_WINDOW_MS = Number(process.env.ANALYTICS_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000);
 const LOGIN_RATE_LIMIT_MAX = Number(process.env.LOGIN_RATE_LIMIT_MAX || 25);
 const LOGIN_RATE_LIMIT_WINDOW_MS = Number(process.env.LOGIN_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000);
 const BOOTSTRAP_OPERATOR_EMAIL = String(process.env.BOOTSTRAP_OPERATOR_EMAIL || '').trim();
@@ -248,7 +250,8 @@ function ensureDb() {
     const bootstrapUsers = buildBootstrapUsers();
     const seed = {
       users: bootstrapUsers,
-      bookings: []
+      bookings: [],
+      analyticsEvents: []
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(seed, null, 2), 'utf8');
     log(`DB inizializzato in ${DB_PATH}`);
@@ -266,13 +269,25 @@ function ensureDb() {
   try {
     const existing = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
     const hasUsers = Array.isArray(existing.users) && existing.users.length > 0;
+    const normalized = {
+      users: Array.isArray(existing.users) ? existing.users : [],
+      bookings: Array.isArray(existing.bookings) ? existing.bookings : [],
+      analyticsEvents: Array.isArray(existing.analyticsEvents) ? existing.analyticsEvents : []
+    };
+
+    const needsWrite = !Array.isArray(existing.analyticsEvents) || !Array.isArray(existing.bookings) || !Array.isArray(existing.users);
+    if (needsWrite) {
+      fs.writeFileSync(DB_PATH, JSON.stringify(normalized, null, 2), 'utf8');
+    }
+
     if (hasUsers) {
       return;
     }
 
     const merged = {
       users: bootstrapUsers,
-      bookings: Array.isArray(existing.bookings) ? existing.bookings : []
+      bookings: normalized.bookings,
+      analyticsEvents: normalized.analyticsEvents
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(merged, null, 2), 'utf8');
     log(`Utenti bootstrap inseriti in ${DB_PATH}`);
@@ -291,6 +306,15 @@ function writeDb(db) {
   fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
 }
 
+function normalizeDb(db) {
+  return {
+    ...db,
+    users: Array.isArray(db.users) ? db.users : [],
+    bookings: Array.isArray(db.bookings) ? db.bookings : [],
+    analyticsEvents: Array.isArray(db.analyticsEvents) ? db.analyticsEvents : []
+  };
+}
+
 function sendJson(res, statusCode, payload) {
   const body = JSON.stringify(payload);
   res.writeHead(statusCode, {
@@ -305,6 +329,16 @@ function sendText(res, statusCode, body) {
   res.writeHead(statusCode, {
     'Content-Type': 'text/plain; charset=utf-8',
     'Content-Length': Buffer.byteLength(body)
+  });
+  res.end(body);
+}
+
+function sendCsv(res, filename, body) {
+  res.writeHead(200, {
+    'Content-Type': 'text/csv; charset=utf-8',
+    'Content-Disposition': `attachment; filename="${filename}"`,
+    'Content-Length': Buffer.byteLength(body),
+    'Cache-Control': 'no-store'
   });
   res.end(body);
 }
@@ -384,6 +418,93 @@ function sanitizeBookingInput(body) {
     agencyId: body.agencyId ? String(body.agencyId).trim() : null,
     website: String(body.website || '').trim()
   };
+}
+
+function sanitizeAnalyticsEvent(body) {
+  const utm = body && typeof body.utm === 'object' ? body.utm : {};
+  return {
+    event: String(body.event || '').trim(),
+    sessionId: String(body.sessionId || '').trim(),
+    lang: String(body.lang || '').trim(),
+    pagePath: String(body.page_path || body.pagePath || '').trim(),
+    pageTitle: String(body.page_title || body.pageTitle || '').trim(),
+    source: String(body.source || '').trim(),
+    label: String(body.label || '').trim(),
+    href: String(body.href || '').trim(),
+    formId: String(body.form_id || body.formId || '').trim(),
+    errorType: String(body.error_type || body.errorType || '').trim(),
+    errorMessage: String(body.error_message || body.errorMessage || '').trim(),
+    missingFields: Array.isArray(body.missing_fields || body.missingFields)
+      ? (body.missing_fields || body.missingFields).map((item) => String(item).trim()).filter(Boolean)
+      : [],
+    funnelStep: String(body.funnel_step || body.funnelStep || '').trim(),
+    utm: {
+      source: String(utm.utm_source || utm.source || '').trim(),
+      medium: String(utm.utm_medium || utm.medium || '').trim(),
+      campaign: String(utm.utm_campaign || utm.campaign || '').trim()
+    }
+  };
+}
+
+function validateAnalyticsEvent(input) {
+  const errors = [];
+  if (!input.event) errors.push('event obbligatorio');
+  if (input.event && input.event.length > 64) errors.push('event troppo lungo');
+  if (input.sessionId && input.sessionId.length > 120) errors.push('sessionId troppo lungo');
+  if (input.label && input.label.length > 240) errors.push('label troppo lunga');
+  if (input.errorMessage && input.errorMessage.length > 500) errors.push('errorMessage troppo lungo');
+  return errors;
+}
+
+function csvEscape(value) {
+  const normalized = value === null || value === undefined ? '' : String(value);
+  return `"${normalized.replace(/"/g, '""')}"`;
+}
+
+function serializeAnalyticsEventsCsv(items) {
+  const header = [
+    'id',
+    'createdAt',
+    'event',
+    'sessionId',
+    'lang',
+    'pagePath',
+    'pageTitle',
+    'source',
+    'label',
+    'href',
+    'formId',
+    'errorType',
+    'errorMessage',
+    'missingFields',
+    'funnelStep',
+    'utmSource',
+    'utmMedium',
+    'utmCampaign'
+  ];
+
+  const rows = items.map((item) => [
+    item.id,
+    item.createdAt,
+    item.event,
+    item.sessionId,
+    item.lang,
+    item.pagePath,
+    item.pageTitle,
+    item.source,
+    item.label,
+    item.href,
+    item.formId,
+    item.errorType,
+    item.errorMessage,
+    Array.isArray(item.missingFields) ? item.missingFields.join('|') : '',
+    item.funnelStep,
+    item.utm && item.utm.source,
+    item.utm && item.utm.medium,
+    item.utm && item.utm.campaign
+  ].map(csvEscape).join(','));
+
+  return [header.join(','), ...rows].join('\n');
 }
 
 function validateBookingInput(input) {
@@ -492,7 +613,7 @@ function handleApi(req, res, pathname) {
           return sendJson(res, 422, { error: 'Validazione fallita', details: errors });
         }
 
-        const db = readDb();
+        const db = normalizeDb(readDb());
         const timestamp = nowIso();
         const reference = buildBookingReference(db.bookings);
         const creatorRole = authUser ? authUser.role : 'public';
@@ -541,6 +662,80 @@ function handleApi(req, res, pathname) {
         });
       })
       .catch((error) => sendJson(res, 400, { error: error.message }));
+  }
+
+  if (pathname === '/api/analytics-events' && req.method === 'POST') {
+    const limit = checkRateLimit(req, 'analytics', ANALYTICS_RATE_LIMIT_MAX, ANALYTICS_RATE_LIMIT_WINDOW_MS);
+    if (!limit.allowed) {
+      return sendJson(res, 429, {
+        error: 'Troppi eventi analytics, riprova più tardi',
+        retryAfterMs: Math.max(limit.resetAt - Date.now(), 0)
+      });
+    }
+
+    return parseRequestBody(req)
+      .then((body) => {
+        const input = sanitizeAnalyticsEvent(body);
+        const errors = validateAnalyticsEvent(input);
+        if (errors.length) {
+          return sendJson(res, 422, { error: 'Validazione analytics fallita', details: errors });
+        }
+
+        const db = normalizeDb(readDb());
+        const item = {
+          id: `evt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          createdAt: nowIso(),
+          event: input.event,
+          sessionId: input.sessionId || null,
+          lang: input.lang || null,
+          pagePath: input.pagePath || null,
+          pageTitle: input.pageTitle || null,
+          source: input.source || null,
+          label: input.label || null,
+          href: input.href || null,
+          formId: input.formId || null,
+          errorType: input.errorType || null,
+          errorMessage: input.errorMessage || null,
+          missingFields: input.missingFields,
+          funnelStep: input.funnelStep || null,
+          utm: input.utm
+        };
+
+        db.analyticsEvents.push(item);
+        writeDb(db);
+        return sendJson(res, 201, { message: 'Evento analytics registrato', item });
+      })
+      .catch((error) => sendJson(res, 400, { error: error.message }));
+  }
+
+  if (pathname === '/api/analytics-events' && req.method === 'GET') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    const db = normalizeDb(readDb());
+    return sendJson(res, 200, {
+      items: db.analyticsEvents.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    });
+  }
+
+  if (pathname === '/api/analytics-events/export' && req.method === 'GET') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+    const format = String(requestUrl.searchParams.get('format') || 'json').trim().toLowerCase();
+    const db = normalizeDb(readDb());
+    const items = db.analyticsEvents.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    if (format === 'csv') {
+      return sendCsv(res, 'analytics-events.csv', serializeAnalyticsEventsCsv(items));
+    }
+
+    return sendJson(res, 200, { items });
   }
 
   const confirmMatch = pathname.match(/^\/api\/bookings\/([^/]+)\/confirm$/);
@@ -672,8 +867,22 @@ function startServer(port = PORT) {
   ensureDb();
   validateProductionConfig();
   const server = createAppServer();
+  let fallbackAttempted = false;
+
+  server.on('error', (error) => {
+    if (error && error.code === 'EADDRINUSE' && !fallbackAttempted) {
+      fallbackAttempted = true;
+      log(`Porta ${port} gia in uso. Avvio automatico su una porta libera...`);
+      server.listen(0);
+      return;
+    }
+    throw error;
+  });
+
   server.listen(port, () => {
-    log(`Server avviato su http://localhost:${port}`);
+    const address = server.address();
+    const activePort = typeof address === 'object' && address ? address.port : port;
+    log(`Server avviato su http://localhost:${activePort}`);
   });
   return server;
 }

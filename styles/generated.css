@@ -1716,6 +1716,13 @@ img {
   gap: 0.75rem;
 }
 
+.utility-links-2col {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
 .utility-link {
   margin-top: 2rem;
   display: inline-flex;
@@ -1752,6 +1759,10 @@ img {
 
 .utility-links .utility-link {
   margin-top: 0;
+}
+
+.utility-links-2col .utility-link {
+  width: 100%;
 }
 
 .contact-info-list {

@@ -31,16 +31,16 @@
   <main class="pt-32 pb-20">
     <section class="section-shell pt-10">
       <div class="section-heading">
-        <span class="eyebrow">Contacts transfer organized since 2006</span>
+        <span class="eyebrow">Contacts and support</span>
         <h1>Contact us: direct and coordinated service</h1>
-        <p>Service active since 2006: real assistance and direct coordination between airport, port and hotel. Request a quote, check transfer availability or contact us on WhatsApp.</p>
+        <p>Since 2006, we have helped travelers, families and groups arrange transfers between airport, train station, ferry port and hotel with clear replies and direct operational support.</p>
       </div>
       <div class="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         <div class="rounded-[2rem] border border-nightBlue/10 bg-white p-8 shadow-xl shadow-nightBlue/10 sm:p-10">
           <h2 class="text-3xl font-semibold text-nightBlue">Operational details</h2>
           <div class="contact-info-list mt-8">
             <div class="contact-info-item"><span class="contact-info-label">Phone</span><a href="tel:+390813331053">+39 081 3331053</a></div>
-            <div class="contact-info-item"><span class="contact-info-label">WhatsApp</span><a href="https://wa.me/393334372831" target="_blank" rel="noreferrer">Chat on WhatsApp</a></div>
+            <div class="contact-info-item"><span class="contact-info-label">WhatsApp</span><a href="https://wa.me/393334372831" target="_blank" rel="noreferrer">Chat on WhatsApp</a><span class="text-xs text-nightBlue block mt-1">Fast reply, 7 days a week</span></div>
             <div class="contact-info-item"><span class="contact-info-label">Email</span><p>booking@ischiatransferservice.com</p></div>
             <div class="contact-info-item"><span class="contact-info-label">Service area</span><p>Gulf of Naples and Amalfi Coast</p></div>
             <div class="contact-info-item"><span class="contact-info-label">Destinations served</span><p>Ischia, Capri, Procida, Naples airport, Naples station, Positano, Amalfi, Ravello</p></div>
@@ -57,10 +57,15 @@
             <label class="form-field"><span>Route</span><input type="text" name="route" placeholder="Port, hotel, airport..." required></label>
             <label class="form-field"><span>Date</span><input type="date" name="date" required></label>
           </div>
-          <label class="form-field mt-5"><span>Details</span><textarea name="details" rows="5" placeholder="Transfer details"></textarea></label>
+          <div class="mt-5 grid gap-5 sm:grid-cols-2">
+            <label class="form-field"><span>Number of passengers</span><input type="number" name="people" min="1" step="1" placeholder="Ex. 2" required></label>
+            <label class="form-field"><span>Estimated time</span><input type="time" name="time"></label>
+          </div>
+          <label class="form-field mt-5"><span>Notes (luggage, children, special requests)</span><textarea name="details" rows="5" placeholder="Ex. 2 large suitcases, 1 child, child seat"></textarea></label>
           <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="mt-6 flex justify-end"><button type="submit" class="btn-primary justify-center border-0">Check availability</button></div>
-          <p id="contact-feedback" class="mt-4 text-sm text-blue-100" aria-live="polite">Fast response within a few hours. After submission you receive availability confirmation first, then operational pickup details.</p>
+          <p class="mt-4 text-sm text-blue-100">Complete the form in a few seconds and we will reply with availability, timing and practical instructions. No advance payment unless it is required for the service requested.</p>
+          <p id="contact-feedback" class="mt-2 text-sm text-blue-100" aria-live="polite">We usually reply within a few hours. After submission, you receive availability confirmation first and pickup details afterwards.</p>
         </form>
       </div>
 

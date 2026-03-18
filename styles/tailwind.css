@@ -555,6 +555,10 @@
         @apply mt-8 flex flex-wrap gap-3;
     }
 
+    .utility-links-2col {
+        @apply grid grid-cols-2 gap-3;
+    }
+
     .utility-link {
         @apply mt-8 inline-flex items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5;
         width: fit-content;
@@ -564,6 +568,10 @@
 
     .utility-links .utility-link {
         margin-top: 0;
+    }
+
+    .utility-links-2col .utility-link {
+        width: 100%;
     }
 
     .contact-info-list {

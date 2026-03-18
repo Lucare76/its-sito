@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contact-form');
     const contactFeedback = document.getElementById('contact-feedback');
     const whatsappPhone = '393334372831';
+    const storageKeys = {
+        utm: 'its_utm_params',
+        sessionId: 'its_session_id',
+        contactDraft: 'its_contact_form_draft',
+        heroDraft: 'its_hero_form_draft',
+        openedForms: 'its_opened_forms',
+    };
     const language = document.documentElement.lang === 'en' ? 'en' : 'it';
     const whatsappMessage = language === 'en'
         ? 'Hello Ischia Transfer Service, I would like information about a private transfer from [pickup] to [destination].'
@@ -17,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ? {
             bookingUnavailable: 'Online booking is unavailable on this static page. Contact us on WhatsApp for immediate assistance.',
             bookingSaveError: 'An error occurred while sending your request. Please try again.',
-            heroRequired: 'Please fill in name, email, service, date and route before sending your request.',
-            contactRequired: 'Please complete all required fields before sending.',
+            heroRequired: 'Please fill in name, email, service, route, date and passenger count before sending your request.',
+            contactRequired: 'Please complete name, email, route, date and passenger count before sending.',
+            invalidEmail: 'Please enter a valid email address.',
             sending: 'Sending your request...',
             heroSuccess: (reference) => `Request sent successfully (${reference}). Next step: our team checks route and timing, then sends confirmation and pickup details.`,
             contactSuccess: (reference) => `Request sent successfully (${reference}). Next step: we verify availability and contact you shortly with operational confirmation.`,
@@ -26,12 +34,357 @@ document.addEventListener('DOMContentLoaded', () => {
         : {
             bookingUnavailable: 'Prenotazione online non disponibile su questa pagina statica. Contattaci su WhatsApp per assistenza immediata.',
             bookingSaveError: 'Si e verificato un errore durante l invio della richiesta. Riprova tra poco.',
-            heroRequired: 'Compila nome, email, servizio, data e tratta prima di inviare la richiesta.',
-            contactRequired: 'Compila tutti i campi obbligatori prima di inviare.',
+            heroRequired: 'Compila nome, email, servizio, tratta, data e numero persone prima di inviare la richiesta.',
+            contactRequired: 'Compila nome, email, tratta, data e numero persone prima di inviare.',
+            invalidEmail: 'Inserisci un indirizzo email valido.',
             sending: 'Invio richiesta in corso...',
             heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: verifichiamo tratta e orari, poi ricevi conferma operativa e dettagli pickup.`,
             contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: controlliamo disponibilita e ti rispondiamo a breve con conferma operativa.`,
         };
+
+    const safeStorage = {
+        get(key) {
+            try {
+                return window.sessionStorage.getItem(key);
+            } catch (error) {
+                return null;
+            }
+        },
+        set(key, value) {
+            try {
+                window.sessionStorage.setItem(key, value);
+            } catch (error) {
+                // Ignore storage write failures.
+            }
+        },
+        remove(key) {
+            try {
+                window.sessionStorage.removeItem(key);
+            } catch (error) {
+                // Ignore storage removal failures.
+            }
+        },
+    };
+
+    const getQueryUtm = () => {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            utm_source: String(params.get('utm_source') || '').trim(),
+            utm_medium: String(params.get('utm_medium') || '').trim(),
+            utm_campaign: String(params.get('utm_campaign') || '').trim(),
+        };
+    };
+
+    const normalizeUtm = (utm) => ({
+        utm_source: String(utm.utm_source || '').trim(),
+        utm_medium: String(utm.utm_medium || '').trim(),
+        utm_campaign: String(utm.utm_campaign || '').trim(),
+    });
+
+    const saveUtmParams = () => {
+        const current = getQueryUtm();
+        if (!current.utm_source && !current.utm_medium && !current.utm_campaign) {
+            return;
+        }
+        safeStorage.set(storageKeys.utm, JSON.stringify(current));
+    };
+
+    const getStoredUtm = () => {
+        const raw = safeStorage.get(storageKeys.utm);
+        if (!raw) {
+            return normalizeUtm({});
+        }
+        try {
+            return normalizeUtm(JSON.parse(raw));
+        } catch (error) {
+            return normalizeUtm({});
+        }
+    };
+
+    const getSessionId = () => {
+        const existing = safeStorage.get(storageKeys.sessionId);
+        if (existing) {
+            return existing;
+        }
+        const generated = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+        safeStorage.set(storageKeys.sessionId, generated);
+        return generated;
+    };
+
+    const sendTrackingPayload = (payload) => {
+        const body = JSON.stringify(payload);
+        if (navigator.sendBeacon) {
+            const blob = new Blob([body], { type: 'application/json' });
+            navigator.sendBeacon('/api/analytics-events', blob);
+            return;
+        }
+
+        fetch('/api/analytics-events', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body,
+            keepalive: true,
+        }).catch(() => {
+            // Ignore analytics network failures.
+        });
+    };
+
+    const trackEvent = (eventName, params = {}) => {
+        const utm = getStoredUtm();
+        const payload = {
+            event: eventName,
+            session_id: getSessionId(),
+            lang: language,
+            page_path: window.location.pathname,
+            page_title: document.title,
+            utm,
+            ...params,
+        };
+
+        if (Array.isArray(window.dataLayer)) {
+            window.dataLayer.push(payload);
+        }
+
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, params);
+        }
+
+        sendTrackingPayload(payload);
+    };
+
+    const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+
+    const trackFormError = ({ formId, errorType, errorMessage, missingFields = [] }) => {
+        trackEvent('form_error', {
+            form_id: formId,
+            funnel_step: 'form_submit',
+            error_type: errorType,
+            error_message: errorMessage,
+            missing_fields: missingFields,
+        });
+    };
+
+    const markFormOpened = (formId, source) => {
+        const raw = safeStorage.get(storageKeys.openedForms);
+        let opened = [];
+        try {
+            opened = raw ? JSON.parse(raw) : [];
+        } catch (error) {
+            opened = [];
+        }
+
+        if (opened.includes(formId)) {
+            return;
+        }
+
+        opened.push(formId);
+        safeStorage.set(storageKeys.openedForms, JSON.stringify(opened));
+        trackEvent('form_open', {
+            form_id: formId,
+            source,
+            funnel_step: 'form_open',
+        });
+    };
+
+    const bindFormOpenTracking = (form, formId, source) => {
+        if (!form) {
+            return;
+        }
+
+        const markOpen = () => markFormOpened(formId, source);
+        form.addEventListener('focusin', markOpen, { once: true });
+        form.addEventListener('pointerdown', markOpen, { once: true });
+    };
+
+    const readDraft = (storageKey) => {
+        const raw = safeStorage.get(storageKey);
+        if (!raw) {
+            return {};
+        }
+        try {
+            return JSON.parse(raw);
+        } catch (error) {
+            return {};
+        }
+    };
+
+    const saveDraft = (storageKey, data) => {
+        safeStorage.set(storageKey, JSON.stringify(data));
+    };
+
+    const clearDraft = (storageKey) => {
+        safeStorage.remove(storageKey);
+    };
+
+    const bindDraftPersistence = (form, storageKey, fieldNames) => {
+        if (!form) {
+            return;
+        }
+
+        const persist = () => {
+            const formData = new FormData(form);
+            const draft = fieldNames.reduce((accumulator, fieldName) => {
+                accumulator[fieldName] = String(formData.get(fieldName) || '').trim();
+                return accumulator;
+            }, {});
+            saveDraft(storageKey, draft);
+        };
+
+        ['input', 'change'].forEach((eventName) => {
+            form.addEventListener(eventName, (event) => {
+                const target = event.target;
+                if (!(target instanceof HTMLElement)) {
+                    return;
+                }
+                if (!target.getAttribute('name') || !fieldNames.includes(target.getAttribute('name'))) {
+                    return;
+                }
+                persist();
+            });
+        });
+    };
+
+    const inferRouteFromPage = () => {
+        const path = window.location.pathname || '/';
+        const key = path.split('/').pop() || (path.endsWith('/en/') ? 'en-index' : 'index');
+        const routeMap = {
+            'index.html': 'Napoli -> Ischia',
+            'en-index': 'Naples -> Ischia',
+            'transfer-stazione-napoli-ischia.html': 'Napoli Stazione -> Ischia Hotel',
+            'transfer-naples-train-station-ischia.html': 'Naples Station -> Ischia Hotel',
+            'transfer-napoli-aeroporto.html': 'Napoli Aeroporto -> Ischia',
+            'transfer-aeroporto-napoli-ischia.html': 'Napoli Aeroporto -> Ischia',
+            'transfer-porto-ischia-hotel.html': 'Porto Ischia -> Hotel',
+            'transfer-naples-airport-port.html': 'Naples Airport -> Naples Port',
+            'naples-airport-to-ischia-transfer.html': 'Naples Airport -> Ischia',
+        };
+
+        if (routeMap[key]) {
+            return routeMap[key];
+        }
+
+        const h1 = document.querySelector('h1');
+        if (h1) {
+            return h1.textContent.replace(/\s+/g, ' ').trim();
+        }
+
+        return language === 'en' ? 'Naples -> Ischia' : 'Napoli -> Ischia';
+    };
+
+    const enrichContactCtaLinks = () => {
+        const links = document.querySelectorAll('a[href*="contatti.html"], a[href*="contacts.html"]');
+        const route = inferRouteFromPage();
+
+        links.forEach((link) => {
+            link.addEventListener('click', () => {
+                try {
+                    const url = new URL(link.getAttribute('href'), window.location.href);
+                    const destination = `${url.pathname}${url.search}`;
+                    if (destination.includes('contatti.html') || destination.includes('contacts.html')) {
+                        if (!url.searchParams.get('route')) {
+                            url.searchParams.set('route', route);
+                        }
+                        if (!url.searchParams.get('people')) {
+                            url.searchParams.set('people', '2');
+                        }
+                        link.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+                    }
+                } catch (error) {
+                    // Keep original href if URL parsing fails.
+                }
+            });
+        });
+    };
+
+    const prefillContactForm = () => {
+        if (!contactForm) {
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const draft = readDraft(storageKeys.contactDraft);
+        const defaults = {
+            name: draft.name || '',
+            route: params.get('route') || inferRouteFromPage(),
+            people: draft.people || params.get('people') || '2',
+            date: draft.date || params.get('date') || '',
+            time: params.get('time') || '',
+            details: params.get('notes') || '',
+        };
+
+        const nameField = contactForm.querySelector('[name="name"]');
+        const routeField = contactForm.querySelector('[name="route"]');
+        const peopleField = contactForm.querySelector('[name="people"]');
+        const dateField = contactForm.querySelector('[name="date"]');
+        const timeField = contactForm.querySelector('[name="time"]');
+        const detailsField = contactForm.querySelector('[name="details"]');
+
+        if (nameField && !nameField.value && defaults.name) {
+            nameField.value = defaults.name;
+        }
+        if (routeField && !routeField.value && defaults.route) {
+            routeField.value = defaults.route;
+        }
+        if (peopleField && !peopleField.value && defaults.people) {
+            peopleField.value = defaults.people;
+        }
+        if (dateField && !dateField.value && defaults.date) {
+            dateField.value = defaults.date;
+        }
+        if (timeField && !timeField.value && defaults.time) {
+            timeField.value = defaults.time;
+        }
+        if (detailsField && !detailsField.value && defaults.details) {
+            detailsField.value = defaults.details;
+        }
+    };
+
+    const prefillHeroForm = () => {
+        if (!heroBookingForm) {
+            return;
+        }
+
+        const draft = readDraft(storageKeys.heroDraft);
+        const defaults = {
+            name: draft['hero-name'] || '',
+            route: draft['hero-route'] || inferRouteFromPage(),
+            people: draft['hero-people'] || '',
+            date: draft['hero-date'] || '',
+        };
+
+        ['hero-name', 'hero-route', 'hero-people', 'hero-date'].forEach((fieldName) => {
+            const field = heroBookingForm.querySelector(`[name="${fieldName}"]`);
+            if (field && !field.value && defaults[fieldName.replace('hero-', '')]) {
+                field.value = defaults[fieldName.replace('hero-', '')];
+            }
+        });
+    };
+
+    const bindTracking = () => {
+        const ctaElements = document.querySelectorAll('a.btn-primary, button.btn-primary');
+        ctaElements.forEach((element) => {
+            element.addEventListener('click', () => {
+                const label = (element.textContent || '').replace(/\s+/g, ' ').trim();
+                trackEvent('cta_click', {
+                    label,
+                    href: element.tagName === 'A' ? element.getAttribute('href') || '' : '',
+                    funnel_step: 'cta_click',
+                });
+            });
+        });
+
+        const whatsappLinks = document.querySelectorAll('a[href*="wa.me/"]');
+        whatsappLinks.forEach((element) => {
+            element.addEventListener('click', () => {
+                trackEvent('whatsapp_click', {
+                    href: element.getAttribute('href') || '',
+                    funnel_step: 'whatsapp_click',
+                });
+            });
+        });
+    };
 
     const setFeedback = (element, message, type) => {
         if (!element) {
@@ -215,6 +568,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (heroBookingForm) {
+        const heroRouteField = heroBookingForm.querySelector('[name="hero-route"]');
+        if (heroRouteField && !heroRouteField.value) {
+            heroRouteField.value = inferRouteFromPage();
+        }
+
         heroBookingForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(heroBookingForm);
@@ -224,12 +582,46 @@ document.addEventListener('DOMContentLoaded', () => {
             const date = String(formData.get('hero-date') || '').trim();
             const time = String(formData.get('hero-time') || '').trim();
             const route = String(formData.get('hero-route') || '').trim();
+            const people = String(formData.get('hero-people') || '').trim();
+            const notes = String(formData.get('hero-notes') || '').trim();
             const website = String(formData.get('website') || '').trim();
+            const heroPeopleField = heroBookingForm.querySelector('[name="hero-people"]');
+            const requiresPeople = Boolean(heroPeopleField);
+            const missingFields = [];
 
-            if (!service || !name || !email || !date || !route) {
+            if (!service) missingFields.push('hero-service');
+            if (!name) missingFields.push('hero-name');
+            if (!email) missingFields.push('hero-email');
+            if (!date) missingFields.push('hero-date');
+            if (!route) missingFields.push('hero-route');
+            if (requiresPeople && !people) missingFields.push('hero-people');
+
+            if (missingFields.length) {
+                trackFormError({
+                    formId: 'hero-booking-form',
+                    errorType: 'missing_required',
+                    errorMessage: messages.heroRequired,
+                    missingFields,
+                });
                 setFeedback(heroBookingFeedback, messages.heroRequired, 'error');
                 return;
             }
+
+            if (!isValidEmail(email)) {
+                trackFormError({
+                    formId: 'hero-booking-form',
+                    errorType: 'invalid_email',
+                    errorMessage: messages.invalidEmail,
+                });
+                setFeedback(heroBookingFeedback, messages.invalidEmail, 'error');
+                return;
+            }
+
+            trackEvent('form_submit', {
+                form_id: 'hero-booking-form',
+                source: 'PUBLIC_HERO_WIDGET',
+                funnel_step: 'form_submit',
+            });
 
             setFeedback(heroBookingFeedback, messages.sending, 'info');
             if (heroBookingSubmit) {
@@ -244,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     time,
                     name,
                     email,
-                    details: 'Richiesta rapida inviata da widget hero.',
+                    details: `${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`,
                     source: 'PUBLIC_HERO_WIDGET',
                     website,
                 });
@@ -255,7 +647,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     'success',
                 );
                 heroBookingForm.reset();
+                clearDraft(storageKeys.heroDraft);
             } catch (error) {
+                trackFormError({
+                    formId: 'hero-booking-form',
+                    errorType: 'submit_error',
+                    errorMessage: error.message,
+                });
                 setFeedback(heroBookingFeedback, error.message, 'error');
             } finally {
                 if (heroBookingSubmit) {
@@ -274,16 +672,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: String(formData.get('email') || '').trim(),
                 route: String(formData.get('route') || '').trim(),
                 date: String(formData.get('date') || '').trim(),
-                details: String(formData.get('details') || '').trim(),
+                time: String(formData.get('time') || '').trim(),
                 website: String(formData.get('website') || '').trim(),
                 service: 'Richiesta Transfer da Form Contatti',
                 source: 'PUBLIC_CONTACT_FORM',
             };
 
-            if (!payload.name || !payload.email || !payload.route || !payload.date) {
+            const people = String(formData.get('people') || '').trim();
+            const notes = String(formData.get('details') || '').trim();
+            const peopleField = contactForm.querySelector('[name="people"]');
+            const requiresPeople = Boolean(peopleField);
+            const missingFields = [];
+            payload.details = `${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${payload.time ? ` | ${language === 'en' ? 'Estimated time' : 'Orario indicativo'}: ${payload.time}` : ''}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`;
+
+            if (!payload.name) missingFields.push('name');
+            if (!payload.email) missingFields.push('email');
+            if (!payload.route) missingFields.push('route');
+            if (!payload.date) missingFields.push('date');
+            if (requiresPeople && !people) missingFields.push('people');
+
+            if (missingFields.length) {
+                trackFormError({
+                    formId: 'contact-form',
+                    errorType: 'missing_required',
+                    errorMessage: messages.contactRequired,
+                    missingFields,
+                });
                 setFeedback(contactFeedback, messages.contactRequired, 'error');
                 return;
             }
+
+            if (!isValidEmail(payload.email)) {
+                trackFormError({
+                    formId: 'contact-form',
+                    errorType: 'invalid_email',
+                    errorMessage: messages.invalidEmail,
+                });
+                setFeedback(contactFeedback, messages.invalidEmail, 'error');
+                return;
+            }
+
+            trackEvent('form_submit', {
+                form_id: 'contact-form',
+                source: 'PUBLIC_CONTACT_FORM',
+                funnel_step: 'form_submit',
+            });
 
             setFeedback(contactFeedback, messages.sending, 'info');
 
@@ -295,7 +728,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     'success',
                 );
                 contactForm.reset();
+                clearDraft(storageKeys.contactDraft);
+                prefillContactForm();
             } catch (error) {
+                trackFormError({
+                    formId: 'contact-form',
+                    errorType: 'submit_error',
+                    errorMessage: error.message,
+                });
                 setFeedback(contactFeedback, error.message, 'error');
             }
         });
@@ -323,7 +763,16 @@ document.addEventListener('DOMContentLoaded', () => {
         revealTargets.forEach((element) => observer.observe(element));
     }
 
+    saveUtmParams();
+    enrichContactCtaLinks();
+    bindFormOpenTracking(heroBookingForm, 'hero-booking-form', 'PUBLIC_HERO_WIDGET');
+    bindFormOpenTracking(contactForm, 'contact-form', 'PUBLIC_CONTACT_FORM');
+    bindDraftPersistence(contactForm, storageKeys.contactDraft, ['name', 'route', 'people', 'date']);
+    bindDraftPersistence(heroBookingForm, storageKeys.heroDraft, ['hero-name', 'hero-route', 'hero-people', 'hero-date']);
+    prefillHeroForm();
+    prefillContactForm();
     createWhatsAppFloat();
+    bindTracking();
     syncHeroOffset();
     syncNavState();
     window.addEventListener('scroll', syncNavState, { passive: true });

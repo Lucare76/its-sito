@@ -31,16 +31,16 @@
   <main class="pt-32 pb-20">
     <section class="section-shell pt-10">
       <div class="section-heading">
-        <span class="eyebrow">Contatti transfer organizzato dal 2006</span>
+        <span class="eyebrow">Contatti e assistenza</span>
         <h1>Contattaci: servizio diretto e coordinato</h1>
-        <p>Servizio attivo dal 2006: rispondiamo con assistenza reale e coordinamento diretto tra aeroporto, porto e hotel. Richiedi preventivo, verifica disponibilità o contatta su WhatsApp.</p>
+        <p>Dal 2006 aiutiamo viaggiatori, famiglie e gruppi a organizzare transfer tra aeroporto, stazione, porto e hotel con risposte chiare e supporto operativo diretto.</p>
       </div>
       <div class="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         <div class="rounded-[2rem] border border-nightBlue/10 bg-white p-8 shadow-xl shadow-nightBlue/10 sm:p-10">
           <h2 class="text-3xl font-semibold text-nightBlue">Informazioni operative</h2>
           <div class="contact-info-list mt-8">
             <div class="contact-info-item"><span class="contact-info-label">Telefono</span><a href="tel:+390813331053">+39 081 3331053</a></div>
-            <div class="contact-info-item"><span class="contact-info-label">WhatsApp</span><a href="https://wa.me/393334372831" target="_blank" rel="noreferrer">Chatta ora su WhatsApp <span title="Risposta rapida, 7 giorni su 7">💬</span></a><span class="text-xs text-nightBlue block mt-1">Risposta rapida, 7 giorni su 7</span></div>
+            <div class="contact-info-item"><span class="contact-info-label">WhatsApp</span><a href="https://wa.me/393334372831" target="_blank" rel="noreferrer">Chatta ora su WhatsApp</a><span class="text-xs text-nightBlue block mt-1">Risposta rapida, 7 giorni su 7</span></div>
             <div class="contact-info-item"><span class="contact-info-label">Email</span><p>booking@ischiatransferservice.com</p></div>
             <div class="contact-info-item"><span class="contact-info-label">Area geografica operativa</span><p>Golfo di Napoli e Costiera Amalfitana</p></div>
             <div class="contact-info-item"><span class="contact-info-label">Localita servite</span><p>Ischia, Capri, Procida, Napoli aeroporto, Napoli stazione, Positano, Amalfi, Ravello</p></div>
@@ -57,10 +57,15 @@
             <label class="form-field"><span>Tratta</span><input type="text" name="route" placeholder="Porto, hotel, aeroporto..." required></label>
             <label class="form-field"><span>Data</span><input type="date" name="date" required></label>
           </div>
-          <label class="form-field mt-5"><span>Dettagli</span><textarea name="details" rows="5" placeholder="Dettagli transfer"></textarea></label>
+          <div class="mt-5 grid gap-5 sm:grid-cols-2">
+            <label class="form-field"><span>Numero persone</span><input type="number" name="people" min="1" step="1" placeholder="Es. 2" required></label>
+            <label class="form-field"><span>Orario indicativo</span><input type="time" name="time"></label>
+          </div>
+          <label class="form-field mt-5"><span>Note (bagagli, bambini, richieste speciali)</span><textarea name="details" rows="5" placeholder="Es. 2 valigie grandi, 1 bambino, seggiolino"></textarea></label>
           <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="mt-6 flex justify-end"><button type="submit" class="btn-primary justify-center border-0">Invia richiesta sicura</button></div>
-          <p id="contact-feedback" class="mt-4 text-sm text-blue-100" aria-live="polite">Risposta garantita entro poche ore. Dopo l invio ricevi prima conferma disponibilita, poi dettagli operativi del pickup.</p>
+          <p class="mt-4 text-sm text-blue-100">Compila il form in pochi secondi e ti risponderemo con disponibilità, tempi e istruzioni operative. Nessun pagamento anticipato se non previsto dal servizio richiesto.</p>
+          <p id="contact-feedback" class="mt-2 text-sm text-blue-100" aria-live="polite">Di solito rispondiamo entro poche ore. Dopo l invio ricevi prima la conferma di disponibilità, poi i dettagli del pickup.</p>
         </form>
       </div>
 
