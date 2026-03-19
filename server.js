@@ -251,7 +251,8 @@ function ensureDb() {
     const seed = {
       users: bootstrapUsers,
       bookings: [],
-      analyticsEvents: []
+      analyticsEvents: [],
+      analyticsSnapshots: []
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(seed, null, 2), 'utf8');
     log(`DB inizializzato in ${DB_PATH}`);
@@ -272,10 +273,11 @@ function ensureDb() {
     const normalized = {
       users: Array.isArray(existing.users) ? existing.users : [],
       bookings: Array.isArray(existing.bookings) ? existing.bookings : [],
-      analyticsEvents: Array.isArray(existing.analyticsEvents) ? existing.analyticsEvents : []
+      analyticsEvents: Array.isArray(existing.analyticsEvents) ? existing.analyticsEvents : [],
+      analyticsSnapshots: Array.isArray(existing.analyticsSnapshots) ? existing.analyticsSnapshots : []
     };
 
-    const needsWrite = !Array.isArray(existing.analyticsEvents) || !Array.isArray(existing.bookings) || !Array.isArray(existing.users);
+    const needsWrite = !Array.isArray(existing.analyticsEvents) || !Array.isArray(existing.bookings) || !Array.isArray(existing.users) || !Array.isArray(existing.analyticsSnapshots);
     if (needsWrite) {
       fs.writeFileSync(DB_PATH, JSON.stringify(normalized, null, 2), 'utf8');
     }
@@ -287,7 +289,8 @@ function ensureDb() {
     const merged = {
       users: bootstrapUsers,
       bookings: normalized.bookings,
-      analyticsEvents: normalized.analyticsEvents
+      analyticsEvents: normalized.analyticsEvents,
+      analyticsSnapshots: normalized.analyticsSnapshots
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(merged, null, 2), 'utf8');
     log(`Utenti bootstrap inseriti in ${DB_PATH}`);
@@ -311,8 +314,72 @@ function normalizeDb(db) {
     ...db,
     users: Array.isArray(db.users) ? db.users : [],
     bookings: Array.isArray(db.bookings) ? db.bookings : [],
-    analyticsEvents: Array.isArray(db.analyticsEvents) ? db.analyticsEvents : []
+    analyticsEvents: Array.isArray(db.analyticsEvents) ? db.analyticsEvents : [],
+    analyticsSnapshots: Array.isArray(db.analyticsSnapshots) ? db.analyticsSnapshots : []
   };
+}
+
+function sanitizeAnalyticsSnapshot(body) {
+  const filters = body && typeof body.filters === 'object' ? body.filters : {};
+  const totals = body && typeof body.totals === 'object' ? body.totals : {};
+  const arrays = ['funnel', 'previousPeriodFunnel', 'topPages', 'healthScore', 'topUtm', 'topPageUtm', 'segmentsByLanguage', 'segmentsByDevice', 'alerts'];
+  const normalized = arrays.reduce((accumulator, key) => {
+    accumulator[key] = Array.isArray(body[key]) ? body[key] : [];
+    return accumulator;
+  }, {});
+
+  return {
+    id: String(body.id || `snap_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`).trim(),
+    exportedAt: String(body.exportedAt || nowIso()).trim(),
+    name: String(body.name || '').trim(),
+    note: String(body.note || '').trim(),
+    pinned: Boolean(body.pinned),
+    tags: Array.isArray(body.tags) ? body.tags.map((item) => String(item || '').trim()).filter(Boolean).slice(0, 10) : [],
+    createdBy: body && typeof body.createdBy === 'object'
+      ? {
+        id: String(body.createdBy.id || '').trim(),
+        name: String(body.createdBy.name || '').trim(),
+        role: String(body.createdBy.role || '').trim()
+      }
+      : {
+        id: '',
+        name: '',
+        role: ''
+      },
+    filters: {
+      range: String(filters.range || '').trim(),
+      page: String(filters.page || '').trim()
+    },
+    totals: {
+      events: Number(totals.events || 0),
+      cta: Number(totals.cta || 0),
+      formOpen: Number(totals.formOpen || 0),
+      formSubmit: Number(totals.formSubmit || 0),
+      whatsapp: Number(totals.whatsapp || 0)
+    },
+    ...normalized
+  };
+}
+
+function validateAnalyticsSnapshot(input) {
+  const errors = [];
+  if (!input.id) errors.push('snapshot id obbligatorio');
+  if (!input.exportedAt) errors.push('exportedAt obbligatorio');
+  if (input.id && input.id.length > 120) errors.push('snapshot id troppo lungo');
+  if (input.name && input.name.length > 120) errors.push('snapshot name troppo lungo');
+  if (input.note && input.note.length > 500) errors.push('snapshot note troppo lunga');
+  if (Array.isArray(input.tags) && input.tags.join(',').length > 240) errors.push('snapshot tags troppo lunghe');
+  return errors;
+}
+
+function sortSnapshots(items) {
+  return [...items].sort((a, b) => {
+    const pinDelta = Number(Boolean(b.pinned)) - Number(Boolean(a.pinned));
+    if (pinDelta !== 0) {
+      return pinDelta;
+    }
+    return new Date(b.exportedAt) - new Date(a.exportedAt);
+  });
 }
 
 function sendJson(res, statusCode, payload) {
@@ -426,6 +493,7 @@ function sanitizeAnalyticsEvent(body) {
     event: String(body.event || '').trim(),
     sessionId: String(body.sessionId || '').trim(),
     lang: String(body.lang || '').trim(),
+    deviceType: String(body.device_type || body.deviceType || '').trim(),
     pagePath: String(body.page_path || body.pagePath || '').trim(),
     pageTitle: String(body.page_title || body.pageTitle || '').trim(),
     source: String(body.source || '').trim(),
@@ -468,6 +536,7 @@ function serializeAnalyticsEventsCsv(items) {
     'event',
     'sessionId',
     'lang',
+    'deviceType',
     'pagePath',
     'pageTitle',
     'source',
@@ -489,6 +558,7 @@ function serializeAnalyticsEventsCsv(items) {
     item.event,
     item.sessionId,
     item.lang,
+    item.deviceType,
     item.pagePath,
     item.pageTitle,
     item.source,
@@ -505,6 +575,217 @@ function serializeAnalyticsEventsCsv(items) {
   ].map(csvEscape).join(','));
 
   return [header.join(','), ...rows].join('\n');
+}
+
+function getRangeWindowMs(range) {
+  const value = String(range || '30d').trim().toLowerCase();
+  const ranges = {
+    '1d': 24 * 60 * 60 * 1000,
+    '7d': 7 * 24 * 60 * 60 * 1000,
+    '30d': 30 * 24 * 60 * 60 * 1000
+  };
+  return value === 'all' ? null : (ranges[value] || ranges['30d']);
+}
+
+function filterAnalyticsItems(items, options = {}) {
+  const page = String(options.page || 'all').trim();
+  const range = String(options.range || '30d').trim().toLowerCase();
+  const now = Date.now();
+  const windowMs = getRangeWindowMs(range);
+
+  return items.filter((item) => {
+    if (page !== 'all' && String(item.pagePath || '').trim() !== page) {
+      return false;
+    }
+    if (!windowMs) {
+      return true;
+    }
+    const createdAt = Date.parse(item.createdAt || '');
+    return Number.isFinite(createdAt) && (now - createdAt) <= windowMs;
+  });
+}
+
+function filterPreviousPeriodAnalyticsItems(items, options = {}) {
+  const page = String(options.page || 'all').trim();
+  const range = String(options.range || '30d').trim().toLowerCase();
+  const now = Date.now();
+  const windowMs = getRangeWindowMs(range);
+  if (!windowMs) {
+    return [];
+  }
+
+  return items.filter((item) => {
+    if (page !== 'all' && String(item.pagePath || '').trim() !== page) {
+      return false;
+    }
+    const createdAt = Date.parse(item.createdAt || '');
+    if (!Number.isFinite(createdAt)) {
+      return false;
+    }
+    const age = now - createdAt;
+    return age > windowMs && age <= (windowMs * 2);
+  });
+}
+
+function countAnalyticsEvent(items, eventName) {
+  return items.filter((item) => item.event === eventName).length;
+}
+
+function buildFunnelStats(items) {
+  const steps = [
+    { event: 'cta_click', label: 'CTA click' },
+    { event: 'form_open', label: 'Form open' },
+    { event: 'form_submit', label: 'Form submit' },
+    { event: 'whatsapp_click', label: 'WhatsApp' }
+  ];
+
+  return steps.map((step, index) => {
+    const total = countAnalyticsEvent(items, step.event);
+    const previousTotal = index === 0 ? total : countAnalyticsEvent(items, steps[index - 1].event);
+    const conversion = index === 0 ? 100 : (previousTotal > 0 ? (total / previousTotal) * 100 : 0);
+    const dropoff = index === 0 ? 0 : Math.max(previousTotal - total, 0);
+    return {
+      step: step.label,
+      total,
+      conversionFromPrevious: index === 0 ? 100 : Math.round(conversion),
+      dropoffFromPrevious: index === 0 ? 0 : dropoff
+    };
+  });
+}
+
+function buildSegmentRows(items, fieldName, fallbackLabel) {
+  const grouped = new Map();
+  items.forEach((item) => {
+    const key = String(item[fieldName] || '').trim() || fallbackLabel;
+    if (!grouped.has(key)) {
+      grouped.set(key, []);
+    }
+    grouped.get(key).push(item);
+  });
+
+  return Array.from(grouped.entries()).map(([key, groupItems]) => {
+    const funnel = buildFunnelStats(groupItems);
+    const cta = funnel[0].total;
+    const whatsapp = funnel[3].total;
+    return {
+      key,
+      cta,
+      submit: funnel[2].total,
+      whatsapp,
+      finalConversion: cta > 0 ? Math.round((whatsapp / cta) * 100) : 0
+    };
+  }).sort((a, b) => b.finalConversion - a.finalConversion);
+}
+
+function computeHealthScore(funnel) {
+  const cta = funnel[0].total;
+  const open = funnel[1].total;
+  const submit = funnel[2].total;
+  const whatsapp = funnel[3].total;
+  const openRate = cta > 0 ? (open / cta) * 100 : 0;
+  const submitRate = open > 0 ? (submit / open) * 100 : 0;
+  const whatsappRate = submit > 0 ? (whatsapp / submit) * 100 : 0;
+  const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+  const weighted = (openRate * 0.2) + (submitRate * 0.3) + (whatsappRate * 0.2) + (finalRate * 0.3);
+  return Math.round(Math.min(Math.max(weighted, 0), 100));
+}
+
+function buildPageRows(items) {
+  const grouped = new Map();
+  items.forEach((item) => {
+    const key = String(item.pagePath || '').trim();
+    if (!key) return;
+    if (!grouped.has(key)) {
+      grouped.set(key, []);
+    }
+    grouped.get(key).push(item);
+  });
+
+  return Array.from(grouped.entries()).map(([pagePath, groupItems]) => {
+    const funnel = buildFunnelStats(groupItems);
+    const cta = funnel[0].total;
+    const whatsapp = funnel[3].total;
+    return {
+      pagePath,
+      cta,
+      open: funnel[1].total,
+      submit: funnel[2].total,
+      whatsapp,
+      finalConversion: cta > 0 ? Math.round((whatsapp / cta) * 100) : 0,
+      healthScore: computeHealthScore(funnel)
+    };
+  }).sort((a, b) => b.finalConversion - a.finalConversion);
+}
+
+function buildBookingKpis(bookings) {
+  const total = bookings.length;
+  const confirmed = bookings.filter((item) => String(item.status || '').toUpperCase() === 'CONFIRMED');
+  const cancelled = bookings.filter((item) => String(item.status || '').toUpperCase() === 'CANCELLED');
+  const pending = bookings.filter((item) => String(item.status || '').toUpperCase() === 'PENDING_CONFIRMATION');
+  const confirmationTimes = confirmed.map((item) => {
+    const createdAt = Date.parse(item.createdAt || '');
+    const statusEvents = Array.isArray(item.statusEvents) ? item.statusEvents : [];
+    const confirmEvent = statusEvents.find((entry) => String(entry.note || '').includes('CONFIRMED') || String(entry.note || '').includes('Conferm'));
+    const confirmedAt = confirmEvent ? Date.parse(confirmEvent.at || '') : NaN;
+    if (!Number.isFinite(createdAt) || !Number.isFinite(confirmedAt)) {
+      return null;
+    }
+    return (confirmedAt - createdAt) / (1000 * 60 * 60);
+  }).filter((value) => Number.isFinite(value) && value >= 0);
+
+  return {
+    total,
+    confirmed: confirmed.length,
+    cancelled: cancelled.length,
+    pending: pending.length,
+    confirmRate: total > 0 ? Math.round((confirmed.length / total) * 100) : 0,
+    averageConfirmationHours: confirmationTimes.length
+      ? Number((confirmationTimes.reduce((sum, value) => sum + value, 0) / confirmationTimes.length).toFixed(2))
+      : 0
+  };
+}
+
+function buildInsightsReport(db, options = {}) {
+  const analyticsItems = Array.isArray(db.analyticsEvents) ? db.analyticsEvents : [];
+  const filteredItems = filterAnalyticsItems(analyticsItems, options);
+  const previousItems = filterPreviousPeriodAnalyticsItems(analyticsItems, options);
+  const pageRows = buildPageRows(filteredItems);
+
+  return {
+    exportedAt: nowIso(),
+    filters: {
+      range: String(options.range || '30d').trim().toLowerCase(),
+      page: String(options.page || 'all').trim()
+    },
+    totals: {
+      events: filteredItems.length,
+      cta: countAnalyticsEvent(filteredItems, 'cta_click'),
+      formOpen: countAnalyticsEvent(filteredItems, 'form_open'),
+      formSubmit: countAnalyticsEvent(filteredItems, 'form_submit'),
+      whatsapp: countAnalyticsEvent(filteredItems, 'whatsapp_click')
+    },
+    funnel: buildFunnelStats(filteredItems),
+    previousPeriodFunnel: buildFunnelStats(previousItems),
+    topPages: pageRows.slice(0, 10).map((item) => ({
+      pagePath: item.pagePath,
+      cta: item.cta,
+      open: item.open,
+      submit: item.submit,
+      whatsapp: item.whatsapp,
+      finalConversion: item.finalConversion
+    })),
+    healthScore: pageRows.slice(0, 10).sort((a, b) => b.healthScore - a.healthScore).map((item) => ({
+      pagePath: item.pagePath,
+      score: item.healthScore,
+      status: item.healthScore >= 75 ? 'Buono' : (item.healthScore >= 45 ? 'Medio' : 'Critico'),
+      cta: item.cta,
+      submit: item.submit,
+      whatsapp: item.whatsapp
+    })),
+    segmentsByLanguage: buildSegmentRows(filteredItems, 'lang', 'n/d'),
+    segmentsByDevice: buildSegmentRows(filteredItems, 'deviceType', 'n/d'),
+    bookingKpis: buildBookingKpis(Array.isArray(db.bookings) ? db.bookings : [])
+  };
 }
 
 function validateBookingInput(input) {
@@ -688,6 +969,7 @@ function handleApi(req, res, pathname) {
           event: input.event,
           sessionId: input.sessionId || null,
           lang: input.lang || null,
+          deviceType: input.deviceType || null,
           pagePath: input.pagePath || null,
           pageTitle: input.pageTitle || null,
           source: input.source || null,
@@ -736,6 +1018,76 @@ function handleApi(req, res, pathname) {
     }
 
     return sendJson(res, 200, { items });
+  }
+
+  if (pathname === '/api/insights/report' && req.method === 'GET') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+    const db = normalizeDb(readDb());
+    return sendJson(res, 200, {
+      report: buildInsightsReport(db, {
+        range: requestUrl.searchParams.get('range') || '30d',
+        page: requestUrl.searchParams.get('page') || 'all'
+      })
+    });
+  }
+
+  if (pathname === '/api/analytics-snapshots' && req.method === 'GET') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    const db = normalizeDb(readDb());
+    return sendJson(res, 200, {
+      items: sortSnapshots(db.analyticsSnapshots)
+    });
+  }
+
+  if (pathname === '/api/analytics-snapshots' && req.method === 'POST') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    return parseRequestBody(req)
+      .then((body) => {
+        const input = sanitizeAnalyticsSnapshot(body);
+        const errors = validateAnalyticsSnapshot(input);
+        if (errors.length) {
+          return sendJson(res, 422, { error: 'Validazione snapshot fallita', details: errors });
+        }
+
+        const db = normalizeDb(readDb());
+        db.analyticsSnapshots = db.analyticsSnapshots.filter((item) => item.id !== input.id);
+        db.analyticsSnapshots.unshift(input);
+        db.analyticsSnapshots = sortSnapshots(db.analyticsSnapshots).slice(0, 30);
+        writeDb(db);
+        return sendJson(res, 201, { message: 'Snapshot analytics salvato', item: input });
+      })
+      .catch((error) => sendJson(res, 400, { error: error.message }));
+  }
+
+  const snapshotMatch = pathname.match(/^\/api\/analytics-snapshots\/([^/]+)$/);
+  if (snapshotMatch && req.method === 'DELETE') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    const snapshotId = snapshotMatch[1];
+    const db = normalizeDb(readDb());
+    const before = db.analyticsSnapshots.length;
+    db.analyticsSnapshots = db.analyticsSnapshots.filter((item) => item.id !== snapshotId);
+    if (db.analyticsSnapshots.length === before) {
+      return sendJson(res, 404, { error: 'Snapshot non trovato' });
+    }
+    writeDb(db);
+    return sendJson(res, 200, { message: 'Snapshot eliminato' });
   }
 
   const confirmMatch = pathname.match(/^\/api\/bookings\/([^/]+)\/confirm$/);

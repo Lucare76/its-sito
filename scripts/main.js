@@ -111,6 +111,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return generated;
     };
 
+    const getDeviceType = () => {
+        const width = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0);
+        if (width > 0 && width < 768) {
+            return 'mobile';
+        }
+        if (width >= 768 && width < 1024) {
+            return 'tablet';
+        }
+        return 'desktop';
+    };
+
     const sendTrackingPayload = (payload) => {
         const body = JSON.stringify(payload);
         if (navigator.sendBeacon) {
@@ -137,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             event: eventName,
             session_id: getSessionId(),
             lang: language,
+            device_type: getDeviceType(),
             page_path: window.location.pathname,
             page_title: document.title,
             utm,

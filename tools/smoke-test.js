@@ -83,6 +83,7 @@ async function run() {
         event: 'form_submit',
         session_id: 'smoke-session',
         lang: 'it',
+        device_type: 'desktop',
         page_path: '/contatti.html',
         page_title: 'Smoke Analytics',
         form_id: 'contact-form',
@@ -100,12 +101,83 @@ async function run() {
       headers: { Authorization: `Bearer ${login.token}` },
     });
 
+    const analytics = await call(baseUrl, '/api/analytics-events', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${login.token}` },
+    });
+    if (!analytics.items || !analytics.items.length || analytics.items[0].deviceType !== 'desktop') {
+      throw new Error('analytics deviceType non registrato correttamente');
+    }
+
     const exportJson = await fetch(`${baseUrl}/api/analytics-events/export?format=json`, {
       headers: { Authorization: `Bearer ${login.token}` },
     });
     if (!exportJson.ok) {
       throw new Error(`/api/analytics-events/export?format=json -> ${exportJson.status}`);
     }
+
+    const insights = await call(baseUrl, '/api/insights/report?range=30d&page=all', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${login.token}` },
+    });
+    if (!insights.report || !insights.report.totals || insights.report.totals.formSubmit < 1) {
+      throw new Error('report insights non restituito correttamente');
+    }
+
+    const snapshot = await call(baseUrl, '/api/analytics-snapshots', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        id: 'snap_smoke_1',
+        exportedAt: '2026-03-19T00:00:00.000Z',
+        name: 'Smoke snapshot',
+        note: 'snapshot di test automatico',
+        pinned: true,
+        tags: ['smoke', 'ops'],
+        createdBy: {
+          id: 'usr_operator_1',
+          name: 'Operatore ITS',
+          role: 'operator',
+        },
+        filters: {
+          range: '7d',
+          page: '/contatti.html',
+        },
+        totals: {
+          events: 1,
+          cta: 0,
+          formOpen: 0,
+          formSubmit: 1,
+          whatsapp: 0,
+        },
+        funnel: [],
+        previousPeriodFunnel: [],
+        topPages: [],
+        healthScore: [],
+        topUtm: [],
+        topPageUtm: [],
+        segmentsByLanguage: [],
+        segmentsByDevice: [],
+        alerts: [],
+      }),
+    });
+
+    if (!snapshot.item || snapshot.item.id !== 'snap_smoke_1' || snapshot.item.name !== 'Smoke snapshot' || snapshot.item.pinned !== true) {
+      throw new Error('snapshot analytics non salvato correttamente');
+    }
+
+    const snapshots = await call(baseUrl, '/api/analytics-snapshots', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${login.token}` },
+    });
+    if (!snapshots.items || !snapshots.items.some((item) => item.id === 'snap_smoke_1')) {
+      throw new Error('snapshot analytics non restituito correttamente');
+    }
+
+    await call(baseUrl, '/api/analytics-snapshots/snap_smoke_1', {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${login.token}` },
+    });
 
     console.log('SMOKE_TEST_OK');
   } finally {

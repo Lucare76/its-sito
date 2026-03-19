@@ -90,6 +90,32 @@
       color: var(--muted);
       font-size: 13px;
     }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .toggle-btn {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .card-content.is-collapsed {
+      display: none;
+    }
+    .snapshot-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .snapshot-actions button {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
     .trend-up { color: var(--ok); }
     .trend-down { color: var(--warn); }
     @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
@@ -130,6 +156,55 @@
     </div>
 
     <div class="card">
+      <strong>Executive Summary</strong>
+      <p class="small">Sintesi automatica dei dati analytics nel contesto filtrato corrente.</p>
+      <div id="executive-summary" class="hint">Nessun riepilogo disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Priorità di Ottimizzazione</strong>
+      <p class="small">Top 3 azioni suggerite in base a drop-off, alert e conversione corrente.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Priorità</th>
+            <th>Ambito</th>
+            <th>Azione</th>
+            <th>Motivo</th>
+          </tr>
+        </thead>
+        <tbody id="priorities-body">
+          <tr><td colspan="4" class="small">Nessuna priorità disponibile.</td></tr>
+        </tbody>
+      </table>
+      <div id="priorities-summary" class="hint">Nessuna priorità disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>KPI Business</strong>
+      <p class="small">Indicatori reali sulle prenotazioni: richieste, conferme, cancellazioni e velocità operativa.</p>
+      <div class="metrics">
+        <div class="metric"><span class="small">Richieste totali</span><strong id="booking-total">0</strong></div>
+        <div class="metric"><span class="small">Confermati</span><strong id="booking-confirmed">0</strong></div>
+        <div class="metric"><span class="small">Tasso conferma</span><strong id="booking-confirm-rate">0%</strong></div>
+        <div class="metric"><span class="small">Tempo medio conferma</span><strong id="booking-confirm-time">0h</strong></div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Totale</th>
+            <th>Quota</th>
+          </tr>
+        </thead>
+        <tbody id="booking-kpi-body">
+          <tr><td colspan="3" class="small">Nessun dato booking</td></tr>
+        </tbody>
+      </table>
+      <div id="booking-kpi-summary" class="hint">Nessun KPI business disponibile.</div>
+    </div>
+
+    <div class="card">
       <table>
         <thead>
           <tr>
@@ -155,6 +230,7 @@
         <button id="analytics-export-json-btn" class="secondary" type="button" disabled>Export JSON</button>
         <button id="analytics-export-csv-btn" class="secondary" type="button" disabled>Export CSV</button>
         <button id="analytics-export-insights-btn" class="secondary" type="button" disabled>Export Insights</button>
+        <button id="analytics-save-snapshot-btn" class="secondary" type="button" disabled>Salva snapshot</button>
       </div>
       <div class="metrics">
         <div class="metric"><span class="small">Totale eventi</span><strong id="analytics-total">0</strong></div>
@@ -196,6 +272,40 @@
       </table>
       <div id="funnel-summary" class="hint">Nessun dato funnel disponibile.</div>
       <div id="funnel-trend" class="hint">Trend non disponibile.</div>
+    </div>
+
+    <div class="card">
+      <strong>Segmenti Lingua e Dispositivo</strong>
+      <p class="small">Confronto rapido tra conversioni per lingua e device type.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Lingua</th>
+            <th>CTA</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+            <th>Conv. finale</th>
+          </tr>
+        </thead>
+        <tbody id="language-segment-body">
+          <tr><td colspan="5" class="small">Nessun dato lingua</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Dispositivo</th>
+            <th>CTA</th>
+            <th>Submit</th>
+            <th>WhatsApp</th>
+            <th>Conv. finale</th>
+          </tr>
+        </thead>
+        <tbody id="device-segment-body">
+          <tr><td colspan="5" class="small">Nessun dato dispositivo</td></tr>
+        </tbody>
+      </table>
+      <div id="segment-summary" class="hint">Nessun report segmenti disponibile.</div>
     </div>
 
     <div class="card">
@@ -322,20 +432,53 @@
       </table>
       <div id="alerts-summary" class="hint">Nessun alert disponibile.</div>
     </div>
+
+    <div class="card">
+      <strong>Snapshot Storici</strong>
+      <p class="small">Salvataggio locale degli insights filtrati correnti per confronto rapido nel tempo.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Quando</th>
+            <th>Nome</th>
+            <th>Filtro</th>
+            <th>Eventi</th>
+            <th>Conv. finale</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="snapshot-body">
+          <tr><td colspan="6" class="small">Nessuno snapshot disponibile.</td></tr>
+        </tbody>
+      </table>
+      <div id="snapshot-summary" class="hint">Nessuno snapshot disponibile.</div>
+    </div>
   </div>
 
   <script>
     const state = {
       token: null,
       user: null,
+      bookings: [],
       analytics: [],
+      insightsReport: null,
       analyticsRange: '30d',
       analyticsPage: 'all',
+      snapshots: [],
     };
 
     const loginForm = document.getElementById('login-form');
     const feedback = document.getElementById('feedback');
     const userLabel = document.getElementById('user-label');
+    const executiveSummary = document.getElementById('executive-summary');
+    const prioritiesBody = document.getElementById('priorities-body');
+    const prioritiesSummary = document.getElementById('priorities-summary');
+    const bookingTotal = document.getElementById('booking-total');
+    const bookingConfirmed = document.getElementById('booking-confirmed');
+    const bookingConfirmRate = document.getElementById('booking-confirm-rate');
+    const bookingConfirmTime = document.getElementById('booking-confirm-time');
+    const bookingKpiBody = document.getElementById('booking-kpi-body');
+    const bookingKpiSummary = document.getElementById('booking-kpi-summary');
     const bookingsBody = document.getElementById('bookings-body');
     const refreshBtn = document.getElementById('refresh-btn');
     const logoutBtn = document.getElementById('logout-btn');
@@ -343,6 +486,7 @@
     const analyticsExportJsonBtn = document.getElementById('analytics-export-json-btn');
     const analyticsExportCsvBtn = document.getElementById('analytics-export-csv-btn');
     const analyticsExportInsightsBtn = document.getElementById('analytics-export-insights-btn');
+    const analyticsSaveSnapshotBtn = document.getElementById('analytics-save-snapshot-btn');
     const analyticsBody = document.getElementById('analytics-body');
     const analyticsTotal = document.getElementById('analytics-total');
     const analyticsCta = document.getElementById('analytics-cta');
@@ -351,6 +495,9 @@
     const funnelBody = document.getElementById('funnel-body');
     const funnelSummary = document.getElementById('funnel-summary');
     const funnelTrend = document.getElementById('funnel-trend');
+    const languageSegmentBody = document.getElementById('language-segment-body');
+    const deviceSegmentBody = document.getElementById('device-segment-body');
+    const segmentSummary = document.getElementById('segment-summary');
     const utmFunnelBody = document.getElementById('utm-funnel-body');
     const utmSummary = document.getElementById('utm-summary');
     const pageRankingBody = document.getElementById('page-ranking-body');
@@ -363,6 +510,8 @@
     const pageUtmSummary = document.getElementById('page-utm-summary');
     const alertsBody = document.getElementById('alerts-body');
     const alertsSummary = document.getElementById('alerts-summary');
+    const snapshotBody = document.getElementById('snapshot-body');
+    const snapshotSummary = document.getElementById('snapshot-summary');
 
     const funnelSteps = [
       { event: 'cta_click', label: 'CTA click' },
@@ -430,6 +579,43 @@
       }
     }
 
+    function enhanceCollapsibleSections() {
+      document.querySelectorAll('.card').forEach((card) => {
+        const title = card.querySelector(':scope > strong');
+        if (!title || card.dataset.collapseReady === 'true') {
+          return;
+        }
+        if (title.textContent.trim() === 'Utente corrente:') {
+          return;
+        }
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+        card.insertBefore(header, title);
+        header.appendChild(title);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'toggle-btn';
+        button.textContent = 'Comprimi';
+        header.appendChild(button);
+
+        const content = document.createElement('div');
+        content.className = 'card-content';
+        Array.from(card.children)
+          .filter((child) => child !== header)
+          .forEach((child) => content.appendChild(child));
+        card.appendChild(content);
+
+        button.addEventListener('click', () => {
+          const collapsed = content.classList.toggle('is-collapsed');
+          button.textContent = collapsed ? 'Espandi' : 'Comprimi';
+        });
+
+        card.dataset.collapseReady = 'true';
+      });
+    }
+
     function setFeedback(message, type = '') {
       feedback.textContent = message;
       feedback.className = '';
@@ -481,7 +667,71 @@
 
     async function loadBookings() {
       const data = await api('/api/bookings', { method: 'GET' });
-      renderBookings(data.items || []);
+      state.bookings = data.items || [];
+      renderBookings(state.bookings);
+      renderBookingKpis(state.bookings);
+    }
+
+    function formatDurationHours(hours) {
+      if (!Number.isFinite(hours) || hours <= 0) {
+        return '0h';
+      }
+      if (hours < 1) {
+        return `${Math.round(hours * 60)}m`;
+      }
+      return `${hours.toFixed(1)}h`;
+    }
+
+    function renderBookingKpis(items) {
+      if (!items.length) {
+        bookingTotal.textContent = '0';
+        bookingConfirmed.textContent = '0';
+        bookingConfirmRate.textContent = '0%';
+        bookingConfirmTime.textContent = '0h';
+        bookingKpiBody.innerHTML = '<tr><td colspan="3" class="small">Nessun dato booking</td></tr>';
+        bookingKpiSummary.textContent = 'Nessun KPI business disponibile.';
+        return;
+      }
+
+      const total = items.length;
+      const grouped = new Map();
+      const confirmedItems = items.filter((item) => String(item.status || '').toUpperCase() === 'CONFIRMED');
+      const confirmationTimes = confirmedItems.map((item) => {
+        const createdAt = Date.parse(item.createdAt || '');
+        const confirmEvent = Array.isArray(item.statusEvents)
+          ? item.statusEvents.find((entry) => String(entry.type || '').toUpperCase() === 'BOOKING_STATUS_CHANGED' && String(item.status || '').toUpperCase() === 'CONFIRMED')
+          : null;
+        const confirmedAt = confirmEvent ? Date.parse(confirmEvent.at || '') : NaN;
+        if (!Number.isFinite(createdAt) || !Number.isFinite(confirmedAt)) {
+          return null;
+        }
+        return (confirmedAt - createdAt) / (1000 * 60 * 60);
+      }).filter((value) => Number.isFinite(value) && value >= 0);
+
+      items.forEach((item) => {
+        const key = String(item.status || 'UNKNOWN').toUpperCase();
+        grouped.set(key, (grouped.get(key) || 0) + 1);
+      });
+
+      bookingTotal.textContent = String(total);
+      bookingConfirmed.textContent = String(confirmedItems.length);
+      bookingConfirmRate.textContent = formatPercent((confirmedItems.length / total) * 100);
+      bookingConfirmTime.textContent = formatDurationHours(
+        confirmationTimes.length
+          ? confirmationTimes.reduce((sum, value) => sum + value, 0) / confirmationTimes.length
+          : 0
+      );
+
+      bookingKpiBody.innerHTML = Array.from(grouped.entries()).sort((a, b) => b[1] - a[1]).map(([status, count]) => `
+        <tr>
+          <td><strong>${status}</strong></td>
+          <td>${count}</td>
+          <td>${formatPercent((count / total) * 100)}</td>
+        </tr>
+      `).join('');
+
+      const cancelled = grouped.get('CANCELLED') || 0;
+      bookingKpiSummary.textContent = `Richieste totali: ${total}. Confermate: ${confirmedItems.length} (${formatPercent((confirmedItems.length / total) * 100)}). Cancellate: ${cancelled}. Tempo medio conferma: ${bookingConfirmTime.textContent}.`;
     }
 
     function countEvents(items, eventName) {
@@ -1049,6 +1299,307 @@
       alertsSummary.textContent = `Criticità principali trovate: ${alerts.length}. Priorità massima su "${alerts[0].scope}" per "${alerts[0].issue}". Azione consigliata: ${alerts[0].suggestion}`;
     }
 
+    function buildSegmentRows(items, fieldName, fallbackLabel) {
+      const grouped = new Map();
+
+      items.forEach((item) => {
+        const key = String(item[fieldName] || '').trim() || fallbackLabel;
+        if (!grouped.has(key)) {
+          grouped.set(key, []);
+        }
+        grouped.get(key).push(item);
+      });
+
+      return Array.from(grouped.entries()).map(([key, groupItems]) => {
+        const stats = buildFunnelStats(groupItems);
+        return {
+          key,
+          cta: stats[0].total,
+          submit: stats[2].total,
+          whatsapp: stats[3].total,
+          finalConversion: stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion);
+    }
+
+    function renderSegmentReport(items) {
+      if (!items.length) {
+        languageSegmentBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato lingua</td></tr>';
+        deviceSegmentBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato dispositivo</td></tr>';
+        segmentSummary.textContent = 'Nessun report segmenti disponibile.';
+        return;
+      }
+
+      const languageRows = buildSegmentRows(items, 'lang', 'n/d');
+      const deviceRows = buildSegmentRows(items, 'deviceType', 'n/d');
+
+      languageSegmentBody.innerHTML = languageRows.map((row) => `
+        <tr>
+          <td><strong>${row.key}</strong></td>
+          <td>${row.cta}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+          <td>${formatPercent(row.finalConversion)}</td>
+        </tr>
+      `).join('');
+
+      deviceSegmentBody.innerHTML = deviceRows.map((row) => `
+        <tr>
+          <td><strong>${row.key}</strong></td>
+          <td>${row.cta}</td>
+          <td>${row.submit}</td>
+          <td>${row.whatsapp}</td>
+          <td>${formatPercent(row.finalConversion)}</td>
+        </tr>
+      `).join('');
+
+      const bestLang = languageRows[0];
+      const bestDevice = deviceRows[0];
+      segmentSummary.textContent = `Lingua migliore: ${bestLang ? `${bestLang.key} (${formatPercent(bestLang.finalConversion)})` : 'n/d'}. Dispositivo migliore: ${bestDevice ? `${bestDevice.key} (${formatPercent(bestDevice.finalConversion)})` : 'n/d'}.`;
+    }
+
+    function renderSnapshots() {
+      const snapshots = Array.isArray(state.snapshots) ? [...state.snapshots].sort((a, b) => new Date(b.exportedAt) - new Date(a.exportedAt)) : [];
+      if (!snapshots.length) {
+        snapshotBody.innerHTML = '<tr><td colspan="6" class="small">Nessuno snapshot disponibile.</td></tr>';
+        snapshotSummary.textContent = 'Nessuno snapshot disponibile.';
+        return;
+      }
+
+      snapshotBody.innerHTML = snapshots.slice(0, 12).map((snapshot) => `
+        <tr>
+          <td>${snapshot.exportedAt || '-'}</td>
+          <td>
+            <strong>${snapshot.pinned ? '[PIN] ' : ''}${snapshot.name || 'Snapshot senza nome'}</strong>
+            <div class="small">${snapshot.createdBy && snapshot.createdBy.name ? `da ${snapshot.createdBy.name}` : 'autore n/d'}</div>
+            ${snapshot.note ? `<div class="small">${snapshot.note}</div>` : ''}
+            ${Array.isArray(snapshot.tags) && snapshot.tags.length ? `<div class="small">tag: ${snapshot.tags.join(', ')}</div>` : ''}
+          </td>
+          <td>${snapshot.filters ? `${snapshot.filters.range || 'n/d'} / ${snapshot.filters.page || 'all'}` : '-'}</td>
+          <td>${snapshot.totals ? snapshot.totals.events : 0}</td>
+          <td>${snapshot.totals && snapshot.totals.cta > 0 ? formatPercent((snapshot.totals.whatsapp / snapshot.totals.cta) * 100) : '0%'}</td>
+          <td>
+            <div class="snapshot-actions">
+              <button type="button" class="secondary" data-snapshot-act="pin" data-snapshot-id="${snapshot.id}">${snapshot.pinned ? 'Unpin' : 'Pin'}</button>
+              <button type="button" class="secondary" data-snapshot-act="apply" data-snapshot-id="${snapshot.id}">Applica filtri</button>
+              <button type="button" class="secondary" data-snapshot-act="download" data-snapshot-id="${snapshot.id}">Scarica</button>
+              <button type="button" class="warn" data-snapshot-act="delete" data-snapshot-id="${snapshot.id}">Elimina</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      snapshotSummary.textContent = `Snapshot disponibili: ${snapshots.length}. Ultimo salvataggio: ${snapshots[0].exportedAt}. Snapshot pinnati: ${snapshots.filter((item) => item.pinned).length}.`;
+    }
+
+    async function saveCurrentSnapshot() {
+      const report = await loadInsightsReport().catch(() => state.insightsReport || buildInsightsReport(state.analytics));
+      const snapshotName = window.prompt('Nome snapshot:', `Snapshot ${new Date().toLocaleString('it-IT')}`) || '';
+      const snapshotNote = window.prompt('Nota snapshot (opzionale):', '') || '';
+      const snapshotTags = window.prompt('Tag snapshot separati da virgola (opzionale):', '') || '';
+      const snapshotPinned = window.confirm('Vuoi pinnare questo snapshot?');
+      report.name = snapshotName.trim();
+      report.note = snapshotNote.trim();
+      report.tags = snapshotTags.split(',').map((item) => item.trim()).filter(Boolean);
+      report.pinned = snapshotPinned;
+      report.createdBy = state.user
+        ? {
+          id: state.user.id,
+          name: state.user.name,
+          role: state.user.role
+        }
+        : {
+          id: '',
+          name: '',
+          role: ''
+        };
+      return api('/api/analytics-snapshots', {
+        method: 'POST',
+        body: JSON.stringify(report)
+      }).then((data) => {
+        state.snapshots = [data.item, ...state.snapshots.filter((item) => item.id !== data.item.id)]
+          .sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || new Date(b.exportedAt) - new Date(a.exportedAt))
+          .slice(0, 30);
+        renderSnapshots();
+        setFeedback('Snapshot insights salvato', 'ok');
+      });
+    }
+
+    function renderExecutiveSummary(items, previousItems) {
+      if (!items.length) {
+        executiveSummary.textContent = 'Nessun riepilogo disponibile.';
+        return;
+      }
+
+      const stats = buildFunnelStats(items);
+      const previousStats = buildFunnelStats(previousItems);
+      const scopeLabel = state.analyticsPage === 'all' ? 'tutte le landing' : state.analyticsPage;
+      const cta = stats[0].total;
+      const open = stats[1].total;
+      const submit = stats[2].total;
+      const whatsapp = stats[3].total;
+      const finalRate = cta > 0 ? Math.round((whatsapp / cta) * 100) : 0;
+      const previousFinalRate = previousStats[0].total > 0 ? Math.round((previousStats[3].total / previousStats[0].total) * 100) : 0;
+
+      let criticalIndex = 1;
+      for (let index = 2; index < stats.length; index += 1) {
+        if (stats[index].conversion < stats[criticalIndex].conversion) {
+          criticalIndex = index;
+        }
+      }
+      const criticalStep = stats[criticalIndex];
+      const previousStep = stats[criticalIndex - 1];
+
+      const pageGroups = new Map();
+      items.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        if (!pagePath) return;
+        if (!pageGroups.has(pagePath)) {
+          pageGroups.set(pagePath, []);
+        }
+        pageGroups.get(pagePath).push(item);
+      });
+
+      const bestPage = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
+        const pageStats = buildFunnelStats(pageItems);
+        return {
+          pagePath,
+          finalConversion: pageStats[0].total > 0 ? Math.round((pageStats[3].total / pageStats[0].total) * 100) : 0,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion)[0];
+
+      const utmGroups = new Map();
+      items.forEach((item) => {
+        const utmKey = getFullUtmKey(item);
+        if (!utmKey) return;
+        if (!utmGroups.has(utmKey)) {
+          utmGroups.set(utmKey, []);
+        }
+        utmGroups.get(utmKey).push(item);
+      });
+
+      const bestUtm = Array.from(utmGroups.entries()).map(([key, utmItems]) => {
+        const utmStats = buildFunnelStats(utmItems);
+        return {
+          key,
+          finalConversion: utmStats[0].total > 0 ? Math.round((utmStats[3].total / utmStats[0].total) * 100) : 0,
+        };
+      }).sort((a, b) => b.finalConversion - a.finalConversion)[0];
+
+      const trendText = state.analyticsRange === 'all'
+        ? 'Il confronto col periodo precedente non è disponibile sul range "Tutto".'
+        : `La conversione finale è ${finalRate >= previousFinalRate ? 'in miglioramento' : 'in calo'} rispetto al periodo precedente (${finalRate}% vs ${previousFinalRate}%).`;
+
+      const lines = [
+        `Nel filtro corrente (${state.analyticsRange}, ${scopeLabel}) il funnel conta ${cta} CTA, ${open} form open, ${submit} submit e ${whatsapp} click WhatsApp.`,
+        `La conversione finale è ${finalRate}% e il punto di perdita più critico è tra ${previousStep.label} e ${criticalStep.label}, con passaggio al ${formatPercent(criticalStep.conversion)}.`,
+        trendText,
+        state.bookings.length ? `Sul lato business risultano ${state.bookings.filter((item) => String(item.status || '').toUpperCase() === 'CONFIRMED').length} booking confermati su ${state.bookings.length} richieste.` : 'Non ci sono ancora dati booking sufficienti per KPI business.',
+        bestPage ? `La landing più forte è ${bestPage.pagePath} con conversione finale ${bestPage.finalConversion}%.` : 'Non ci sono ancora abbastanza dati per confrontare le landing.',
+        bestUtm ? `Il canale UTM migliore è ${bestUtm.key} con conversione finale ${bestUtm.finalConversion}%.` : 'Non ci sono ancora abbastanza dati UTM per confrontare i canali.',
+      ];
+
+      executiveSummary.innerHTML = lines.map((line) => `<div>${line}</div>`).join('');
+    }
+
+    function renderPriorities(items) {
+      if (!items.length) {
+        prioritiesBody.innerHTML = '<tr><td colspan="4" class="small">Nessuna priorità disponibile.</td></tr>';
+        prioritiesSummary.textContent = 'Nessuna priorità disponibile.';
+        return;
+      }
+
+      const priorities = [];
+      const stats = buildFunnelStats(items);
+      const cta = stats[0].total;
+      const open = stats[1].total;
+      const submit = stats[2].total;
+      const whatsapp = stats[3].total;
+      const openRate = cta > 0 ? (open / cta) * 100 : 0;
+      const submitRate = open > 0 ? (submit / open) * 100 : 0;
+      const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+      const scopeLabel = state.analyticsPage === 'all' ? 'landing principali' : state.analyticsPage;
+
+      if (cta >= 20 && openRate < 35) {
+        priorities.push({
+          rank: 1,
+          scope: scopeLabel,
+          action: 'Rafforzare passaggio CTA → form',
+          reason: `Solo il ${formatPercent(openRate)} passa da CTA a form open su ${cta} click.`,
+          score: 100 - openRate,
+        });
+      }
+
+      if (open >= 15 && submitRate < 35) {
+        priorities.push({
+          rank: 2,
+          scope: scopeLabel,
+          action: 'Ridurre attrito del form',
+          reason: `Il passaggio Form open → Form submit è ${formatPercent(submitRate)} con ${open} aperture.`,
+          score: 100 - submitRate,
+        });
+      }
+
+      if (cta >= 20 && finalRate < 15) {
+        priorities.push({
+          rank: 3,
+          scope: scopeLabel,
+          action: 'Aumentare fiducia e chiusura finale',
+          reason: `La conversione finale WhatsApp/CTA è ${formatPercent(finalRate)} su ${cta} CTA.`,
+          score: 100 - finalRate,
+        });
+      }
+
+      const pageGroups = new Map();
+      items.forEach((item) => {
+        const pagePath = String(item.pagePath || '').trim();
+        if (!pagePath) return;
+        if (!pageGroups.has(pagePath)) {
+          pageGroups.set(pagePath, []);
+        }
+        pageGroups.get(pagePath).push(item);
+      });
+
+      const weakestPage = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
+        const pageStats = buildFunnelStats(pageItems);
+        return {
+          pagePath,
+          finalRate: pageStats[0].total > 0 ? (pageStats[3].total / pageStats[0].total) * 100 : 0,
+          cta: pageStats[0].total,
+        };
+      }).filter((item) => item.cta >= 10).sort((a, b) => a.finalRate - b.finalRate)[0];
+
+      if (weakestPage) {
+        priorities.push({
+          rank: 4,
+          scope: weakestPage.pagePath,
+          action: 'Ottimizzare la landing più debole',
+          reason: `Questa pagina ha la conversione finale più bassa tra quelle con traffico utile: ${formatPercent(weakestPage.finalRate)}.`,
+          score: 100 - weakestPage.finalRate,
+        });
+      }
+
+      priorities.sort((a, b) => b.score - a.score);
+      const topPriorities = priorities.slice(0, 3);
+
+      if (!topPriorities.length) {
+        prioritiesBody.innerHTML = '<tr><td colspan="4" class="small">Nessuna priorità disponibile.</td></tr>';
+        prioritiesSummary.textContent = 'Nessuna priorità disponibile.';
+        return;
+      }
+
+      prioritiesBody.innerHTML = topPriorities.map((item, index) => `
+        <tr>
+          <td><strong>${index + 1}</strong></td>
+          <td>${item.scope}</td>
+          <td>${item.action}</td>
+          <td>${item.reason}</td>
+        </tr>
+      `).join('');
+
+      prioritiesSummary.textContent = `Priorità principale: ${topPriorities[0].action} su ${topPriorities[0].scope}.`;
+    }
+
     function buildInsightsReport(items) {
       const { filteredItems, previousItems } = getCurrentAnalyticsScope(items);
       const funnel = buildFunnelStats(filteredItems).map((step, index) => ({
@@ -1164,6 +1715,9 @@
         }
       });
 
+      const segmentsByLanguage = buildSegmentRows(filteredItems, 'lang', 'n/d');
+      const segmentsByDevice = buildSegmentRows(filteredItems, 'deviceType', 'n/d');
+
       return {
         exportedAt: new Date().toISOString(),
         filters: {
@@ -1183,8 +1737,26 @@
         healthScore,
         topUtm,
         topPageUtm,
+        segmentsByLanguage,
+        segmentsByDevice,
+        bookingKpis: {
+          total: state.bookings.length,
+          confirmed: state.bookings.filter((item) => String(item.status || '').toUpperCase() === 'CONFIRMED').length,
+          cancelled: state.bookings.filter((item) => String(item.status || '').toUpperCase() === 'CANCELLED').length,
+          pending: state.bookings.filter((item) => String(item.status || '').toUpperCase() === 'PENDING_CONFIRMATION').length,
+        },
         alerts: alerts.sort((a, b) => b.priority - a.priority).slice(0, 12),
       };
+    }
+
+    async function loadInsightsReport() {
+      const params = new URLSearchParams({
+        range: state.analyticsRange,
+        page: state.analyticsPage,
+      });
+      const data = await api(`/api/insights/report?${params.toString()}`, { method: 'GET' });
+      state.insightsReport = data.report || null;
+      return state.insightsReport;
     }
 
     function downloadJson(filename, payload) {
@@ -1214,6 +1786,9 @@
       renderUtmRanking(filteredItems);
       renderPageUtmRanking(filteredItems);
       renderAlerts(filteredItems);
+      renderExecutiveSummary(filteredItems, previousItems);
+      renderPriorities(filteredItems);
+      renderSegmentReport(filteredItems);
 
       if (!filteredItems.length) {
         analyticsBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato</td></tr>';
@@ -1243,6 +1818,12 @@
       const data = await api('/api/analytics-events', { method: 'GET' });
       state.analytics = data.items || [];
       renderAnalytics(state.analytics);
+    }
+
+    async function loadSnapshots() {
+      const data = await api('/api/analytics-snapshots', { method: 'GET' });
+      state.snapshots = data.items || [];
+      renderSnapshots();
     }
 
     function downloadWithAuth(path) {
@@ -1309,9 +1890,12 @@
         analyticsExportJsonBtn.disabled = false;
         analyticsExportCsvBtn.disabled = false;
         analyticsExportInsightsBtn.disabled = false;
+        analyticsSaveSnapshotBtn.disabled = false;
         setFeedback('Login effettuato', 'ok');
         await loadBookings();
         await loadAnalytics();
+        await loadInsightsReport();
+        await loadSnapshots();
       } catch (error) {
         setFeedback(error.message, 'err');
       }
@@ -1329,7 +1913,10 @@
     logoutBtn.addEventListener('click', () => {
       state.token = null;
       state.user = null;
+      state.bookings = [];
       state.analytics = [];
+      state.insightsReport = null;
+      state.snapshots = [];
       userLabel.textContent = 'non autenticato';
       refreshBtn.disabled = true;
       logoutBtn.disabled = true;
@@ -1337,15 +1924,25 @@
       analyticsExportJsonBtn.disabled = true;
       analyticsExportCsvBtn.disabled = true;
       analyticsExportInsightsBtn.disabled = true;
+      analyticsSaveSnapshotBtn.disabled = true;
       bookingsBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato</td></tr>';
       analyticsBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato</td></tr>';
       funnelBody.innerHTML = '<tr><td colspan="4" class="small">Nessun dato</td></tr>';
+      languageSegmentBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato lingua</td></tr>';
+      deviceSegmentBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato dispositivo</td></tr>';
       utmFunnelBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
       pageRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato pagine</td></tr>';
       healthScoreBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato score</td></tr>';
       utmRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
       pageUtmBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato combinato</td></tr>';
       alertsBody.innerHTML = '<tr><td colspan="5" class="small">Nessuna criticità rilevata.</td></tr>';
+      executiveSummary.textContent = 'Nessun riepilogo disponibile.';
+      prioritiesBody.innerHTML = '<tr><td colspan="4" class="small">Nessuna priorità disponibile.</td></tr>';
+      bookingTotal.textContent = '0';
+      bookingConfirmed.textContent = '0';
+      bookingConfirmRate.textContent = '0%';
+      bookingConfirmTime.textContent = '0h';
+      bookingKpiBody.innerHTML = '<tr><td colspan="3" class="small">Nessun dato booking</td></tr>';
       analyticsTotal.textContent = '0';
       analyticsCta.textContent = '0';
       analyticsSubmit.textContent = '0';
@@ -1353,18 +1950,23 @@
       funnelSummary.textContent = 'Nessun dato funnel disponibile.';
       funnelTrend.textContent = 'Trend non disponibile.';
       funnelTrend.className = 'hint';
+      segmentSummary.textContent = 'Nessun report segmenti disponibile.';
       utmSummary.textContent = 'Nessun confronto canali disponibile.';
       pageRankingSummary.textContent = 'Nessun ranking disponibile.';
       healthScoreSummary.textContent = 'Nessun Health Score disponibile.';
       utmRankingSummary.textContent = 'Nessun ranking UTM disponibile.';
       pageUtmSummary.textContent = 'Nessuna combinazione disponibile.';
       alertsSummary.textContent = 'Nessun alert disponibile.';
+      prioritiesSummary.textContent = 'Nessuna priorità disponibile.';
+      bookingKpiSummary.textContent = 'Nessun KPI business disponibile.';
+      renderSnapshots();
       setFeedback('Logout completato');
     });
 
     analyticsRefreshBtn.addEventListener('click', async () => {
       try {
         await loadAnalytics();
+        await loadInsightsReport();
         setFeedback('Analytics aggiornati', 'ok');
       } catch (error) {
         setFeedback(error.message, 'err');
@@ -1380,10 +1982,80 @@
     });
 
     analyticsExportInsightsBtn.addEventListener('click', () => {
-      downloadJson('analytics-insights.json', buildInsightsReport(state.analytics));
+      loadInsightsReport()
+        .catch(() => state.insightsReport || buildInsightsReport(state.analytics))
+        .then((report) => {
+          downloadJson('analytics-insights.json', report);
+        });
+    });
+
+    analyticsSaveSnapshotBtn.addEventListener('click', async () => {
+      try {
+        await saveCurrentSnapshot();
+      } catch (error) {
+        setFeedback(error.message, 'err');
+      }
     });
 
     ensureAnalyticsFilters();
+    enhanceCollapsibleSections();
+    renderSnapshots();
+
+    snapshotBody.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) return;
+      const action = target.getAttribute('data-snapshot-act');
+      const snapshotId = target.getAttribute('data-snapshot-id');
+      if (!action || !snapshotId) return;
+
+      const snapshot = state.snapshots.find((item) => item.id === snapshotId);
+      if (!snapshot) return;
+
+      if (action === 'download') {
+        downloadJson(`analytics-insights-${snapshotId}.json`, snapshot);
+        return;
+      }
+
+      if (action === 'pin') {
+        const updatedSnapshot = {
+          ...snapshot,
+          pinned: !snapshot.pinned,
+        };
+        api('/api/analytics-snapshots', {
+          method: 'POST',
+          body: JSON.stringify(updatedSnapshot)
+        }).then((data) => {
+          state.snapshots = [data.item, ...state.snapshots.filter((item) => item.id !== snapshotId)]
+            .sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || new Date(b.exportedAt) - new Date(a.exportedAt))
+            .slice(0, 30);
+          renderSnapshots();
+          setFeedback(updatedSnapshot.pinned ? 'Snapshot pinnato' : 'Snapshot unpinnato', 'ok');
+        }).catch((error) => setFeedback(error.message, 'err'));
+        return;
+      }
+
+      if (action === 'delete') {
+        api(`/api/analytics-snapshots/${snapshotId}`, {
+          method: 'DELETE'
+        }).then(() => {
+          state.snapshots = state.snapshots.filter((item) => item.id !== snapshotId);
+          renderSnapshots();
+          setFeedback('Snapshot eliminato', 'ok');
+        }).catch((error) => setFeedback(error.message, 'err'));
+        return;
+      }
+
+      if (action === 'apply') {
+        state.analyticsRange = snapshot.filters && snapshot.filters.range ? snapshot.filters.range : '30d';
+        state.analyticsPage = snapshot.filters && snapshot.filters.page ? snapshot.filters.page : 'all';
+        const rangeSelect = document.getElementById('analytics-range');
+        const pageSelect = document.getElementById('analytics-page');
+        if (rangeSelect) rangeSelect.value = state.analyticsRange;
+        renderAnalytics(state.analytics);
+        if (pageSelect) pageSelect.value = state.analyticsPage;
+        setFeedback('Filtri snapshot applicati', 'ok');
+      }
+    });
 
     bookingsBody.addEventListener('click', async (event) => {
       const target = event.target;

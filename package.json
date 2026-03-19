@@ -8,6 +8,8 @@
     "watch": "tailwindcss build styles/tailwind.css -o styles/generated.css --watch",
     "start": "node server.js",
     "test": "node tools/smoke-test.js",
+    "test:pages": "node tools/browserless-smoke.js",
+    "test:playwright": "node tools/playwright-smoke.js",
     "lint": "eslint . --ext .js",
     "lint:js": "eslint . --ext .js"
   },
@@ -16,7 +18,8 @@
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "live-server": "^1.2.1"
+    "live-server": "^1.2.1",
+    "playwright": "^1.58.2"
   },
   "author": "I.T.S. Ischia Transfer Service S.r.l.",
   "license": "MIT"
