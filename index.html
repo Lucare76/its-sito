@@ -147,10 +147,10 @@
                     <a class="nav-link" href="#servizi">Servizi</a>
                     <a class="nav-link" href="#flotta">Flotta</a>
                     <a class="nav-link" href="#vantaggi">Vantaggi</a>
-                    <a class="nav-link" href="#contatti">Contatti</a>
+                    <a class="nav-link" href="#footer">Contatti</a>
                     <a class="nav-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="nav-link" href="en/index.html">EN</a>
-                    <a class="btn-primary" href="#contatti">Richiedi transfer</a>
+                    <a class="btn-primary" href="contatti.html">Richiedi transfer</a>
                 </div>
             </div>
 
@@ -159,10 +159,10 @@
                     <a class="mobile-link" href="#servizi">Servizi</a>
                     <a class="mobile-link" href="#flotta">Flotta</a>
                     <a class="mobile-link" href="#vantaggi">Vantaggi</a>
-                    <a class="mobile-link" href="#contatti">Contatti</a>
+                    <a class="mobile-link" href="#footer">Contatti</a>
                     <a class="mobile-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="mobile-link" href="en/index.html">English version</a>
-                    <a class="btn-primary mt-2 justify-center" href="#contatti">Richiedi Transfer</a>
+                    <a class="btn-primary mt-2 justify-center" href="contatti.html">Richiedi Transfer</a>
                 </div>
             </div>
         </nav>
@@ -444,28 +444,6 @@
             </div>
         </section>
 
-        <section id="contatti" class="section-shell pb-24">
-            <div class="mx-auto grid max-w-7xl gap-8 px-6 lg:px-8">
-                <form id="contact-form" class="contact-card">
-                    <div class="grid gap-5 sm:grid-cols-2">
-                        <label class="form-field"><span>Nome</span><input type="text" name="name" placeholder="Nome e cognome" required></label>
-                        <label class="form-field"><span>Email</span><input type="email" name="email" placeholder="nome@email.com" required></label>
-                    </div>
-                    <div class="grid gap-5 sm:grid-cols-2">
-                        <label class="form-field"><span>Tratta</span><input type="text" name="route" placeholder="Aeroporto, stazione, porto, hotel..." required></label>
-                        <label class="form-field"><span>Data</span><input type="date" name="date" required></label>
-                    </div>
-                    <label class="form-field"><span>Dettagli</span><textarea name="details" rows="5" placeholder="Descrivi la tua richiesta di transfer"></textarea></label>
-                    <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <p class="text-sm leading-7 text-gray-200">La richiesta arriva direttamente al nostro team operativo.</p>
-                        <button type="submit" class="btn-primary justify-center border-0">Richiedi disponibilita</button>
-                    </div>
-                    <p id="contact-feedback" class="mt-4 text-sm text-blue-100" aria-live="polite"></p>
-                </form>
-            </div>
-        </section>
-
         <section class="section-shell pt-0">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="cta-banner">
@@ -474,7 +452,7 @@
                     <p>Scrivici su WhatsApp per una risposta veloce, oppure inviaci i dettagli dal modulo contatti per ricevere una conferma più completa.</p>
                     <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
                         <a href="https://wa.me/393334372831" target="_blank" rel="noreferrer" class="btn-primary cta-primary justify-center">Parla con noi su WhatsApp</a>
-                        <a href="#contatti" class="btn-secondary justify-center">Vai al modulo completo</a>
+                        <a href="contatti.html" class="btn-secondary justify-center">Vai al modulo completo</a>
                     </div>
                 </div>
             </div>
@@ -533,7 +511,7 @@
         </section>
     </main>
 
-    <footer class="site-footer">
+    <footer id="footer" class="site-footer">
         <div class="mx-auto grid max-w-7xl gap-8 px-6 py-12 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
             <div>
                 <p class="footer-brand">I.T.S. Ischia Transfer Service</p>
