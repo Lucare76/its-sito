@@ -2,7 +2,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const dns = require('dns');
 const nodemailer = require('nodemailer');
+
+// Prefer IPv4 for all DNS lookups (fixes SMTP on IPv6-only or dual-stack hosts)
+dns.setDefaultResultOrder('ipv4first');
 
 function loadEnvFile() {
   const envPath = path.join(__dirname, '.env');
@@ -105,7 +109,6 @@ function getMailTransporter() {
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_SECURE,
-      family: 4,
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
