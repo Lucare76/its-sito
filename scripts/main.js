@@ -431,9 +431,28 @@ document.addEventListener('DOMContentLoaded', () => {
             throw new Error(messages.bookingUnavailable);
         }
 
-        const data = await response.json();
+        const contentType = String(response.headers.get('content-type') || '').toLowerCase();
+        const rawResponse = await response.text();
+        let data = null;
+
+        if (rawResponse && contentType.includes('application/json')) {
+            try {
+                data = JSON.parse(rawResponse);
+            } catch (error) {
+                throw new Error(messages.bookingSaveError);
+            }
+        }
+
+        if (!contentType.includes('application/json')) {
+            throw new Error(messages.bookingUnavailable);
+        }
+
         if (!response.ok) {
-            throw new Error(data.error || messages.bookingSaveError);
+            throw new Error((data && data.error) || messages.bookingSaveError);
+        }
+
+        if (!data || !data.booking) {
+            throw new Error(messages.bookingSaveError);
         }
 
         return data.booking;
