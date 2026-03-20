@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 function loadEnvFile() {
   const envPath = path.join(__dirname, '.env');
@@ -63,6 +64,13 @@ const BOOTSTRAP_ADMIN_EMAIL = String(process.env.BOOTSTRAP_ADMIN_EMAIL || '').tr
 const BOOTSTRAP_ADMIN_PASSWORD = String(process.env.BOOTSTRAP_ADMIN_PASSWORD || '');
 const BOOTSTRAP_AGENCY_EMAIL = String(process.env.BOOTSTRAP_AGENCY_EMAIL || '').trim();
 const BOOTSTRAP_AGENCY_PASSWORD = String(process.env.BOOTSTRAP_AGENCY_PASSWORD || '');
+const SMTP_HOST = String(process.env.SMTP_HOST || '').trim();
+const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
+const SMTP_SECURE = String(process.env.SMTP_SECURE || '').trim().toLowerCase() === 'true';
+const SMTP_USER = String(process.env.SMTP_USER || '').trim();
+const SMTP_PASS = String(process.env.SMTP_PASS || '');
+const BOOKING_NOTIFICATION_TO = String(process.env.BOOKING_NOTIFICATION_TO || '').trim();
+const BOOKING_NOTIFICATION_FROM = String(process.env.BOOKING_NOTIFICATION_FROM || SMTP_USER || '').trim();
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -81,6 +89,28 @@ const MIME_TYPES = {
 
 function log(message) {
   console.log(`[${new Date().toISOString()}] ${message}`);
+}
+
+let mailTransporter = null;
+
+function getMailTransporter() {
+  if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS || !BOOKING_NOTIFICATION_TO || !BOOKING_NOTIFICATION_FROM) {
+    return null;
+  }
+
+  if (!mailTransporter) {
+    mailTransporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS
+      }
+    });
+  }
+
+  return mailTransporter;
 }
 
 function nowIso() {
@@ -317,6 +347,70 @@ function normalizeDb(db) {
     analyticsEvents: Array.isArray(db.analyticsEvents) ? db.analyticsEvents : [],
     analyticsSnapshots: Array.isArray(db.analyticsSnapshots) ? db.analyticsSnapshots : []
   };
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+async function sendBookingNotificationEmail(booking) {
+  const transporter = getMailTransporter();
+  if (!transporter) {
+    return { sent: false, skipped: true, reason: 'smtp_not_configured' };
+  }
+
+  const details = booking.details ? escapeHtml(booking.details) : 'Nessun dettaglio aggiuntivo';
+  const time = booking.time ? escapeHtml(booking.time) : 'Non indicato';
+  const phone = booking.phone ? escapeHtml(booking.phone) : 'Non indicato';
+  const agencyId = booking.agencyId ? escapeHtml(booking.agencyId) : 'Nessuna agenzia';
+
+  const subject = `[ITS Test] Nuova richiesta ${booking.reference}`;
+  const text = [
+    'Nuova richiesta dal sito ITS',
+    `Reference: ${booking.reference}`,
+    `Nome: ${booking.name}`,
+    `Email: ${booking.email}`,
+    `Telefono: ${phone}`,
+    `Servizio: ${booking.service}`,
+    `Tratta: ${booking.route}`,
+    `Data: ${booking.date}`,
+    `Orario: ${time}`,
+    `Source: ${booking.source}`,
+    `Agency ID: ${agencyId}`,
+    `Dettagli: ${booking.details || 'Nessun dettaglio aggiuntivo'}`,
+    `Creato il: ${booking.createdAt}`
+  ].join('\n');
+  const html = `
+    <h2>Nuova richiesta dal sito ITS</h2>
+    <p><strong>Reference:</strong> ${escapeHtml(booking.reference)}</p>
+    <p><strong>Nome:</strong> ${escapeHtml(booking.name)}</p>
+    <p><strong>Email:</strong> ${escapeHtml(booking.email)}</p>
+    <p><strong>Telefono:</strong> ${phone}</p>
+    <p><strong>Servizio:</strong> ${escapeHtml(booking.service)}</p>
+    <p><strong>Tratta:</strong> ${escapeHtml(booking.route)}</p>
+    <p><strong>Data:</strong> ${escapeHtml(booking.date)}</p>
+    <p><strong>Orario:</strong> ${time}</p>
+    <p><strong>Source:</strong> ${escapeHtml(booking.source)}</p>
+    <p><strong>Agency ID:</strong> ${agencyId}</p>
+    <p><strong>Creato il:</strong> ${escapeHtml(booking.createdAt)}</p>
+    <p><strong>Dettagli:</strong><br>${details.replace(/\n/g, '<br>')}</p>
+  `;
+
+  await transporter.sendMail({
+    from: BOOKING_NOTIFICATION_FROM,
+    to: BOOKING_NOTIFICATION_TO,
+    replyTo: booking.email,
+    subject,
+    text,
+    html
+  });
+
+  return { sent: true, skipped: false };
 }
 
 function sanitizeAnalyticsSnapshot(body) {
@@ -937,10 +1031,24 @@ function handleApi(req, res, pathname) {
         db.bookings.push(booking);
         writeDb(db);
 
-        return sendJson(res, 201, {
-          message: 'Prenotazione registrata',
-          booking
-        });
+        return sendBookingNotificationEmail(booking)
+          .then((emailResult) => sendJson(res, 201, {
+            message: 'Prenotazione registrata',
+            booking,
+            notificationEmail: emailResult
+          }))
+          .catch((error) => {
+            log(`Invio email booking fallito per ${booking.reference}: ${error.message}`);
+            return sendJson(res, 201, {
+              message: 'Prenotazione registrata',
+              booking,
+              notificationEmail: {
+                sent: false,
+                skipped: false,
+                reason: 'send_failed'
+              }
+            });
+          });
       })
       .catch((error) => sendJson(res, 400, { error: error.message }));
   }

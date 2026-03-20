@@ -14,6 +14,7 @@
     "lint:js": "eslint . --ext .js"
   },
   "dependencies": {
+    "nodemailer": "^8.0.3",
     "tailwindcss": "^2.2.19"
   },
   "devDependencies": {

@@ -1,3 +1,4 @@
 npm.env
+.env
 data/db.json
 node_modules
