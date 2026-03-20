@@ -103,6 +103,9 @@ function getMailTransporter() {
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_SECURE,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
       auth: {
         user: SMTP_USER,
         pass: SMTP_PASS
@@ -1031,24 +1034,25 @@ function handleApi(req, res, pathname) {
         db.bookings.push(booking);
         writeDb(db);
 
-        return sendBookingNotificationEmail(booking)
-          .then((emailResult) => sendJson(res, 201, {
-            message: 'Prenotazione registrata',
-            booking,
-            notificationEmail: emailResult
-          }))
+        sendBookingNotificationEmail(booking)
+          .then((emailResult) => {
+            if (emailResult && emailResult.sent) {
+              log(`Email booking inviata per ${booking.reference} a ${BOOKING_NOTIFICATION_TO}`);
+            } else if (emailResult && emailResult.skipped) {
+              log(`Email booking saltata per ${booking.reference}: ${emailResult.reason}`);
+            }
+          })
           .catch((error) => {
             log(`Invio email booking fallito per ${booking.reference}: ${error.message}`);
-            return sendJson(res, 201, {
-              message: 'Prenotazione registrata',
-              booking,
-              notificationEmail: {
-                sent: false,
-                skipped: false,
-                reason: 'send_failed'
-              }
-            });
           });
+
+        return sendJson(res, 201, {
+          message: 'Prenotazione registrata',
+          booking,
+          notificationEmail: {
+            queued: true
+          }
+        });
       })
       .catch((error) => sendJson(res, 400, { error: error.message }));
   }
