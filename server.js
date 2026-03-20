@@ -84,7 +84,9 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon',
   '.ttf': 'font/ttf',
   '.woff': 'font/woff',
-  '.woff2': 'font/woff2'
+  '.woff2': 'font/woff2',
+  '.avif': 'image/avif',
+  '.webp': 'image/webp'
 };
 
 function log(message) {
@@ -121,6 +123,7 @@ function nowIso() {
 }
 
 const rateLimitStore = new Map();
+const tokenBlacklist = new Set();
 
 function getClientIp(req) {
   const xff = req.headers['x-forwarded-for'];
@@ -170,6 +173,14 @@ function hashPassword(password) {
   return crypto.scryptSync(password, AUTH_SALT, 64).toString('hex');
 }
 
+function generateSalt() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+function hashPasswordWithSalt(password, salt) {
+  return crypto.scryptSync(password, salt, 64).toString('hex');
+}
+
 function signToken(payload) {
   const header = { alg: 'HS256', typ: 'JWT' };
   const headerPart = base64UrlEncode(JSON.stringify(header));
@@ -186,6 +197,10 @@ function signToken(payload) {
 
 function verifyToken(token) {
   if (!token) {
+    return null;
+  }
+
+  if (tokenBlacklist.has(token)) {
     return null;
   }
 
@@ -236,13 +251,15 @@ function buildBootstrapUsers() {
       return;
     }
 
+    const salt = generateSalt();
     users.push({
       id: config.id,
       name: config.name,
       email: config.email,
       role: config.role,
       agencyId: config.agencyId || null,
-      passwordHash: hashPassword(config.password)
+      salt,
+      passwordHash: hashPasswordWithSalt(config.password, salt)
     });
   }
 
@@ -372,7 +389,7 @@ async function sendBookingNotificationEmail(booking) {
   const phone = booking.phone ? escapeHtml(booking.phone) : 'Non indicato';
   const agencyId = booking.agencyId ? escapeHtml(booking.agencyId) : 'Nessuna agenzia';
 
-  const subject = `[ITS Test] Nuova richiesta ${booking.reference}`;
+  const subject = `[ITS] Nuova richiesta ${booking.reference}`;
   const text = [
     'Nuova richiesta dal sito ITS',
     `Reference: ${booking.reference}`,
@@ -479,18 +496,21 @@ function sortSnapshots(items) {
   });
 }
 
-function sendJson(res, statusCode, payload) {
+function sendJson(res, statusCode, payload, extraHeaders) {
   const body = JSON.stringify(payload);
   res.writeHead(statusCode, {
+    ...getSecurityHeaders(),
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
-    'Cache-Control': 'no-store'
+    'Cache-Control': 'no-store',
+    ...extraHeaders
   });
   res.end(body);
 }
 
 function sendText(res, statusCode, body) {
   res.writeHead(statusCode, {
+    ...getSecurityHeaders(),
     'Content-Type': 'text/plain; charset=utf-8',
     'Content-Length': Buffer.byteLength(body)
   });
@@ -499,12 +519,27 @@ function sendText(res, statusCode, body) {
 
 function sendCsv(res, filename, body) {
   res.writeHead(200, {
+    ...getSecurityHeaders(),
     'Content-Type': 'text/csv; charset=utf-8',
     'Content-Disposition': `attachment; filename="${filename}"`,
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store'
   });
   res.end(body);
+}
+
+function getSecurityHeaders() {
+  const headers = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+  };
+  if (process.env.NODE_ENV === 'production') {
+    headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';
+  }
+  return headers;
 }
 
 function extractAuthUser(req) {
@@ -916,19 +951,38 @@ function handleApi(req, res, pathname) {
   if (pathname === '/api/auth/login' && req.method === 'POST') {
     const limit = checkRateLimit(req, 'login', LOGIN_RATE_LIMIT_MAX, LOGIN_RATE_LIMIT_WINDOW_MS);
     if (!limit.allowed) {
+      const retryAfterSec = Math.ceil(Math.max(limit.resetAt - Date.now(), 0) / 1000);
       return sendJson(res, 429, {
         error: 'Troppi tentativi login, riprova più tardi',
         retryAfterMs: Math.max(limit.resetAt - Date.now(), 0)
-      });
+      }, { 'Retry-After': String(retryAfterSec) });
     }
 
     return parseRequestBody(req)
       .then((body) => {
         const email = String(body.email || '').trim().toLowerCase();
         const password = String(body.password || '');
+        const ip = getClientIp(req);
         const db = readDb();
         const user = db.users.find((item) => item.email.toLowerCase() === email);
-        if (!user || user.passwordHash !== hashPassword(password)) {
+
+        // Always compute a hash to prevent timing-based user enumeration.
+        const candidateSalt = user ? (user.salt || AUTH_SALT) : AUTH_SALT;
+        const candidateHash = hashPasswordWithSalt(password, candidateSalt);
+        const storedHash = user ? user.passwordHash : hashPasswordWithSalt('', candidateSalt);
+
+        let passwordMatch = false;
+        try {
+          passwordMatch = crypto.timingSafeEqual(
+            Buffer.from(candidateHash, 'hex'),
+            Buffer.from(storedHash, 'hex')
+          );
+        } catch (_) {
+          passwordMatch = false;
+        }
+
+        if (!user || !passwordMatch) {
+          log(`LOGIN_FAIL ip=${ip} email=${email}`);
           return sendJson(res, 401, { error: 'Credenziali non valide' });
         }
 
@@ -940,6 +994,7 @@ function handleApi(req, res, pathname) {
           exp
         });
 
+        log(`LOGIN_SUCCESS ip=${ip} userId=${user.id} email=${email}`);
         return sendJson(res, 200, {
           token,
           user: sanitizeUser(user),
@@ -955,6 +1010,49 @@ function handleApi(req, res, pathname) {
       return sendJson(res, 401, { error: 'Non autorizzato' });
     }
     return sendJson(res, 200, { user });
+  }
+
+  if (pathname === '/api/auth/logout' && req.method === 'POST') {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (token) {
+      tokenBlacklist.add(token);
+    }
+    return sendJson(res, 200, { message: 'Logout effettuato' });
+  }
+
+  if (pathname === '/api/test-email' && req.method === 'POST') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+
+    const transporter = getMailTransporter();
+    if (!transporter) {
+      return sendJson(res, 503, {
+        ok: false,
+        error: 'SMTP non configurato',
+        config: {
+          host: SMTP_HOST || '(vuoto)',
+          port: SMTP_PORT,
+          secure: SMTP_SECURE,
+          user: SMTP_USER || '(vuoto)',
+          passSet: Boolean(SMTP_PASS),
+          notificationTo: BOOKING_NOTIFICATION_TO || '(vuoto)',
+          notificationFrom: BOOKING_NOTIFICATION_FROM || '(vuoto)'
+        }
+      });
+    }
+
+    return transporter.verify()
+      .then(() => transporter.sendMail({
+        from: BOOKING_NOTIFICATION_FROM,
+        to: BOOKING_NOTIFICATION_TO,
+        subject: '[ITS] Test connessione email',
+        text: `Test email inviata il ${nowIso()} da ${user.email} (${user.role})`
+      }))
+      .then((info) => sendJson(res, 200, { ok: true, messageId: info.messageId }))
+      .catch((err) => sendJson(res, 500, { ok: false, error: err.message, code: err.code || null }));
   }
 
   if (pathname === '/api/bookings' && req.method === 'GET') {
@@ -976,10 +1074,11 @@ function handleApi(req, res, pathname) {
   if (pathname === '/api/bookings' && req.method === 'POST') {
     const limit = checkRateLimit(req, 'booking', BOOKING_RATE_LIMIT_MAX, BOOKING_RATE_LIMIT_WINDOW_MS);
     if (!limit.allowed) {
+      const retryAfterSec = Math.ceil(Math.max(limit.resetAt - Date.now(), 0) / 1000);
       return sendJson(res, 429, {
         error: 'Troppe richieste di prenotazione, riprova più tardi',
         retryAfterMs: Math.max(limit.resetAt - Date.now(), 0)
-      });
+      }, { 'Retry-After': String(retryAfterSec) });
     }
 
     return parseRequestBody(req)
@@ -1060,10 +1159,11 @@ function handleApi(req, res, pathname) {
   if (pathname === '/api/analytics-events' && req.method === 'POST') {
     const limit = checkRateLimit(req, 'analytics', ANALYTICS_RATE_LIMIT_MAX, ANALYTICS_RATE_LIMIT_WINDOW_MS);
     if (!limit.allowed) {
+      const retryAfterSec = Math.ceil(Math.max(limit.resetAt - Date.now(), 0) / 1000);
       return sendJson(res, 429, {
         error: 'Troppi eventi analytics, riprova più tardi',
         retryAfterMs: Math.max(limit.resetAt - Date.now(), 0)
-      });
+      }, { 'Retry-After': String(retryAfterSec) });
     }
 
     return parseRequestBody(req)
@@ -1292,7 +1392,7 @@ function serveStatic(req, res, pathname) {
 
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-  const headers = { 'Content-Type': contentType };
+  const headers = { ...getSecurityHeaders(), 'Content-Type': contentType };
 
   // Avoid stale homepage/content after deploys.
   if (ext === '.html') {
