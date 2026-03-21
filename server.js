@@ -112,6 +112,8 @@ function getMailTransporter() {
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
+      family: 4,
+      tls: { rejectUnauthorized: false },
       auth: {
         user: SMTP_USER,
         pass: SMTP_PASS
