@@ -394,6 +394,10 @@ async function sendBookingNotificationEmail(booking) {
   const time = booking.time ? escapeHtml(booking.time) : 'Non indicato';
   const phone = booking.phone ? escapeHtml(booking.phone) : 'Non indicato';
   const agencyId = booking.agencyId ? escapeHtml(booking.agencyId) : 'Nessuna agenzia';
+  const peopleMatch = String(booking.details || '').match(/(?:Passeggeri|Passengers):\s*([^|]+)/i);
+  const notesMatch = String(booking.details || '').match(/(?:Note|Notes):\s*([^|]+)/i);
+  const people = peopleMatch ? escapeHtml(peopleMatch[1].trim()) : 'Non indicato';
+  const notes = notesMatch ? escapeHtml(notesMatch[1].trim()) : details;
 
   const subject = `[ITS] Nuova richiesta ${booking.reference}`;
   const text = [
@@ -412,19 +416,79 @@ async function sendBookingNotificationEmail(booking) {
     `Creato il: ${booking.createdAt}`
   ].join('\n');
   const html = `
-    <h2>Nuova richiesta dal sito ITS</h2>
-    <p><strong>Reference:</strong> ${escapeHtml(booking.reference)}</p>
-    <p><strong>Nome:</strong> ${escapeHtml(booking.name)}</p>
-    <p><strong>Email:</strong> ${escapeHtml(booking.email)}</p>
-    <p><strong>Telefono:</strong> ${phone}</p>
-    <p><strong>Servizio:</strong> ${escapeHtml(booking.service)}</p>
-    <p><strong>Tratta:</strong> ${escapeHtml(booking.route)}</p>
-    <p><strong>Data:</strong> ${escapeHtml(booking.date)}</p>
-    <p><strong>Orario:</strong> ${time}</p>
-    <p><strong>Source:</strong> ${escapeHtml(booking.source)}</p>
-    <p><strong>Agency ID:</strong> ${agencyId}</p>
-    <p><strong>Creato il:</strong> ${escapeHtml(booking.createdAt)}</p>
-    <p><strong>Dettagli:</strong><br>${details.replace(/\n/g, '<br>')}</p>
+    <!DOCTYPE html>
+    <html lang="it">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Nuova Richiesta ITS</title>
+    </head>
+    <body style="margin:0;padding:20px;background-color:#f8f9fa;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#333;">
+      <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.1);border:1px solid #e0e0e0;">
+        <div style="background-color:#00204a;padding:40px 20px;text-align:center;">
+          <h1 style="color:#ffffff;margin:0;font-size:24px;letter-spacing:1px;text-transform:uppercase;">ISCHIA TRANSFER SERVICE</h1>
+          <div style="color:#007bff;font-size:14px;margin-top:5px;font-weight:bold;">DAL 2006 IL TUO TRANSFER DI FIDUCIA</div>
+        </div>
+        <div style="padding:40px;">
+          <div style="display:inline-block;background-color:#e7f1ff;color:#007bff;padding:6px 15px;border-radius:50px;font-size:13px;font-weight:bold;margin-bottom:25px;">NUOVA RICHIESTA DAL SITO</div>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Reference ID</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">#${escapeHtml(booking.reference)}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Nome Cliente</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.name)}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Email</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.email)}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Telefono</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${phone}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Servizio</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.service)}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Tratta</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#007bff;font-weight:700;">${escapeHtml(booking.route)}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Data e Orario</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.date)} alle ${time}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Passeggeri</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${people} persone</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Source</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.source)}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Agency ID</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${agencyId}</td>
+            </tr>
+            <tr>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Creato il</td>
+              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.createdAt)}</td>
+            </tr>
+          </table>
+          <div style="margin-top:30px;padding:20px;background-color:#f8f9fa;border-radius:8px;border-left:5px solid #007bff;">
+            <div style="font-size:13px;color:#6c757d;text-transform:uppercase;margin-bottom:10px;font-weight:bold;">Note aggiuntive:</div>
+            <div style="color:#444;line-height:1.6;">${notes.replace(/\n/g, '<br>')}</div>
+          </div>
+        </div>
+        <div style="background-color:#00204a;color:#ffffff;text-align:center;padding:20px;font-size:12px;">
+          &copy; 2026 I.T.S. Ischia Transfer Service<br>
+          <a href="https://www.ischiatransferservice.it/" style="color:#007bff;text-decoration:none;">Visita il sito web</a>
+        </div>
+      </div>
+    </body>
+    </html>
   `;
 
   await transporter.sendMail({

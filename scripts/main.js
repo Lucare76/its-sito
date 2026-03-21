@@ -425,15 +425,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const postBookingEmailJs = async (payload) => {
         const reference = generateReference();
         const details = payload.details || 'Nessun dettaglio';
-        const parts = details.split('|');
-        const people = parts[0] ? parts[0].replace(/Passeggeri:|Passengers:/i, '').trim() : 'n/a';
-        const notes = parts[1] ? parts[1].replace(/Note:|Notes:/i, '').trim() : '';
+        const phoneFromDetails = (details.match(/(?:Telefono|Phone):\s*([^|]+)/i) || [])[1]?.trim() || '';
+        const people = (details.match(/(?:Passeggeri|Passengers):\s*([^|]+)/i) || [])[1]?.trim() || 'n/a';
+        const notes = (details.match(/(?:Note|Notes):\s*([^|]+)/i) || [])[1]?.trim() || '';
 
         await emailjs.send('service_436gahf', 'template_wmuj1zo', {
             reference,
             name: payload.name,
             email: payload.email,
-            phone: payload.phone || 'Non indicato',
+            phone: payload.phone || phoneFromDetails || 'Non indicato',
             service: payload.service,
             route: payload.route,
             date: payload.date,

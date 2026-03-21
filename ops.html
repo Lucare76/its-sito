@@ -65,10 +65,23 @@
     .s-pending { background: #fff3cd; color: #7a5b00; }
     .s-confirmed { background: #d1fae5; color: #065f46; }
     .s-cancelled { background: #fee2e2; color: #991b1b; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 820px; }
     th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 10px 8px; vertical-align: top; }
     th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
     .small { font-size: 12px; color: var(--muted); }
+    .booking-meta {
+      display: grid;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .booking-meta div {
+      overflow-wrap: anywhere;
+    }
     #feedback { margin-top: 8px; font-size: 13px; }
     #feedback.ok { color: var(--ok); }
     #feedback.err { color: var(--warn); }
@@ -118,6 +131,50 @@
     }
     .trend-up { color: var(--ok); }
     .trend-down { color: var(--warn); }
+    @media (max-width: 720px) {
+      .wrap { padding: 12px; }
+      .card { padding: 12px; }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .toolbar button {
+        width: 100%;
+      }
+      table {
+        min-width: 0;
+      }
+      thead {
+        display: none;
+      }
+      tbody,
+      tr,
+      td {
+        display: block;
+        width: 100%;
+      }
+      tr {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        margin-top: 10px;
+        padding: 10px;
+        background: #fff;
+      }
+      td {
+        border: 0;
+        padding: 6px 0;
+      }
+      td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+    }
     @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
     @media (max-width: 900px) { .metrics { grid-template-columns: 1fr 1fr; } }
   </style>
@@ -205,6 +262,7 @@
     </div>
 
     <div class="card">
+      <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -220,6 +278,7 @@
           <tr><td colspan="6" class="small">Nessun dato</td></tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <div class="card">
@@ -650,12 +709,24 @@
 
       bookingsBody.innerHTML = items.map((item) => `
         <tr>
-          <td><strong>${item.reference}</strong><div class="small">${item.id}</div></td>
-          <td>${item.name}<div class="small">${item.email}</div></td>
-          <td>${item.service}<div class="small">${item.route}</div></td>
-          <td>${item.date}${item.time ? ' ' + item.time : ''}</td>
-          <td><span class="${statusClass(item.status)}">${item.status}</span></td>
-          <td>
+          <td data-label="Ref"><strong>${item.reference}</strong><div class="small">${item.id}</div></td>
+          <td data-label="Cliente">
+            ${item.name}
+            <div class="booking-meta small">
+              <div>${item.email || 'Email non indicata'}</div>
+              <div>${item.phone || 'Telefono non indicato'}</div>
+            </div>
+          </td>
+          <td data-label="Servizio">
+            ${item.service}
+            <div class="booking-meta small">
+              <div>${item.route || 'Tratta non indicata'}</div>
+              <div>${item.details || 'Nessun dettaglio aggiuntivo'}</div>
+            </div>
+          </td>
+          <td data-label="Data">${item.date}${item.time ? ' ' + item.time : ''}</td>
+          <td data-label="Status"><span class="${statusClass(item.status)}">${item.status}</span></td>
+          <td data-label="Azioni">
             <div class="toolbar">
               <button data-act="confirm" data-id="${item.id}" type="button">Conferma</button>
               <button data-act="cancel" data-id="${item.id}" class="warn" type="button">Annulla</button>
