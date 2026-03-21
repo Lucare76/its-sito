@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contactDraft: 'its_contact_form_draft',
         heroDraft: 'its_hero_form_draft',
         openedForms: 'its_opened_forms',
+        cookieConsent: 'its_cookie_consent',
     };
     const language = document.documentElement.lang === 'en' ? 'en' : 'it';
     const whatsappMessage = language === 'en'
@@ -29,6 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
             invalidEmail: 'Please enter a valid email address.',
             invalidDate: 'Please enter a valid date in YYYY-MM-DD format that is not in the past.',
             invalidTime: 'Please enter a valid time in HH:MM format.',
+            cookieTitle: 'Cookies and basic analytics',
+            cookieBody: 'We use necessary tools and, with your consent, basic analytics to measure form submissions, CTA clicks, WhatsApp clicks and UTM sources.',
+            cookieAccept: 'Accept',
+            cookieReject: 'Reject',
             sending: 'Sending your request...',
             heroSuccess: (reference) => `Request sent successfully (${reference}). Next step: our team checks route and timing, then sends confirmation and pickup details.`,
             contactSuccess: (reference) => `Request sent successfully (${reference}). Next step: we verify availability and contact you shortly with operational confirmation.`,
@@ -41,6 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
             invalidEmail: 'Inserisci un indirizzo email valido.',
             invalidDate: 'Inserisci una data valida nel formato GG-MM-AAAA e non nel passato.',
             invalidTime: 'Inserisci un orario valido nel formato HH:MM.',
+            cookieTitle: 'Cookie e analisi di base',
+            cookieBody: 'Utilizziamo strumenti necessari e, con il tuo consenso, analisi di base per misurare invii form, click sulle CTA, click WhatsApp e sorgenti UTM.',
+            cookieAccept: 'Accetta',
+            cookieReject: 'Rifiuta',
             sending: 'Invio richiesta in corso...',
             heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: verifichiamo tratta e orari, poi ricevi conferma operativa e dettagli pickup.`,
             contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: controlliamo disponibilita e ti rispondiamo a breve con conferma operativa.`,
@@ -69,6 +78,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
     };
+    const safeLocalStorage = {
+        get(key) {
+            try {
+                return window.localStorage.getItem(key);
+            } catch (error) {
+                return null;
+            }
+        },
+        set(key, value) {
+            try {
+                window.localStorage.setItem(key, value);
+            } catch (error) {
+                // Ignore storage write failures.
+            }
+        },
+        remove(key) {
+            try {
+                window.localStorage.removeItem(key);
+            } catch (error) {
+                // Ignore storage removal failures.
+            }
+        },
+    };
+    const getCookieConsent = () => {
+        const value = String(safeLocalStorage.get(storageKeys.cookieConsent) || '').trim().toLowerCase();
+        return value === 'accepted' || value === 'rejected' ? value : '';
+    };
+    const hasAnalyticsConsent = () => getCookieConsent() === 'accepted';
+    const clearAnalyticsStorage = () => {
+        safeStorage.remove(storageKeys.utm);
+        safeStorage.remove(storageKeys.sessionId);
+    };
 
     const getQueryUtm = () => {
         const params = new URLSearchParams(window.location.search);
@@ -86,6 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const saveUtmParams = () => {
+        if (!hasAnalyticsConsent()) {
+            return;
+        }
         const current = getQueryUtm();
         if (!current.utm_source && !current.utm_medium && !current.utm_campaign) {
             return;
@@ -94,6 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getStoredUtm = () => {
+        if (!hasAnalyticsConsent()) {
+            return normalizeUtm({});
+        }
         const raw = safeStorage.get(storageKeys.utm);
         if (!raw) {
             return normalizeUtm({});
@@ -106,6 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getSessionId = () => {
+        if (!hasAnalyticsConsent()) {
+            return '';
+        }
         const existing = safeStorage.get(storageKeys.sessionId);
         if (existing) {
             return existing;
@@ -147,6 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const trackEvent = (eventName, params = {}) => {
+        if (!hasAnalyticsConsent()) {
+            return;
+        }
         const utm = getStoredUtm();
         const payload = {
             event: eventName,
@@ -241,6 +294,43 @@ document.addEventListener('DOMContentLoaded', () => {
             field.setAttribute('step', '300');
             field.setAttribute('inputmode', 'numeric');
         });
+    };
+    const getCookiePolicyHref = () => 'cookie-policy.html';
+    const hideCookieBanner = () => {
+        const banner = document.getElementById('cookie-banner');
+        if (banner) {
+            banner.remove();
+        }
+    };
+    const setCookieConsent = (value) => {
+        safeLocalStorage.set(storageKeys.cookieConsent, value);
+        if (value !== 'accepted') {
+            clearAnalyticsStorage();
+        } else {
+            saveUtmParams();
+        }
+        hideCookieBanner();
+    };
+    const renderCookieBanner = () => {
+        if (getCookieConsent()) {
+            return;
+        }
+        const banner = document.createElement('div');
+        banner.id = 'cookie-banner';
+        banner.className = 'cookie-banner';
+        banner.innerHTML = `
+            <div class="cookie-banner__content">
+                <p class="cookie-banner__title">${messages.cookieTitle}</p>
+                <p class="cookie-banner__text">${messages.cookieBody} <a href="${getCookiePolicyHref()}">${language === 'en' ? 'Read the Cookie Policy' : 'Leggi la Cookie Policy'}</a>.</p>
+            </div>
+            <div class="cookie-banner__actions">
+                <button type="button" class="btn-secondary cookie-banner__button" data-cookie-choice="reject">${messages.cookieReject}</button>
+                <button type="button" class="btn-primary cookie-banner__button" data-cookie-choice="accept">${messages.cookieAccept}</button>
+            </div>
+        `;
+        document.body.appendChild(banner);
+        banner.querySelector('[data-cookie-choice="accept"]').addEventListener('click', () => setCookieConsent('accepted'));
+        banner.querySelector('[data-cookie-choice="reject"]').addEventListener('click', () => setCookieConsent('rejected'));
     };
 
     const trackFormError = ({ formId, errorType, errorMessage, missingFields = [] }) => {
@@ -952,6 +1042,7 @@ document.addEventListener('DOMContentLoaded', () => {
     prefillHeroForm();
     prefillContactForm();
     applyDateTimeConstraints();
+    renderCookieBanner();
     createWhatsAppFloat();
     bindTracking();
     syncHeroOffset();
