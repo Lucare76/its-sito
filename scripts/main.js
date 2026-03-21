@@ -416,19 +416,46 @@ document.addEventListener('DOMContentLoaded', () => {
         element.classList.add('text-gray-600');
     };
 
+    const generateReference = () => {
+        const year = new Date().getFullYear();
+        const num = String(Math.floor(Math.random() * 9000) + 1000);
+        return `ITS-${year}-${num}`;
+    };
+
+    const postBookingEmailJs = async (payload) => {
+        const reference = generateReference();
+        const details = payload.details || 'Nessun dettaglio';
+        const parts = details.split('|');
+        const people = parts[0] ? parts[0].replace(/Passeggeri:|Passengers:/i, '').trim() : 'n/a';
+        const notes = parts[1] ? parts[1].replace(/Note:|Notes:/i, '').trim() : '';
+
+        await emailjs.send('service_436gahf', 'template_wmuj1zo', {
+            reference,
+            name: payload.name,
+            email: payload.email,
+            phone: payload.phone || 'Non indicato',
+            service: payload.service,
+            route: payload.route,
+            date: payload.date,
+            time: payload.time || 'Non indicato',
+            people,
+            details: notes,
+        });
+
+        return { reference };
+    };
+
     const postBooking = async (payload) => {
         let response;
 
         try {
             response = await fetch('/api/bookings', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
         } catch (error) {
-            throw new Error(messages.bookingUnavailable);
+            return postBookingEmailJs(payload);
         }
 
         const contentType = String(response.headers.get('content-type') || '').toLowerCase();
@@ -444,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!contentType.includes('application/json')) {
-            throw new Error(messages.bookingUnavailable);
+            return postBookingEmailJs(payload);
         }
 
         if (!response.ok) {
