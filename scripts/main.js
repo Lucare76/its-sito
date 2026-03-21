@@ -637,6 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const service = String(formData.get('hero-service') || '').trim();
             const name = String(formData.get('hero-name') || '').trim();
             const email = String(formData.get('hero-email') || '').trim();
+            const phone = String(formData.get('hero-phone') || '').trim();
             const date = String(formData.get('hero-date') || '').trim();
             const time = String(formData.get('hero-time') || '').trim();
             const route = String(formData.get('hero-route') || '').trim();
@@ -694,6 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     time,
                     name,
                     email,
+                    phone,
                     details: `${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`,
                     source: 'PUBLIC_HERO_WIDGET',
                     website,
