@@ -991,23 +991,50 @@ function buildInsightsReport(db, options = {}) {
 }
 
 function validateBookingInput(input) {
-  const errors = [];
-  if (!input.service) errors.push('service obbligatorio');
-  if (!input.route) errors.push('route obbligatorio');
-  if (!input.date) errors.push('date obbligatorio');
-  if (!input.name) errors.push('name obbligatorio');
-  if (!input.email) errors.push('email obbligatorio');
+    const errors = [];
+    const today = new Date();
+    const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+    const itDatePattern = /^\d{2}-\d{2}-\d{4}$/;
+    if (!input.service) errors.push('service obbligatorio');
+    if (!input.route) errors.push('route obbligatorio');
+    if (!input.date) errors.push('date obbligatorio');
+    if (!input.name) errors.push('name obbligatorio');
+    if (!input.email) errors.push('email obbligatorio');
   if (input.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
     errors.push('email non valida');
+    }
+    if (input.date && !(isoDatePattern.test(input.date) || itDatePattern.test(input.date))) {
+      errors.push('date non valida (formato YYYY-MM-DD o DD-MM-YYYY)');
+    }
+    if (input.date && (isoDatePattern.test(input.date) || itDatePattern.test(input.date))) {
+      const normalizedDate = isoDatePattern.test(input.date)
+        ? input.date
+        : (() => {
+          const [day, month, year] = input.date.split('-');
+          return `${year}-${month}-${day}`;
+        })();
+      const [year, month, day] = normalizedDate.split('-').map(Number);
+      const candidate = new Date(Date.UTC(year, month - 1, day));
+      const isRealDate = (
+        candidate.getUTCFullYear() === year &&
+        candidate.getUTCMonth() === month - 1 &&
+        candidate.getUTCDate() === day
+      );
+      if (!isRealDate) {
+        errors.push('date non reale');
+      } else if (normalizedDate < todayIso) {
+        errors.push('date nel passato non consentita');
+      }
+    }
+    if (input.time && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(input.time)) {
+      errors.push('orario non valido (formato HH:MM)');
+    }
+    if (input.website) {
+      errors.push('richiesta non valida');
+    }
+    return errors;
   }
-  if (input.date && !/^\d{4}-\d{2}-\d{2}$/.test(input.date)) {
-    errors.push('date non valida (formato YYYY-MM-DD)');
-  }
-  if (input.website) {
-    errors.push('richiesta non valida');
-  }
-  return errors;
-}
 
 function handleApi(req, res, pathname) {
   if (pathname === '/api/health' && req.method === 'GET') {

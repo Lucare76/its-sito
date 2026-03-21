@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
             heroRequired: 'Please fill in name, email, service, route, date and passenger count before sending your request.',
             contactRequired: 'Please complete name, email, route, date and passenger count before sending.',
             invalidEmail: 'Please enter a valid email address.',
+            invalidDate: 'Please enter a valid date in YYYY-MM-DD format that is not in the past.',
+            invalidTime: 'Please enter a valid time in HH:MM format.',
             sending: 'Sending your request...',
             heroSuccess: (reference) => `Request sent successfully (${reference}). Next step: our team checks route and timing, then sends confirmation and pickup details.`,
             contactSuccess: (reference) => `Request sent successfully (${reference}). Next step: we verify availability and contact you shortly with operational confirmation.`,
@@ -37,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             heroRequired: 'Compila nome, email, servizio, tratta, data e numero persone prima di inviare la richiesta.',
             contactRequired: 'Compila nome, email, tratta, data e numero persone prima di inviare.',
             invalidEmail: 'Inserisci un indirizzo email valido.',
+            invalidDate: 'Inserisci una data valida nel formato GG-MM-AAAA e non nel passato.',
+            invalidTime: 'Inserisci un orario valido nel formato HH:MM.',
             sending: 'Invio richiesta in corso...',
             heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: verifichiamo tratta e orari, poi ricevi conferma operativa e dettagli pickup.`,
             contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: controlliamo disponibilita e ti rispondiamo a breve con conferma operativa.`,
@@ -167,6 +171,77 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+    const getTodayIso = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    const normalizeDateForValidation = (value) => {
+        const raw = String(value || '').trim();
+        if (!raw) {
+            return null;
+        }
+        if (language === 'it') {
+            const match = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+            if (!match) {
+                return null;
+            }
+            return `${match[3]}-${match[2]}-${match[1]}`;
+        }
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+            return null;
+        }
+        return raw;
+    };
+    const isValidDate = (value) => {
+        const normalized = normalizeDateForValidation(value);
+        if (!normalized) {
+            return false;
+        }
+        const [year, month, day] = normalized.split('-').map(Number);
+        const candidate = new Date(Date.UTC(year, month - 1, day));
+        if (
+            candidate.getUTCFullYear() !== year ||
+            candidate.getUTCMonth() !== month - 1 ||
+            candidate.getUTCDate() !== day
+        ) {
+            return false;
+        }
+        return normalized >= getTodayIso();
+    };
+    const isValidTime = (value) => {
+        const raw = String(value || '').trim();
+        if (!raw) {
+            return true;
+        }
+        const match = raw.match(/^(\d{2}):(\d{2})$/);
+        if (!match) {
+            return false;
+        }
+        const hours = Number(match[1]);
+        const minutes = Number(match[2]);
+        return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+    };
+    const applyDateTimeConstraints = () => {
+        const today = getTodayIso();
+        document.querySelectorAll('input[type="date"]').forEach((field) => {
+            field.setAttribute('min', today);
+        });
+        if (language === 'it') {
+            ['hero-date', 'date'].forEach((fieldName) => {
+                const field = document.querySelector(`[name="${fieldName}"]`);
+                if (field) {
+                    field.setAttribute('maxlength', '10');
+                }
+            });
+        }
+        document.querySelectorAll('input[type="time"]').forEach((field) => {
+            field.setAttribute('step', '300');
+            field.setAttribute('inputmode', 'numeric');
+        });
+    };
 
     const trackFormError = ({ formId, errorType, errorMessage, missingFields = [] }) => {
         trackEvent('form_error', {
@@ -676,6 +751,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            if (!isValidDate(date)) {
+                trackFormError({
+                    formId: 'hero-booking-form',
+                    errorType: 'invalid_date',
+                    errorMessage: messages.invalidDate,
+                });
+                setFeedback(heroBookingFeedback, messages.invalidDate, 'error');
+                return;
+            }
+
+            if (!isValidTime(time)) {
+                trackFormError({
+                    formId: 'hero-booking-form',
+                    errorType: 'invalid_time',
+                    errorMessage: messages.invalidTime,
+                });
+                setFeedback(heroBookingFeedback, messages.invalidTime, 'error');
+                return;
+            }
+
             trackEvent('form_submit', {
                 form_id: 'hero-booking-form',
                 source: 'PUBLIC_HERO_WIDGET',
@@ -777,6 +872,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            if (!isValidDate(payload.date)) {
+                trackFormError({
+                    formId: 'contact-form',
+                    errorType: 'invalid_date',
+                    errorMessage: messages.invalidDate,
+                });
+                setFeedback(contactFeedback, messages.invalidDate, 'error');
+                return;
+            }
+
+            if (!isValidTime(payload.time)) {
+                trackFormError({
+                    formId: 'contact-form',
+                    errorType: 'invalid_time',
+                    errorMessage: messages.invalidTime,
+                });
+                setFeedback(contactFeedback, messages.invalidTime, 'error');
+                return;
+            }
+
             trackEvent('form_submit', {
                 form_id: 'contact-form',
                 source: 'PUBLIC_CONTACT_FORM',
@@ -836,6 +951,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bindDraftPersistence(heroBookingForm, storageKeys.heroDraft, ['hero-name', 'hero-route', 'hero-people', 'hero-date']);
     prefillHeroForm();
     prefillContactForm();
+    applyDateTimeConstraints();
     createWhatsAppFloat();
     bindTracking();
     syncHeroOffset();
