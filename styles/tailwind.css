@@ -697,6 +697,28 @@
         @apply mt-3 block text-sm text-blue-100 transition hover:text-lemonYellow;
     }
 
+    .footer-legal {
+        @apply border-t px-6 py-5 text-center text-xs leading-6 text-blue-100;
+        border-color: rgba(255, 255, 255, 0.08);
+        font-style: normal;
+    }
+
+    .footer-legal strong {
+        @apply block text-sm font-semibold text-white;
+    }
+
+    @media (min-width: 1024px) {
+        .footer-legal {
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .footer-legal strong {
+            display: inline;
+            margin-right: 0.5rem;
+        }
+    }
+
     .footer-copy {
         @apply border-t px-6 py-4 text-center text-xs text-blue-200;
         border-color: rgba(255, 255, 255, 0.08);
