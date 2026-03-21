@@ -688,6 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
+                const phoneLabel = language === 'en' ? 'Phone' : 'Telefono';
                 const booking = await postBooking({
                     service,
                     route,
@@ -696,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     name,
                     email,
                     phone,
-                    details: `${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`,
+                    details: `${phone ? `${phoneLabel}: ${phone} | ` : ''}${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`,
                     source: 'PUBLIC_HERO_WIDGET',
                     website,
                 });
@@ -743,7 +744,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const peopleField = contactForm.querySelector('[name="people"]');
             const requiresPeople = Boolean(peopleField);
             const missingFields = [];
-            payload.details = `${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${payload.time ? ` | ${language === 'en' ? 'Estimated time' : 'Orario indicativo'}: ${payload.time}` : ''}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`;
+            const contactPhone = String(formData.get('phone') || '').trim();
+            if (contactPhone) {
+                payload.phone = contactPhone;
+            }
+            payload.details = `${contactPhone ? `${language === 'en' ? 'Phone' : 'Telefono'}: ${contactPhone} | ` : ''}${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${payload.time ? ` | ${language === 'en' ? 'Estimated time' : 'Orario indicativo'}: ${payload.time}` : ''}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`;
 
             if (!payload.name) missingFields.push('name');
             if (!payload.email) missingFields.push('email');
