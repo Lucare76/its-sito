@@ -484,7 +484,7 @@ async function sendBookingNotificationEmail(booking) {
         </div>
         <div style="background-color:#00204a;color:#ffffff;text-align:center;padding:20px;font-size:12px;">
           &copy; 2026 I.T.S. Ischia Transfer Service<br>
-          <a href="https://www.ischiatransferservice.it/" style="color:#007bff;text-decoration:none;">Visita il sito web</a>
+          <a href="https://lucare76.github.io/its-sito/index.html" style="color:#007bff;text-decoration:none;">Visita il sito web</a>
         </div>
       </div>
     </body>
