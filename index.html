@@ -39,7 +39,7 @@
             "addressCountry": "IT"
           },
           "areaServed": ["Ischia", "Capri", "Procida", "Napoli", "Costiera Amalfitana"],
-          "sameAs": ["https://wa.me/393334372831"]
+          "sameAs": ["https://wa.me/390813331053"]
         },
         {
           "@type": "TransportService",
@@ -156,15 +156,16 @@
 
             <div id="mobile-menu" class="mx-6 hidden rounded-3xl border border-nightBlue/10 bg-white/95 p-4 shadow-2xl shadow-nightBlue/10 backdrop-blur lg:hidden">
                 <div class="flex flex-col gap-2">
+                    <!-- UX IMPROVEMENT: mobile menu order -->
                     <a class="mobile-link" href="#richiedi-transfer">Verifica disponibilità</a>
-                    <a class="mobile-link" href="https://wa.me/393334372831" target="_blank" rel="noreferrer">WhatsApp</a>
+                    <a class="mobile-link" href="https://wa.me/390813331053" target="_blank" rel="noreferrer" aria-label="Apri WhatsApp per le prenotazioni ITS">WhatsApp</a>
                     <a class="mobile-link" href="#servizi">Servizi</a>
                     <a class="mobile-link" href="#destinazioni-seo">Tratte più richieste</a>
                     <a class="mobile-link" href="#flotta">Flotta</a>
                     <a class="mobile-link" href="#faq-transfer">FAQ</a>
                     <a class="mobile-link" href="#footer">Contatti</a>
-                    <a class="mobile-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="mobile-link" href="en/index.html">English version</a>
+                    <a class="mobile-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="btn-primary mt-2 justify-center" href="#richiedi-transfer">Verifica disponibilità</a>
                 </div>
             </div>
@@ -187,8 +188,8 @@
             <div class="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-10 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:pb-28">
                 <div class="flex flex-col justify-center">
                     <span class="eyebrow !bg-white/10 !text-lemonYellow">Transfer Ischia dal 2006</span>
-                    <h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">Transfer Napoli Ischia dal volo, dal treno o dal porto fino all'hotel.</h1>
-                    <p class="mt-6 max-w-2xl text-lg leading-8 text-blue-50 sm:text-xl">Se arrivi a Capodichino, Napoli Centrale o Beverello con valigie, bambini o una coincidenza da prendere, ti diciamo dove incontrare l'autista e coordiniamo ogni passaggio fino all'arrivo a Ischia.</p>
+                    <h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">Transfer Napoli - Ischia senza stress dall'arrivo all'hotel</h1>
+                    <p class="mt-6 max-w-2xl text-lg leading-8 text-blue-50 sm:text-xl">Atterri a Capodichino, scendi a Napoli Centrale o sei al porto? Il tuo autista ti aspetta all'uscita e coordiniamo ogni passaggio fino a Ischia.</p>
 
                     <ul class="hero-trust mt-5">
                         <li>Punto d'incontro inviato prima dell'arrivo a Capodichino, Napoli Centrale o Beverello</li>
@@ -202,16 +203,8 @@
                             <dd>2006</dd>
                         </div>
                         <div class="stat-card stat-card-dark">
-                            <dt>Punti di partenza a Napoli</dt>
-                            <dd>3</dd>
-                        </div>
-                        <div class="stat-card stat-card-dark">
-                            <dt>Porti serviti a Ischia</dt>
-                            <dd>3</dd>
-                        </div>
-                        <div class="stat-card stat-card-dark">
-                            <dt>Supporto lingue</dt>
-                            <dd>IT / EN</dd>
+                            <dt>Operativi</dt>
+                            <dd>7/7</dd>
                         </div>
                     </dl>
                 </div>
@@ -223,7 +216,6 @@
                                 <p class="booking-label">Richiesta transfer</p>
                                 <h2 class="mt-2 text-3xl font-semibold text-nightBlue">Verifica disponibilità per la tua tratta</h2>
                             </div>
-                            <span class="rounded-full bg-lemonYellow px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-nightBlue">Servizio 24h</span>
                         </div>
                         <a href="https://ischia-transfer.vercel.app/login" class="reserved-top-link mt-4 hidden lg:inline-flex">Accedi all'area riservata</a>
 
@@ -317,13 +309,71 @@
                             <p class="max-w-sm text-sm leading-7 text-gray-600">Risposta entro poche ore nelle fasce operative • Nessun pagamento anticipato • Conferma via WhatsApp o email</p>
                             <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <button id="hero-booking-submit" type="submit" form="hero-booking-form" class="btn-primary justify-center border-0">Verifica disponibilità</button>
-                                <a href="https://wa.me/393334372831" target="_blank" rel="noreferrer" class="btn-secondary justify-center">Scrivici su WhatsApp</a>
+                                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary justify-center" aria-label="Scrivici su WhatsApp per verificare disponibilità">Scrivici su WhatsApp</a>
                             </div>
                         </div>
                         <p id="hero-booking-feedback" class="mt-4 text-sm text-gray-600" aria-live="polite"></p>
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- UX IMPROVEMENT: what happens after request -->
+        <section id="come-funziona" class="section-shell pt-0">
+            <div class="section-heading">
+                <span class="eyebrow">Cosa Succede Dopo</span>
+                <h2>Dopo la richiesta sai già come si muove il transfer</h2>
+                <p>Prima del giorno del viaggio ti confermiamo i passaggi utili, così sai dove andare e cosa aspettarti.</p>
+            </div>
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-3 lg:px-8">
+                <article class="process-step-card">
+                    <strong>Step 1</strong>
+                    <h3>Invii la richiesta</h3>
+                    <p>Compili il form o scrivi su WhatsApp con data, orario e tratta.</p>
+                </article>
+                <article class="process-step-card">
+                    <strong>Step 2</strong>
+                    <h3>Ricevi conferma</h3>
+                    <p>Ti rispondiamo entro 2 ore nelle fasce operative con disponibilità e dettagli del transfer.</p>
+                </article>
+                <article class="process-step-card">
+                    <strong>Step 3</strong>
+                    <h3>Il giorno del viaggio</h3>
+                    <p>L'autista ti aspetta nel punto concordato. Ti indichiamo esattamente dove e a che ora presentarti.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- UX IMPROVEMENT: travel times -->
+        <section id="tempi-percorrenza" class="section-shell pt-0">
+            <div class="section-heading">
+                <span class="eyebrow">Tempi Di Percorrenza</span>
+                <h2>Tempi indicativi per le tratte più richieste</h2>
+                <p>Una panoramica utile per capire il passaggio tra Napoli, il porto e le principali zone di Ischia.</p>
+            </div>
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-5 lg:px-8">
+                <article class="utility-card">
+                    <h3>Capodichino → Porto Beverello</h3>
+                    <p>Circa 20-35 min</p>
+                </article>
+                <article class="utility-card">
+                    <h3>Napoli Centrale → Porto Beverello</h3>
+                    <p>Circa 15-25 min</p>
+                </article>
+                <article class="utility-card">
+                    <h3>Porto Ischia → hotel zona porto</h3>
+                    <p>Circa 5-10 min</p>
+                </article>
+                <article class="utility-card">
+                    <h3>Porto Ischia → hotel zona Forio</h3>
+                    <p>Circa 20-30 min</p>
+                </article>
+                <article class="utility-card">
+                    <h3>Porto Ischia → hotel zona Casamicciola</h3>
+                    <p>Circa 10-15 min</p>
+                </article>
+            </div>
+            <p class="mx-auto mt-6 max-w-7xl px-6 text-sm text-gray-500 lg:px-8">Tempi indicativi, variabili in base al traffico.</p>
         </section>
 
         <section id="destinazioni-seo" class="section-shell pb-0">
@@ -339,9 +389,6 @@
                 <a class="service-link" href="transfer-porto-ischia-hotel.html">Transfer Porto Ischia Hotel</a>
                 <a class="service-link" href="transfer-privato-ischia.html">Transfer Privato Ischia</a>
                 <a class="service-link" href="transfer-gruppi-ischia.html">Transfer Gruppi Ischia</a>
-                <a class="service-link" href="transfer-capri.html">Transfer Capri</a>
-                <a class="service-link" href="transfer-procida.html">Transfer Procida</a>
-                <a class="service-link" href="transfer-costiera-amalfitana.html">Transfer Costiera Amalfitana</a>
             </div>
         </section>
 
@@ -392,7 +439,7 @@
                     <div class="fleet-image-shell">
                         <picture>
                             <source srcset="assets/fleet-sedan.webp" type="image/webp">
-                            <img src="assets/fleet-sedan.webp" alt="Sedan premium per transfer privati" loading="lazy" decoding="async" class="fleet-image fleet-image-sedan">
+                                <img src="assets/fleet-sedan.webp" alt="Mercedes E 270 per transfer privati tra Napoli e Ischia" loading="lazy" decoding="async" class="fleet-image fleet-image-sedan">
                         </picture>
                         <span class="fleet-badge">Privato</span>
                     </div>
@@ -406,7 +453,7 @@
                         <div class="fleet-image-shell">
                             <picture>
                                 <source srcset="assets/fleet-minivan.webp" type="image/webp">
-                                <img src="assets/fleet-minivan.webp" alt="Mercedes Vito nero per transfer privati e gruppi piccoli" loading="lazy" decoding="async" class="fleet-image fleet-image-bus">
+                                <img src="assets/fleet-minivan.webp" alt="Mercedes Vito per famiglie e piccoli gruppi con bagagli" loading="lazy" decoding="async" class="fleet-image fleet-image-bus">
                             </picture>
                             <span class="fleet-badge">Famiglie</span>
                         </div>
@@ -435,8 +482,8 @@
         <section id="vantaggi" class="section-shell">
             <div class="section-heading">
                 <span class="eyebrow">Perché scegliere ITS</span>
-                    <h2>Esperienza locale, passaggi già coordinati</h2>
-                <p>Dal 2006 aiutiamo chi arriva a Napoli a capire subito dove andare, quanto tempo serve per il porto e come arrivare in hotel senza passaggi lasciati all'ultimo minuto.</p>
+                    <h2>Conosciamo ogni tratta, ogni orario, ogni imprevisto</h2>
+                <p>Dal 2006 accompagniamo chi arriva a Napoli fino all'hotel a Ischia, senza nulla lasciato al caso.</p>
             </div>
             <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Punto d'incontro definito</h3><p>Prima dell'arrivo ricevi indicazioni sul pickup, così non perdi tempo tra uscite aeroporto, taxi e terminal.</p></div>
@@ -444,24 +491,13 @@
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Richiesta guidata</h3><p>Compili la tratta, il punto di arrivo e i bagagli in pochi passaggi, senza dover spiegare tutto da zero.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Supporto su bagagli e cambi</h3><p>Ti aiutiamo quando ci sono valigie ingombranti, bambini, ritardi o cambi di programma prima dell'imbarco.</p></div>
             </div>
-            <div class="mx-auto mt-10 max-w-7xl px-6 lg:px-8">
-                <article class="trust-panel">
-                    <p class="trust-kicker">Dopo la richiesta</p>
-                    <h3>Ti confermiamo i passaggi utili prima che inizi lo spostamento.</h3>
-                    <div class="trust-stats">
-                        <div><strong>1. Riceviamo i dettagli</strong><span>Tratta, data, bagagli e destinazione finale</span></div>
-                        <div><strong>2. Ti confermiamo pickup e porto</strong><span>Con orario indicativo e passaggi da seguire</span></div>
-                        <div><strong>3. Restiamo disponibili</strong><span>Fino all'arrivo a Ischia e all'ultimo tratto in hotel</span></div>
-                    </div>
-                </article>
-            </div>
         </section>
 
         <section id="recensioni" class="section-shell pt-0">
             <div class="section-heading">
                 <span class="eyebrow">Recensioni</span>
                 <h2>Cosa dicono i clienti</h2>
-                <p>Recensioni di viaggiatori che hanno scelto i nostri transfer tra Napoli, il porto e Ischia.</p>
+                <p>Chi ha viaggiato con noi racconta.</p>
             </div>
             <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-3 lg:px-8">
                 <article class="service-card">
@@ -483,11 +519,11 @@
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="cta-banner">
                     <p class="cta-kicker">Contatto diretto</p>
-                    <h2>Hai già volo o traghetto? Ti confermiamo subito il percorso utile.</h2>
+                    <h2>Condividi gli orari, costruiamo il transfer su misura</h2>
                     <p>Mandaci tratta, data, bagagli e destinazione finale. Ti diciamo se il transfer è disponibile e quali passaggi seguire da Napoli a Ischia.</p>
                     <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
                         <a href="contatti.html" class="btn-primary cta-primary justify-center">Verifica disponibilità</a>
-                        <a href="https://wa.me/393334372831" target="_blank" rel="noreferrer" class="btn-secondary justify-center">Scrivici su WhatsApp</a>
+                        <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary justify-center" aria-label="Scrivici su WhatsApp per parlare del transfer">Scrivici su WhatsApp</a>
                     </div>
                 </div>
             </div>
@@ -499,22 +535,7 @@
                 <h2>Tempi, contatti e risorse utili prima di partire</h2>
                 <p>Le informazioni che servono più spesso prima di inviare la richiesta o di partire per il porto.</p>
             </div>
-            <div class="mx-auto grid max-w-7xl gap-6 px-6 lg:grid-cols-3 lg:px-8">
-                <article class="utility-card">
-                    <h3>Tempi indicativi</h3>
-                    <p>Capodichino - Beverello: circa 20-35 minuti.<br>Napoli Centrale - Beverello: circa 15-30 minuti.<br>Porto di Ischia - hotel: circa 10-35 minuti, in base alla zona.</p>
-                    <a href="contatti.html" class="utility-link">Invia la tua tratta</a>
-                </article>
-                <article class="utility-card">
-                    <h3>Contatti diretti</h3>
-                    <p>WhatsApp prenotazioni: +39 333 4372831<br>Telefono ufficio: +39 081 3331053<br>Email: booking@ischiatransferservice.com</p>
-                    <div class="utility-links utility-links-2col">
-                        <a href="https://wa.me/393334372831" target="_blank" rel="noreferrer" class="utility-link">WhatsApp</a>
-                        <a href="tel:+390813331053" class="utility-link">Chiama ufficio</a>
-                        <a href="mailto:booking@ischiatransferservice.com" class="utility-link">Email</a>
-                        <a href="contatti.html" class="utility-link">Form contatti</a>
-                    </div>
-                </article>
+            <div class="mx-auto grid max-w-7xl gap-6 px-6 lg:grid-cols-1 lg:px-8">
                 <article class="utility-card">
                     <h3>Prima di partire</h3>
                     <p>Controlla meteo, traghetti e arrivi volo se hai una coincidenza stretta o un arrivo serale.</p>
@@ -522,6 +543,8 @@
                         <a href="https://www.meteo.it/meteo/ischia-63037" target="_blank" rel="noreferrer" class="utility-link">Meteo Ischia</a>
                         <a href="https://easy.caremar.it/it/orari-tratta/Napoli-Ischia/" target="_blank" rel="noreferrer" class="utility-link">Caremar</a>
                         <a href="https://www.alilauro.it/it/tratte/napoli-beverello-ischia-ischia-napoli-beverello/" target="_blank" rel="noreferrer" class="utility-link">Alilauro</a>
+                        <a href="https://www.snav.it/orari-e-tratte" target="_blank" rel="noreferrer" class="utility-link">SNAV</a>
+                        <a href="https://www.medmargroup.it/it/" target="_blank" rel="noreferrer" class="utility-link">Medmar</a>
                         <a href="https://www.aeroportodinapoli.it/arrival" target="_blank" rel="noreferrer" class="utility-link">Arrivi volo</a>
                     </div>
                 </article>
@@ -559,7 +582,7 @@
             </div>
             <div>
                 <p class="footer-title">Contatti</p>
-                <a class="footer-link" href="https://wa.me/393334372831" target="_blank" rel="noreferrer">WhatsApp prenotazioni: +39 333 4372831</a>
+                <a class="footer-link" href="https://wa.me/390813331053" target="_blank" rel="noreferrer">WhatsApp prenotazioni: +39 081 333 1053</a>
                 <a class="footer-link" href="tel:+390813331053">Telefono ufficio: +39 081 3331053</a>
                 <a class="footer-link" href="mailto:booking@ischiatransferservice.com">booking@ischiatransferservice.com</a>
             </div>
@@ -575,9 +598,22 @@
         <address class="footer-legal" itemscope itemtype="https://schema.org/LocalBusiness"><strong itemprop="name">ISCHIA TRANSFER SERVICE S.r.l.</strong><span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress"><span itemprop="streetAddress">Via Cilento, 14/C</span> – <span itemprop="postalCode">80070</span> <span itemprop="addressLocality">Ischia</span> (<span itemprop="addressRegion">NA</span>)</span> – Tel. <span itemprop="telephone">0813331053</span> – Fax 0813331053 – C.F. / P.IVA <span itemprop="vatID">05931311210</span> – Registro Imprese CCIAA n. T65085267 – Capitale sociale versato: Euro 10.000,00</address>
     </footer>
 
+    <!-- UX IMPROVEMENT: scroll to top -->
+    <button id="scroll-top" class="scroll-top-button" type="button" aria-label="Torna in cima alla pagina">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7" />
+        </svg>
+    </button>
+
+    <!-- UX IMPROVEMENT: mobile sticky cta -->
+    <div class="mobile-sticky-cta" aria-label="Azioni rapide mobile">
+        <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary justify-center" aria-label="Apri WhatsApp per le prenotazioni ITS">WhatsApp</a>
+        <a href="#richiedi-transfer" class="btn-primary justify-center">Verifica disponibilità</a>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>emailjs.init('kPLCj-5Q49NIzb1Co');</script>
-    <script src="scripts/main.js?v=20260322a"></script>
+    <script src="scripts/main.js?v=20260322b"></script>
 </body>
 </html>
 

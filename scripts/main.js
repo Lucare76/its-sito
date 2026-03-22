@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroBookingFeedback = document.getElementById('hero-booking-feedback');
     const contactForm = document.getElementById('contact-form');
     const contactFeedback = document.getElementById('contact-feedback');
-    const whatsappPhone = '393334372831';
+    const scrollTopButton = document.getElementById('scroll-top');
+    const whatsappPhone = '390813331053';
     const storageKeys = {
         utm: 'its_utm_params',
         sessionId: 'its_session_id',
@@ -702,6 +703,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.removeEventListener('keydown', trapMenuFocus);
     };
 
+    const focusHeroForm = () => {
+        if (!heroBookingForm) {
+            return;
+        }
+
+        const firstField = heroBookingForm.querySelector('select, input, textarea');
+        if (!firstField) {
+            return;
+        }
+
+        window.setTimeout(() => {
+            firstField.focus({ preventScroll: true });
+        }, 420);
+    };
+
     const getFocusableElements = (container) => {
         if (!container) {
             return [];
@@ -790,8 +806,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             closeMobileMenu();
+
+            if (targetId === '#richiedi-transfer') {
+                focusHeroForm();
+            }
         });
     });
+
+    if (scrollTopButton) {
+        scrollTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        });
+    }
+
+    const syncScrollTopButton = () => {
+        if (!scrollTopButton) {
+            return;
+        }
+
+        scrollTopButton.classList.toggle('is-visible', window.scrollY > 400);
+    };
 
     if (heroBookingForm) {
         heroBookingForm.addEventListener('submit', async (event) => {
@@ -1061,7 +1098,9 @@ document.addEventListener('DOMContentLoaded', () => {
     bindTracking();
     syncHeroOffset();
     syncNavState();
+    syncScrollTopButton();
     window.addEventListener('scroll', syncNavState, { passive: true });
+    window.addEventListener('scroll', syncScrollTopButton, { passive: true });
     window.addEventListener('resize', () => {
         syncHeroOffset();
         if (window.innerWidth >= 1024) {

@@ -58,7 +58,7 @@ async function run() {
 
     const landingHtml = await requestText(`${baseUrl}/transfer-stazione-napoli-ischia.html`);
     assertContains(landingHtml, 'Richiedi disponibilita', 'landing transfer');
-    assertContains(landingHtml, 'wa.me/393334372831', 'landing transfer');
+    assertContains(landingHtml, 'wa.me/390813331053', 'landing transfer');
 
     const opsHtml = await requestText(`${baseUrl}/ops.html`);
     assertContains(opsHtml, 'Executive Summary', 'ops');
