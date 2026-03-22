@@ -238,6 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
         if (language === 'it') {
+            if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+                return raw;
+            }
             const match = raw.match(/^(\d{2})-(\d{2})-(\d{4})$/);
             if (!match) {
                 return null;

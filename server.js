@@ -410,7 +410,6 @@ async function sendBookingNotificationEmail(booking) {
     `Tratta: ${booking.route}`,
     `Data: ${booking.date}`,
     `Orario: ${time}`,
-    `Source: ${booking.source}`,
     `Agency ID: ${agencyId}`,
     `Dettagli: ${booking.details || 'Nessun dettaglio aggiuntivo'}`,
     `Creato il: ${booking.createdAt}`
@@ -422,6 +421,41 @@ async function sendBookingNotificationEmail(booking) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Nuova Richiesta ITS</title>
+      <style>
+        @media only screen and (max-width: 480px) {
+          .booking-email-content {
+            padding: 20px !important;
+          }
+          .booking-email-table,
+          .booking-email-table tbody,
+          .booking-email-table tr,
+          .booking-email-table td {
+            display: block !important;
+            width: 100% !important;
+          }
+          .booking-email-table tr {
+            padding: 12px 0 !important;
+            border-bottom: 1px solid #f0f0f0 !important;
+          }
+          .booking-email-table td {
+            padding: 0 !important;
+            border-bottom: 0 !important;
+          }
+          .booking-email-label {
+            margin-bottom: 6px !important;
+            font-size: 11px !important;
+            line-height: 1.35 !important;
+          }
+          .booking-email-value {
+            font-size: 15px !important;
+            line-height: 1.45 !important;
+            word-break: break-word !important;
+          }
+          .booking-email-notes {
+            padding: 16px !important;
+          }
+        }
+      </style>
     </head>
     <body style="margin:0;padding:20px;background-color:#f8f9fa;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#333;">
       <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.1);border:1px solid #e0e0e0;">
@@ -429,55 +463,51 @@ async function sendBookingNotificationEmail(booking) {
           <h1 style="color:#ffffff;margin:0;font-size:24px;letter-spacing:1px;text-transform:uppercase;">ISCHIA TRANSFER SERVICE</h1>
           <div style="color:#007bff;font-size:14px;margin-top:5px;font-weight:bold;">DAL 2006 IL TUO TRANSFER DI FIDUCIA</div>
         </div>
-        <div style="padding:40px;">
+        <div class="booking-email-content" style="padding:40px;">
           <div style="display:inline-block;background-color:#e7f1ff;color:#007bff;padding:6px 15px;border-radius:50px;font-size:13px;font-weight:bold;margin-bottom:25px;">NUOVA RICHIESTA DAL SITO</div>
-          <table style="width:100%;border-collapse:collapse;">
+          <table class="booking-email-table" style="width:100%;border-collapse:collapse;">
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Reference ID</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">#${escapeHtml(booking.reference)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Reference ID</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">#${escapeHtml(booking.reference)}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Nome Cliente</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.name)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Nome Cliente</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.name)}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Email</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.email)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Email</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.email)}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Telefono</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${phone}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Telefono</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${phone}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Servizio</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.service)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Servizio</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.service)}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Tratta</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#007bff;font-weight:700;">${escapeHtml(booking.route)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Tratta</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#007bff;font-weight:700;">${escapeHtml(booking.route)}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Data e Orario</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.date)} alle ${time}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Data e Orario</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.date)} alle ${time}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Passeggeri</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${people} persone</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Passeggeri</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${people}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Source</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.source)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Agency ID</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${agencyId}</td>
             </tr>
             <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Agency ID</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${agencyId}</td>
-            </tr>
-            <tr>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Creato il</td>
-              <td style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.createdAt)}</td>
+              <td class="booking-email-label" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6c757d;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;width:40%;">Creato il</td>
+              <td class="booking-email-value" style="padding:15px 0;border-bottom:1px solid #f0f0f0;font-size:16px;color:#00204a;font-weight:500;">${escapeHtml(booking.createdAt)}</td>
             </tr>
           </table>
-          <div style="margin-top:30px;padding:20px;background-color:#f8f9fa;border-radius:8px;border-left:5px solid #007bff;">
+          <div class="booking-email-notes" style="margin-top:30px;padding:20px;background-color:#f8f9fa;border-radius:8px;border-left:5px solid #007bff;">
             <div style="font-size:13px;color:#6c757d;text-transform:uppercase;margin-bottom:10px;font-weight:bold;">Note aggiuntive:</div>
             <div style="color:#444;line-height:1.6;">${notes.replace(/\n/g, '<br>')}</div>
           </div>
@@ -598,14 +628,14 @@ function sendCsv(res, filename, body) {
   res.end(body);
 }
 
-function getSecurityHeaders() {
-  const headers = {
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
-  };
+  function getSecurityHeaders() {
+    const headers = {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.emailjs.com; frame-src https://maps.google.com https://www.google.com; frame-ancestors 'none'"
+    };
   if (process.env.NODE_ENV === 'production') {
     headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';
   }
