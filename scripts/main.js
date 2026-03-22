@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
         : "Ciao Ischia Transfer Service, vorrei informazioni per un transfer privato da [partenza] a [destinazione].";
     const messages = language === 'en'
         ? {
-            bookingUnavailable: 'Online booking is unavailable on this static page. Contact us on WhatsApp for immediate assistance.',
-            bookingSaveError: 'An error occurred while sending your request. Please try again.',
-            heroRequired: 'Please fill in name, email, service, route, date and passenger count before sending your request.',
-            contactRequired: 'Please complete name, email, route, date and passenger count before sending.',
+            bookingUnavailable: 'Online booking is not available on this page. Message us on WhatsApp for a quick reply.',
+            bookingSaveError: 'There was a problem sending your request. Please try again in a moment.',
+            heroRequired: 'Please complete all required fields before sending your request.',
+            contactRequired: 'Please complete all required fields before sending your request.',
             invalidEmail: 'Please enter a valid email address.',
             invalidDate: 'Please enter a valid date in YYYY-MM-DD format that is not in the past.',
             invalidTime: 'Please enter a valid time in HH:MM format.',
@@ -35,15 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
             cookieAccept: 'Accept',
             cookieReject: 'Reject',
             sending: 'Sending your request...',
-            heroSuccess: (reference) => `Request sent successfully (${reference}). Next step: our team checks route and timing, then sends confirmation and pickup details.`,
-            contactSuccess: (reference) => `Request sent successfully (${reference}). Next step: we verify availability and contact you shortly with operational confirmation.`,
+            heroSuccess: (reference) => `Request sent (${reference}). We will get back to you shortly.`,
+            contactSuccess: (reference) => `Request sent (${reference}). We will get back to you shortly.`,
         }
         : {
-            bookingUnavailable: 'Prenotazione online non disponibile su questa pagina statica. Contattaci su WhatsApp per assistenza immediata.',
-            bookingSaveError: 'Si e verificato un errore durante l invio della richiesta. Riprova tra poco.',
-            heroRequired: 'Compila nome, email, servizio, tratta, data e numero persone prima di inviare la richiesta.',
-            contactRequired: 'Compila nome, email, tratta, data e numero persone prima di inviare.',
-            invalidEmail: 'Inserisci un indirizzo email valido.',
+            bookingUnavailable: 'Prenotazione online non disponibile su questa pagina. Scrivici su WhatsApp per una risposta veloce.',
+            bookingSaveError: "Si è verificato un problema durante l'invio della richiesta. Riprova tra poco.",
+            heroRequired: 'Compila tutti i campi obbligatori prima di inviare la richiesta.',
+            contactRequired: 'Compila tutti i campi obbligatori prima di inviare la richiesta.',
+            invalidEmail: 'Inserisci un’email valida.',
             invalidDate: 'Inserisci una data valida nel formato GG-MM-AAAA e non nel passato.',
             invalidTime: 'Inserisci un orario valido nel formato HH:MM.',
             cookieTitle: 'Cookie e analisi di base',
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cookieAccept: 'Accetta',
             cookieReject: 'Rifiuta',
             sending: 'Invio richiesta in corso...',
-            heroSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: verifichiamo tratta e orari, poi ricevi conferma operativa e dettagli pickup.`,
-            contactSuccess: (reference) => `Richiesta inviata con successo (${reference}). Prossimo passaggio: controlliamo disponibilita e ti rispondiamo a breve con conferma operativa.`,
+            heroSuccess: (reference) => `Richiesta inviata (${reference}), ti rispondiamo a breve.`,
+            contactSuccess: (reference) => `Richiesta inviata (${reference}), ti rispondiamo a breve.`,
         };
 
     const safeStorage = {
@@ -526,12 +526,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const draft = readDraft(storageKeys.heroDraft);
         const defaults = {
             name: draft['hero-name'] || '',
-            route: draft['hero-route'] || inferRouteFromPage(),
+            service: draft['hero-service'] || '',
+            arrival: draft['hero-arrival'] || '',
+            route: draft['hero-route'] || '',
             people: draft['hero-people'] || '',
+            luggage: draft['hero-luggage'] || '',
             date: draft['hero-date'] || '',
         };
 
-        ['hero-name', 'hero-route', 'hero-people', 'hero-date'].forEach((fieldName) => {
+        ['hero-name', 'hero-service', 'hero-arrival', 'hero-route', 'hero-people', 'hero-luggage', 'hero-date'].forEach((fieldName) => {
             const field = heroBookingForm.querySelector(`[name="${fieldName}"]`);
             if (field && !field.value && defaults[fieldName.replace('hero-', '')]) {
                 field.value = defaults[fieldName.replace('hero-', '')];
@@ -791,15 +794,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (heroBookingForm) {
-        const heroRouteField = heroBookingForm.querySelector('[name="hero-route"]');
-        if (heroRouteField && !heroRouteField.value) {
-            heroRouteField.value = inferRouteFromPage();
-        }
-
         heroBookingForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(heroBookingForm);
             const service = String(formData.get('hero-service') || '').trim();
+            const arrivalPoint = String(formData.get('hero-arrival') || '').trim();
             const name = String(formData.get('hero-name') || '').trim();
             const email = String(formData.get('hero-email') || '').trim();
             const phone = String(formData.get('hero-phone') || '').trim();
@@ -807,6 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const time = String(formData.get('hero-time') || '').trim();
             const route = String(formData.get('hero-route') || '').trim();
             const people = String(formData.get('hero-people') || '').trim();
+            const luggage = String(formData.get('hero-luggage') || '').trim();
             const notes = String(formData.get('hero-notes') || '').trim();
             const website = String(formData.get('website') || '').trim();
             const heroPeopleField = heroBookingForm.querySelector('[name="hero-people"]');
@@ -814,6 +814,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const missingFields = [];
 
             if (!service) missingFields.push('hero-service');
+            if (!arrivalPoint) missingFields.push('hero-arrival');
             if (!name) missingFields.push('hero-name');
             if (!email) missingFields.push('hero-email');
             if (!date) missingFields.push('hero-date');
@@ -874,15 +875,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const phoneLabel = language === 'en' ? 'Phone' : 'Telefono';
+                const luggageLabel = language === 'en' ? 'Luggage' : 'Bagagli';
+                const detailsLabel = language === 'en' ? 'Final stop' : 'Destinazione finale';
+                const routeLabel = language === 'en' ? 'Route' : 'Tratta';
+                const arrivalLabel = language === 'en' ? 'Arrival point' : 'Punto di arrivo';
+                const detailsParts = [
+                    `${routeLabel}: ${service}`,
+                    `${arrivalLabel}: ${arrivalPoint}`,
+                    `${detailsLabel}: ${route}`,
+                    `${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}`,
+                    luggage ? `${luggageLabel}: ${luggage}` : '',
+                    phone ? `${phoneLabel}: ${phone}` : '',
+                    notes ? `${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : '',
+                ].filter(Boolean);
                 const booking = await postBooking({
                     service,
-                    route,
+                    route: `${service} | ${arrivalPoint} | ${route}`,
                     date,
                     time,
                     name,
                     email,
                     phone,
-                    details: `${phone ? `${phoneLabel}: ${phone} | ` : ''}${language === 'en' ? 'Passengers' : 'Passeggeri'}: ${people || 'n/a'}${notes ? ` | ${language === 'en' ? 'Notes' : 'Note'}: ${notes}` : ''}`,
+                    details: detailsParts.join(' | '),
                     source: 'PUBLIC_HERO_WIDGET',
                     website,
                 });
@@ -1038,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bindFormOpenTracking(heroBookingForm, 'hero-booking-form', 'PUBLIC_HERO_WIDGET');
     bindFormOpenTracking(contactForm, 'contact-form', 'PUBLIC_CONTACT_FORM');
     bindDraftPersistence(contactForm, storageKeys.contactDraft, ['name', 'route', 'people', 'date']);
-    bindDraftPersistence(heroBookingForm, storageKeys.heroDraft, ['hero-name', 'hero-route', 'hero-people', 'hero-date']);
+    bindDraftPersistence(heroBookingForm, storageKeys.heroDraft, ['hero-name', 'hero-service', 'hero-arrival', 'hero-route', 'hero-people', 'hero-luggage', 'hero-date']);
     prefillHeroForm();
     prefillContactForm();
     applyDateTimeConstraints();
