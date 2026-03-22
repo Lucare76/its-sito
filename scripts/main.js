@@ -594,22 +594,50 @@ document.addEventListener('DOMContentLoaded', () => {
         return `ITS-${year}-${num}`;
     };
 
+    const formatBookingDateForEmail = (value) => {
+        const normalized = normalizeDateForValidation(value);
+        if (!normalized) {
+            return String(value || '').trim();
+        }
+        if (language === 'it') {
+            const [year, month, day] = normalized.split('-');
+            return `${day}-${month}-${year}`;
+        }
+        return normalized;
+    };
+
+    const normalizePeopleForEmail = (value) => {
+        const raw = String(value || '').trim();
+        if (!raw) {
+            return 'n/a';
+        }
+        return raw
+            .replace(/\b(persone|passengers?|people)\b/gi, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+    };
+
     const postBookingEmailJs = async (payload) => {
+        if (typeof emailjs === 'undefined' || typeof emailjs.send !== 'function') {
+            throw new Error(messages.bookingSaveError);
+        }
+
         const reference = generateReference();
         const details = payload.details || 'Nessun dettaglio';
+        const fallbackText = language === 'en' ? 'Not provided' : 'Non indicato';
         const phoneFromDetails = (details.match(/(?:Telefono|Phone):\s*([^|]+)/i) || [])[1]?.trim() || '';
-        const people = (details.match(/(?:Passeggeri|Passengers):\s*([^|]+)/i) || [])[1]?.trim() || 'n/a';
+        const people = normalizePeopleForEmail((details.match(/(?:Passeggeri|Passengers):\s*([^|]+)/i) || [])[1]?.trim() || 'n/a');
         const notes = (details.match(/(?:Note|Notes):\s*([^|]+)/i) || [])[1]?.trim() || '';
 
         await emailjs.send('service_436gahf', 'template_wmuj1zo', {
             reference,
             name: payload.name,
             email: payload.email,
-            phone: payload.phone || phoneFromDetails || 'Non indicato',
+            phone: payload.phone || phoneFromDetails || fallbackText,
             service: payload.service,
             route: payload.route,
-            date: payload.date,
-            time: payload.time || 'Non indicato',
+            date: formatBookingDateForEmail(payload.date),
+            time: payload.time || fallbackText,
             people,
             details: notes,
         });
