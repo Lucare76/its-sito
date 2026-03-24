@@ -68,7 +68,7 @@
     }
 
     .btn-primary {
-        @apply inline-flex items-center gap-2 rounded-full bg-lemonYellow px-7 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-lemonYellow px-7 py-3 text-center text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:shadow-lg;
         min-height: 3rem;
         box-shadow: 0 10px 30px rgba(250, 204, 21, 0.08);
     }
@@ -78,7 +78,7 @@
     }
 
     .btn-secondary {
-        @apply inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:bg-white;
+        @apply inline-flex items-center justify-center gap-2 rounded-full border px-7 py-3 text-center text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:bg-white;
         border-color: rgba(30, 58, 138, 0.15);
         background-color: rgba(255, 255, 255, 0.75);
     }
@@ -793,6 +793,10 @@
     }
 
     @media (max-width: 768px) {
+        body {
+            line-height: 1.6;
+        }
+
         .nav-shell {
             margin-top: 0.75rem;
             border-radius: 1.5rem;
@@ -808,6 +812,7 @@
             width: 100%;
             justify-content: center;
             min-height: 3.25rem;
+            padding: 0.95rem 1.5rem;
             font-size: 0.95rem;
         }
 
@@ -832,8 +837,108 @@
         .fleet-copy,
         .trust-panel,
         .utility-card,
-        .contact-card {
-            padding: 1.5rem;
+        .contact-card,
+        .process-step-card,
+        .booking-card,
+        .cta-banner {
+            padding: 1.6rem;
+        }
+
+        .hero-section .eyebrow,
+        .hero-section h1,
+        .section-heading .eyebrow,
+        .section-heading h2,
+        .service-card h3,
+        .fleet-copy h3,
+        .benefit-card h3,
+        .utility-card h3,
+        .process-step-card h3,
+        .cta-banner .cta-kicker,
+        .cta-banner h2,
+        .footer-title,
+        .contact-card h2 {
+            text-align: center;
+        }
+
+        .hero-section h1,
+        .section-heading h2,
+        .cta-banner h2,
+        .contact-card h2,
+        .service-card h3,
+        .fleet-copy h3,
+        .benefit-card h3,
+        .utility-card h3,
+        .process-step-card h3 {
+            margin-bottom: 0.9rem;
+            text-wrap: balance;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-section > div p,
+        .section-heading p,
+        .service-card p,
+        .fleet-copy p,
+        .benefit-card p,
+        .utility-card p,
+        .process-step-card p,
+        .cta-banner p,
+        .footer-text,
+        .footer-legal,
+        .contact-info-item,
+        .contact-card > p:not(#contact-feedback),
+        .booking-card > div > p:not(#hero-booking-feedback) {
+            text-align: left;
+            line-height: 1.65;
+            max-width: 31ch;
+            margin-left: 0;
+            margin-right: auto;
+            text-wrap: pretty;
+        }
+
+        .section-heading p,
+        .service-card p,
+        .fleet-copy p,
+        .benefit-card p,
+        .utility-card p,
+        .process-step-card p,
+        .cta-banner p,
+        .footer-text,
+        .contact-card > p:not(#contact-feedback),
+        .booking-card > div > p:not(#hero-booking-feedback) {
+            margin-top: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .hero-section .stat-card,
+        .utility-links,
+        .cta-banner > div {
+            justify-items: center;
+        }
+
+        .cta-banner > div,
+        .utility-links {
+            margin-top: 1.25rem;
+        }
+
+        .booking-card .cta-actions-equal {
+            justify-items: center;
+            align-items: center;
+        }
+
+        .cta-banner .cta-actions-equal {
+            justify-items: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section-heading,
+        .hero-section > div,
+        .cta-banner,
+        .contact-card,
+        .booking-card {
+            row-gap: 0.9rem;
         }
 
         .fleet-image-shell {
@@ -841,7 +946,6 @@
         }
 
         .booking-card {
-            padding: 1.25rem;
             border-radius: 1.5rem;
         }
 
@@ -876,7 +980,8 @@
 
         .hero-section p {
             font-size: 1rem;
-            line-height: 1.65;
+            line-height: 1.7;
+            max-width: 28ch;
         }
 
         .hero-overlay {
@@ -901,7 +1006,9 @@
         .section-heading p,
         .service-card p,
         .fleet-copy p,
-        .utility-card p {
+        .utility-card p,
+        .process-step-card p,
+        .cta-banner p {
             font-size: 1rem;
             line-height: 1.7;
         }
