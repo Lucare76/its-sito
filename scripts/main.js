@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
     };
+    const pathname = window.location.pathname || '/';
+    const isHomepage = /(?:^\/$|\/index\.html$|\/en\/$|\/en\/index\.html$)/i.test(pathname);
     const getCookieConsent = () => {
         const value = String(safeLocalStorage.get(storageKeys.cookieConsent) || '').trim().toLowerCase();
         return value === 'accepted' || value === 'rejected' ? value : '';
@@ -427,6 +429,97 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const inferEventPosition = (element) => {
+        if (!(element instanceof Element)) {
+            return 'unknown';
+        }
+        if (element.closest('#hero')) {
+            return 'hero';
+        }
+        if (element.closest('.mobile-sticky-cta')) {
+            return 'mobile_sticky';
+        }
+        const section = element.closest('section[id]');
+        if (section instanceof HTMLElement) {
+            return section.id || 'section';
+        }
+        if (element.closest('footer')) {
+            return 'footer';
+        }
+        if (element.closest('header')) {
+            return 'header';
+        }
+        return 'section';
+    };
+
+    const heroFunnelState = {
+        started: false,
+        step1Complete: false,
+        step2Open: false,
+        step2Complete: false,
+        submitted: false,
+        abandonTracked: false,
+    };
+
+    const markHeroFunnelEvent = (eventName, extra = {}) => {
+        if (!isHomepage) {
+            return;
+        }
+        trackEvent(eventName, {
+            form_id: 'hero-booking-form',
+            source: 'PUBLIC_HERO_WIDGET',
+            position: 'hero',
+            ...extra,
+        });
+    };
+
+    const trackScrollDepth = (() => {
+        const thresholds = [25, 50, 75, 100];
+        const fired = new Set();
+
+        return () => {
+            if (!isHomepage) {
+                return;
+            }
+            const scrollTop = window.scrollY || window.pageYOffset || 0;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+            const fullHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, 1);
+            const progress = Math.min(100, Math.round(((scrollTop + viewportHeight) / fullHeight) * 100));
+
+            thresholds.forEach((threshold) => {
+                if (progress >= threshold && !fired.has(threshold)) {
+                    fired.add(threshold);
+                    trackEvent(`scroll_${threshold}`, {
+                        position: 'homepage',
+                        scroll_percent: threshold,
+                        funnel_step: 'scroll_depth',
+                    });
+                }
+            });
+        };
+    })();
+
+    const trackHeroAbandon = () => {
+        if (!isHomepage || heroFunnelState.abandonTracked || heroFunnelState.submitted || !heroFunnelState.started) {
+            return;
+        }
+
+        if (!heroFunnelState.step1Complete) {
+            heroFunnelState.abandonTracked = true;
+            markHeroFunnelEvent('form_abandon_step1', {
+                funnel_step: 'form_abandon_step1',
+            });
+            return;
+        }
+
+        if (heroFunnelState.step2Open && !heroFunnelState.submitted) {
+            heroFunnelState.abandonTracked = true;
+            markHeroFunnelEvent('form_abandon_step2', {
+                funnel_step: 'form_abandon_step2',
+            });
+        }
+    };
+
     const inferRouteFromPage = () => {
         const path = window.location.pathname || '/';
         const key = path.split('/').pop() || (path.endsWith('/en/') ? 'en-index' : 'index');
@@ -544,18 +637,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 field.value = defaults[fieldName.replace('hero-', '')];
             }
         });
+
+        setHeroFormExpanded(heroAdvancedHasValues());
     };
 
     const bindTracking = () => {
-        const ctaElements = document.querySelectorAll('a.btn-primary, button.btn-primary');
+        const ctaElements = document.querySelectorAll('a.btn-primary, button.btn-primary, a.btn-secondary, .service-link, .utility-link');
         ctaElements.forEach((element) => {
             element.addEventListener('click', () => {
                 const label = (element.textContent || '').replace(/\s+/g, ' ').trim();
+                const position = inferEventPosition(element);
                 trackEvent('cta_click', {
                     label,
                     href: element.tagName === 'A' ? element.getAttribute('href') || '' : '',
+                    position,
                     funnel_step: 'cta_click',
                 });
+                if (isHomepage && position === 'hero') {
+                    trackEvent('hero_cta_click', {
+                        label,
+                        href: element.tagName === 'A' ? element.getAttribute('href') || '' : '',
+                        position,
+                        funnel_step: 'hero_cta_click',
+                    });
+                }
             });
         });
 
@@ -564,6 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element.addEventListener('click', () => {
                 trackEvent('whatsapp_click', {
                     href: element.getAttribute('href') || '',
+                    position: inferEventPosition(element),
                     funnel_step: 'whatsapp_click',
                 });
             });
@@ -711,6 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         nav.classList.toggle('scrolled', window.scrollY > 24);
+        document.body.classList.toggle('has-scrolled', window.scrollY > 180);
     };
 
     const syncHeroOffset = () => {
@@ -747,6 +854,101 @@ document.addEventListener('DOMContentLoaded', () => {
         window.setTimeout(() => {
             firstField.focus({ preventScroll: true });
         }, 420);
+    };
+
+    const heroAdvancedContainer = heroBookingForm ? heroBookingForm.querySelector('[data-hero-advanced]') : null;
+    const heroProgressDots = heroBookingForm
+        ? Array.from(heroBookingForm.parentElement?.querySelectorAll('.hero-form-progress-dot') || [])
+        : [];
+    const heroProgressiveRequiredFields = heroBookingForm
+        ? Array.from(heroBookingForm.querySelectorAll('[data-progressive-required="true"]'))
+        : [];
+
+    const setHeroFormExpanded = (expanded) => {
+        if (!heroBookingForm || !heroAdvancedContainer) {
+            return;
+        }
+
+        heroBookingForm.dataset.expanded = expanded ? 'true' : 'false';
+        heroProgressiveRequiredFields.forEach((field) => {
+            if (expanded) {
+                field.setAttribute('required', 'required');
+                return;
+            }
+            field.removeAttribute('required');
+        });
+        heroProgressDots.forEach((dot, index) => {
+            dot.classList.toggle('is-active', expanded ? index <= 1 : index === 0);
+        });
+    };
+
+    const isHeroFormExpanded = () => heroBookingForm?.dataset.expanded === 'true';
+
+    const focusFirstAdvancedHeroField = () => {
+        if (!heroAdvancedContainer) {
+            return;
+        }
+
+        const firstField = heroAdvancedContainer.querySelector('select, input, textarea');
+        if (!firstField) {
+            return;
+        }
+
+        window.setTimeout(() => {
+            firstField.focus({ preventScroll: true });
+        }, 180);
+    };
+
+    const heroAdvancedHasValues = () => {
+        if (!heroAdvancedContainer) {
+            return false;
+        }
+
+        return Array.from(heroAdvancedContainer.querySelectorAll('input, select, textarea')).some((field) => String(field.value || '').trim());
+    };
+
+    const scrollHeroAdvancedIntoView = () => {
+        if (!heroAdvancedContainer) {
+            return;
+        }
+
+        const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 92;
+        const top = heroAdvancedContainer.getBoundingClientRect().top + window.scrollY - navHeight - 12;
+        window.scrollTo({
+            top,
+            behavior: 'smooth',
+        });
+    };
+
+    const pulseHeroAdvanced = () => {
+        if (!heroAdvancedContainer) {
+            return;
+        }
+
+        heroBookingForm?.classList.add('is-expanding');
+        heroAdvancedContainer.classList.add('is-highlighted');
+        window.setTimeout(() => {
+            heroBookingForm?.classList.remove('is-expanding');
+            heroAdvancedContainer.classList.remove('is-highlighted');
+        }, 900);
+    };
+
+    const syncMobileOverlayState = () => {
+        const activeElement = document.activeElement;
+        const isFormFieldActive = Boolean(
+            activeElement &&
+            /^(INPUT|SELECT|TEXTAREA)$/.test(activeElement.tagName) &&
+            window.innerWidth <= 768,
+        );
+        document.body.classList.toggle('form-input-active', isFormFieldActive);
+
+        if (!window.visualViewport || window.innerWidth > 768) {
+            document.body.classList.remove('keyboard-open');
+            return;
+        }
+
+        const keyboardHeight = Math.max(0, window.innerHeight - window.visualViewport.height);
+        document.body.classList.toggle('keyboard-open', keyboardHeight > 140);
     };
 
     const getFocusableElements = (container) => {
@@ -862,8 +1064,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (heroBookingForm) {
+        const markHeroFormStart = () => {
+            if (heroFunnelState.started) {
+                return;
+            }
+            heroFunnelState.started = true;
+            markHeroFunnelEvent('form_start', {
+                funnel_step: 'form_start',
+            });
+        };
+
+        heroBookingForm.addEventListener('focusin', markHeroFormStart, { once: true });
+        heroBookingForm.addEventListener('pointerdown', markHeroFormStart, { once: true });
+
         heroBookingForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+
+            if (!isHeroFormExpanded()) {
+                heroFunnelState.step1Complete = true;
+                markHeroFunnelEvent('form_step1_complete', {
+                    funnel_step: 'form_step1_complete',
+                });
+                if (heroBookingSubmit) {
+                    heroBookingSubmit.classList.add('is-advancing');
+                }
+                window.setTimeout(() => {
+                    setHeroFormExpanded(true);
+                    heroFunnelState.step2Open = true;
+                    markHeroFunnelEvent('form_step2_open', {
+                        funnel_step: 'form_step2_open',
+                    });
+                    scrollHeroAdvancedIntoView();
+                    pulseHeroAdvanced();
+                    focusFirstAdvancedHeroField();
+                    if (heroBookingSubmit) {
+                        heroBookingSubmit.classList.remove('is-advancing');
+                    }
+                }, 150);
+                return;
+            }
+
             const formData = new FormData(heroBookingForm);
             const service = String(formData.get('hero-service') || '').trim();
             const arrivalPoint = String(formData.get('hero-arrival') || '').trim();
@@ -930,9 +1170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            heroFunnelState.step2Complete = true;
+            markHeroFunnelEvent('form_step2_complete', {
+                funnel_step: 'form_step2_complete',
+            });
             trackEvent('form_submit', {
                 form_id: 'hero-booking-form',
                 source: 'PUBLIC_HERO_WIDGET',
+                position: 'hero',
                 funnel_step: 'form_submit',
             });
 
@@ -974,7 +1219,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     messages.heroSuccess(booking.reference),
                     'success',
                 );
+                heroFunnelState.submitted = true;
                 heroBookingForm.reset();
+                setHeroFormExpanded(false);
                 clearDraft(storageKeys.heroDraft);
             } catch (error) {
                 trackFormError({
@@ -1121,6 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bindFormOpenTracking(contactForm, 'contact-form', 'PUBLIC_CONTACT_FORM');
     bindDraftPersistence(contactForm, storageKeys.contactDraft, ['name', 'route', 'people', 'date']);
     bindDraftPersistence(heroBookingForm, storageKeys.heroDraft, ['hero-name', 'hero-service', 'hero-arrival', 'hero-route', 'hero-people', 'hero-luggage', 'hero-date']);
+    setHeroFormExpanded(false);
     prefillHeroForm();
     prefillContactForm();
     applyDateTimeConstraints();
@@ -1130,16 +1378,34 @@ document.addEventListener('DOMContentLoaded', () => {
     syncHeroOffset();
     syncNavState();
     syncScrollTopButton();
+    syncMobileOverlayState();
+    trackScrollDepth();
     window.addEventListener('scroll', syncNavState, { passive: true });
     window.addEventListener('scroll', syncScrollTopButton, { passive: true });
+    window.addEventListener('scroll', trackScrollDepth, { passive: true });
     window.addEventListener('resize', () => {
         syncHeroOffset();
+        syncMobileOverlayState();
         if (window.innerWidth >= 1024) {
             closeMobileMenu();
         }
     });
 
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', syncHeroOffset, { passive: true });
+        window.visualViewport.addEventListener('resize', () => {
+            syncHeroOffset();
+            syncMobileOverlayState();
+        }, { passive: true });
     }
+
+    document.addEventListener('focusin', syncMobileOverlayState);
+    document.addEventListener('focusout', () => {
+        window.setTimeout(syncMobileOverlayState, 40);
+    });
+    window.addEventListener('pagehide', trackHeroAbandon);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            trackHeroAbandon();
+        }
+    });
 });

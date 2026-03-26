@@ -282,8 +282,8 @@
     </div>
 
     <div class="card">
-      <strong>Analytics eventi</strong>
-      <p class="small">Export rapido JSON/CSV e ultimi eventi del funnel.</p>
+      <strong>KPI Homepage</strong>
+      <p class="small">Quadro rapido delle conversioni homepage IT + EN basato sugli eventi tracciati.</p>
       <div class="toolbar">
         <button id="analytics-refresh-btn" class="secondary" type="button" disabled>Aggiorna analytics</button>
         <button id="analytics-export-json-btn" class="secondary" type="button" disabled>Export JSON</button>
@@ -292,30 +292,29 @@
         <button id="analytics-save-snapshot-btn" class="secondary" type="button" disabled>Salva snapshot</button>
       </div>
       <div class="metrics">
-        <div class="metric"><span class="small">Totale eventi</span><strong id="analytics-total">0</strong></div>
-        <div class="metric"><span class="small">CTA click</span><strong id="analytics-cta">0</strong></div>
+        <div class="metric"><span class="small">Page view</span><strong id="analytics-total">0</strong></div>
+        <div class="metric"><span class="small">Hero CTA</span><strong id="analytics-cta">0</strong></div>
         <div class="metric"><span class="small">Form submit</span><strong id="analytics-submit">0</strong></div>
         <div class="metric"><span class="small">WhatsApp click</span><strong id="analytics-whatsapp">0</strong></div>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Quando</th>
-            <th>Evento</th>
-            <th>Pagina</th>
-            <th>Form/Label</th>
-            <th>UTM</th>
+            <th>KPI</th>
+            <th>Valore</th>
+            <th>Formula</th>
+            <th>Nota</th>
           </tr>
         </thead>
         <tbody id="analytics-body">
-          <tr><td colspan="5" class="small">Nessun dato</td></tr>
+          <tr><td colspan="4" class="small">Nessun dato</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="card">
       <strong>Drop-off Funnel</strong>
-      <p class="small">Percorso base: CTA click → Form open → Form submit → WhatsApp.</p>
+      <p class="small">Percorso homepage: Hero CTA → Form start → Step 1 → Step 2 open → Step 2 complete → Submit.</p>
       <table class="funnel-table">
         <thead>
           <tr>
@@ -335,99 +334,103 @@
 
     <div class="card">
       <strong>Segmenti Lingua e Dispositivo</strong>
-      <p class="small">Confronto rapido tra conversioni per lingua e device type.</p>
+      <p class="small">Confronto rapido tra homepage IT / EN e quota submit per device.</p>
       <table>
         <thead>
           <tr>
             <th>Lingua</th>
-            <th>CTA</th>
+            <th>Page view</th>
+            <th>Hero CTA</th>
             <th>Submit</th>
             <th>WhatsApp</th>
             <th>Conv. finale</th>
           </tr>
         </thead>
         <tbody id="language-segment-body">
-          <tr><td colspan="5" class="small">Nessun dato lingua</td></tr>
+          <tr><td colspan="6" class="small">Nessun dato lingua</td></tr>
         </tbody>
       </table>
       <table>
         <thead>
           <tr>
             <th>Dispositivo</th>
-            <th>CTA</th>
+            <th>Page view</th>
+            <th>Hero CTA</th>
             <th>Submit</th>
             <th>WhatsApp</th>
             <th>Conv. finale</th>
           </tr>
         </thead>
         <tbody id="device-segment-body">
-          <tr><td colspan="5" class="small">Nessun dato dispositivo</td></tr>
+          <tr><td colspan="6" class="small">Nessun dato dispositivo</td></tr>
         </tbody>
       </table>
       <div id="segment-summary" class="hint">Nessun report segmenti disponibile.</div>
     </div>
 
     <div class="card">
-      <strong>Funnel per UTM</strong>
-      <p class="small">Raggruppamento rapido per `source / campaign` quando disponibili.</p>
+      <strong>CTA per Posizione</strong>
+      <p class="small">Dove cliccano di piu e quali posizioni portano piu submit.</p>
       <table>
         <thead>
           <tr>
-            <th>Canale</th>
+            <th>Posizione</th>
             <th>CTA</th>
-            <th>Open</th>
+            <th>Hero CTA</th>
             <th>Submit</th>
             <th>WhatsApp</th>
-            <th>Conversione finale</th>
+            <th>Submit / CTA</th>
           </tr>
         </thead>
         <tbody id="utm-funnel-body">
-          <tr><td colspan="6" class="small">Nessun dato UTM</td></tr>
+          <tr><td colspan="6" class="small">Nessun dato posizione</td></tr>
         </tbody>
       </table>
-      <div id="utm-summary" class="hint">Nessun confronto canali disponibile.</div>
+      <div id="utm-summary" class="hint">Nessun confronto posizioni disponibile.</div>
     </div>
 
     <div class="card">
-      <strong>Top Pagine per Conversione</strong>
-      <p class="small">Confronto rapido tra landing in base al funnel finale WhatsApp / CTA.</p>
+      <strong>Abbandoni Form</strong>
+      <p class="small">Punti di uscita principali prima dell'invio della richiesta.</p>
       <table>
         <thead>
           <tr>
-            <th>Pagina</th>
-            <th>CTA</th>
-            <th>Open</th>
-            <th>Submit</th>
-            <th>WhatsApp</th>
-            <th>Conv. finale</th>
+            <th>Fase</th>
+            <th>Abbandoni</th>
+            <th>Base</th>
+            <th>Tasso abbandono</th>
+            <th>Submit finali</th>
+            <th>Nota</th>
           </tr>
         </thead>
         <tbody id="page-ranking-body">
-          <tr><td colspan="6" class="small">Nessun dato pagine</td></tr>
+          <tr><td colspan="6" class="small">Nessun dato abbandoni</td></tr>
         </tbody>
       </table>
-      <div id="page-ranking-summary" class="hint">Nessun ranking disponibile.</div>
+      <div id="page-ranking-summary" class="hint">Nessun dato abbandoni disponibile.</div>
     </div>
 
     <div class="card">
-      <strong>Health Score Landing</strong>
-      <p class="small">Punteggio sintetico per capire quali pagine stanno performando meglio nel funnel.</p>
+      <strong>Funnel per Dispositivo</strong>
+      <p class="small">Confronto separato mobile vs desktop sul funnel completo della homepage.</p>
       <table>
         <thead>
           <tr>
-            <th>Pagina</th>
-            <th>Score</th>
-            <th>Stato</th>
-            <th>CTA</th>
+            <th>Dispositivo</th>
+            <th>Hero CTA</th>
+            <th>Form start</th>
+            <th>Step 1</th>
+            <th>Step 2 open</th>
+            <th>Step 2 complete</th>
             <th>Submit</th>
-            <th>WhatsApp</th>
+            <th>Conv. totale</th>
           </tr>
         </thead>
         <tbody id="health-score-body">
-          <tr><td colspan="6" class="small">Nessun dato score</td></tr>
+          <tr><td colspan="8" class="small">Nessun dato dispositivo</td></tr>
         </tbody>
       </table>
-      <div id="health-score-summary" class="hint">Nessun Health Score disponibile.</div>
+      <div id="health-score-summary" class="hint">Nessun confronto device disponibile.</div>
     </div>
 
     <div class="card">
@@ -573,10 +576,17 @@
     const snapshotSummary = document.getElementById('snapshot-summary');
 
     const funnelSteps = [
-      { event: 'cta_click', label: 'CTA click' },
-      { event: 'form_open', label: 'Form open' },
+      { event: 'hero_cta_click', label: 'Hero CTA' },
+      { event: 'form_start', label: 'Form start' },
+      { event: 'form_step1_complete', label: 'Step 1 complete' },
+      { event: 'form_step2_open', label: 'Step 2 open' },
+      { event: 'form_step2_complete', label: 'Step 2 complete' },
       { event: 'form_submit', label: 'Form submit' },
-      { event: 'whatsapp_click', label: 'WhatsApp' },
+    ];
+    const homepagePageOptions = [
+      { value: 'all', label: 'Homepage IT + EN' },
+      { value: '/', label: 'Homepage IT' },
+      { value: '/en/', label: 'Homepage EN' },
     ];
 
     function ensureAnalyticsFilters() {
@@ -602,7 +612,7 @@
       if (!document.getElementById('analytics-page')) {
         const pageSelect = document.createElement('select');
         pageSelect.id = 'analytics-page';
-        pageSelect.innerHTML = '<option value="all">Tutte le pagine</option>';
+        pageSelect.innerHTML = '<option value="all">Homepage IT + EN</option>';
         toolbar.insertBefore(pageSelect, analyticsRefreshBtn);
         pageSelect.addEventListener('change', () => {
           state.analyticsPage = pageSelect.value;
@@ -611,26 +621,21 @@
       }
     }
 
-    function updatePageFilterOptions(items) {
+    function updatePageFilterOptions() {
       const select = document.getElementById('analytics-page');
       if (!select) return;
 
-      const pages = Array.from(new Set(
-        items
-          .map((item) => String(item.pagePath || '').trim())
-          .filter(Boolean)
-      )).sort((a, b) => a.localeCompare(b));
-
       const previousValue = state.analyticsPage;
-      select.innerHTML = '<option value="all">Tutte le pagine</option>';
-      pages.forEach((page) => {
+      select.innerHTML = '';
+      homepagePageOptions.forEach((page) => {
         const option = document.createElement('option');
-        option.value = page;
-        option.textContent = page;
+        option.value = page.value;
+        option.textContent = page.label;
         select.appendChild(option);
       });
 
-      if (previousValue !== 'all' && pages.includes(previousValue)) {
+      const allowedValues = homepagePageOptions.map((item) => item.value);
+      if (previousValue !== 'all' && allowedValues.includes(previousValue)) {
         select.value = previousValue;
       } else {
         select.value = 'all';
@@ -805,8 +810,87 @@
       bookingKpiSummary.textContent = `Richieste totali: ${total}. Confermate: ${confirmedItems.length} (${formatPercent((confirmedItems.length / total) * 100)}). Cancellate: ${cancelled}. Tempo medio conferma: ${bookingConfirmTime.textContent}.`;
     }
 
+    function getItemValue(item, ...keys) {
+      for (const key of keys) {
+        if (item && item[key] !== undefined && item[key] !== null && item[key] !== '') {
+          return item[key];
+        }
+      }
+      return '';
+    }
+
+    function normalizeHomepagePath(value) {
+      const path = String(value || '').trim();
+      if (!path) return '';
+      if (path === '/' || path === '/index.html') return '/';
+      if (path === '/en' || path === '/en/' || path === '/en/index.html') return '/en/';
+      return path;
+    }
+
+    function getItemPagePath(item) {
+      return normalizeHomepagePath(getItemValue(item, 'pagePath', 'page_path'));
+    }
+
+    function getItemDeviceType(item) {
+      return String(getItemValue(item, 'deviceType', 'device_type') || '').trim();
+    }
+
+    function getItemLang(item) {
+      return String(getItemValue(item, 'lang') || '').trim();
+    }
+
+    function getItemPosition(item) {
+      return String(getItemValue(item, 'position') || '').trim();
+    }
+
+    function getItemCreatedAt(item) {
+      return String(getItemValue(item, 'createdAt', 'created_at') || '').trim();
+    }
+
+    function getItemFunnelStep(item) {
+      return String(getItemValue(item, 'funnelStep', 'funnel_step') || '').trim();
+    }
+
+    function getItemPageLabel(item) {
+      const pagePath = getItemPagePath(item);
+      if (pagePath === '/') return 'IT';
+      if (pagePath === '/en/') return 'EN';
+      return pagePath || 'n/d';
+    }
+
+    function isHomepageItem(item) {
+      const pagePath = getItemPagePath(item);
+      return pagePath === '/' || pagePath === '/en/';
+    }
+
     function countEvents(items, eventName) {
       return items.filter((item) => item.event === eventName).length;
+    }
+
+    function safeRate(numerator, denominator) {
+      if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator <= 0) {
+        return null;
+      }
+      return (numerator / denominator) * 100;
+    }
+
+    function formatRate(value) {
+      return value === null ? 'n/d' : formatPercent(value);
+    }
+
+    function buildHomepageMetrics(items) {
+      return {
+        pageView: countEvents(items, 'page_view'),
+        heroCta: countEvents(items, 'hero_cta_click'),
+        formStart: countEvents(items, 'form_start'),
+        step1Complete: countEvents(items, 'form_step1_complete'),
+        step2Open: countEvents(items, 'form_step2_open'),
+        step2Complete: countEvents(items, 'form_step2_complete'),
+        submit: countEvents(items, 'form_submit'),
+        whatsapp: countEvents(items, 'whatsapp_click'),
+        abandonStep1: countEvents(items, 'form_abandon_step1'),
+        abandonStep2: countEvents(items, 'form_abandon_step2'),
+      };
     }
 
     function formatPercent(value) {
@@ -831,7 +915,7 @@
       }
 
       return items.filter((item) => {
-        const createdAt = Date.parse(item.createdAt || '');
+        const createdAt = Date.parse(getItemCreatedAt(item));
         return Number.isFinite(createdAt) && (now - createdAt) <= limit;
       });
     }
@@ -841,7 +925,7 @@
         return items;
       }
 
-      return items.filter((item) => String(item.pagePath || '').trim() === state.analyticsPage);
+      return items.filter((item) => getItemPagePath(item) === state.analyticsPage);
     }
 
     function getPreviousRangeItems(items) {
@@ -861,7 +945,7 @@
       }
 
       return items.filter((item) => {
-        const createdAt = Date.parse(item.createdAt || '');
+        const createdAt = Date.parse(getItemCreatedAt(item));
         if (!Number.isFinite(createdAt)) {
           return false;
         }
@@ -890,25 +974,33 @@
         return;
       }
 
-      const currentStats = buildFunnelStats(currentItems);
-      const previousStats = buildFunnelStats(previousItems);
-      const currentFinal = currentStats[0].total > 0 ? (currentStats[3].total / currentStats[0].total) * 100 : 0;
-      const previousFinal = previousStats[0].total > 0 ? (previousStats[3].total / previousStats[0].total) * 100 : 0;
-      const currentSubmitRate = currentStats[1].total > 0 ? (currentStats[2].total / currentStats[1].total) * 100 : 0;
-      const previousSubmitRate = previousStats[1].total > 0 ? (previousStats[2].total / previousStats[1].total) * 100 : 0;
-      const ctaDelta = formatDelta(currentStats[0].total, previousStats[0].total);
+      const currentMetrics = buildHomepageMetrics(currentItems);
+      const previousMetrics = buildHomepageMetrics(previousItems);
+      const currentFinal = safeRate(currentMetrics.submit, currentMetrics.pageView) ?? 0;
+      const previousFinal = safeRate(previousMetrics.submit, previousMetrics.pageView) ?? 0;
+      const currentSubmitRate = safeRate(currentMetrics.submit, currentMetrics.step2Open) ?? 0;
+      const previousSubmitRate = safeRate(previousMetrics.submit, previousMetrics.step2Open) ?? 0;
+      const ctaDelta = formatDelta(currentMetrics.heroCta, previousMetrics.heroCta);
       const finalDelta = formatDelta(currentFinal, previousFinal);
       const submitDelta = formatDelta(currentSubmitRate, previousSubmitRate);
       const isPositive = currentFinal >= previousFinal;
-      const scopeLabel = state.analyticsPage === 'all' ? 'tutte le pagine' : state.analyticsPage;
+      const scopeLabel = state.analyticsPage === 'all' ? 'homepage IT + EN' : homepagePageOptions.find((item) => item.value === state.analyticsPage)?.label || state.analyticsPage;
 
       funnelTrend.className = `hint ${isPositive ? 'trend-up' : 'trend-down'}`;
-      funnelTrend.textContent = `Trend vs periodo precedente (${scopeLabel}): CTA ${ctaDelta}, conversione finale ${finalDelta}, passaggio Form open → Form submit ${submitDelta}.`;
+      funnelTrend.textContent = `Trend vs periodo precedente (${scopeLabel}): Hero CTA ${ctaDelta}, conversione totale ${finalDelta}, passaggio Step 2 open → Submit ${submitDelta}.`;
     }
 
     function buildFunnelStats(items) {
+      const metrics = buildHomepageMetrics(items);
       return funnelSteps.map((step, index) => {
-        const total = countEvents(items, step.event);
+        const total = metrics[
+          step.event === 'hero_cta_click' ? 'heroCta'
+            : step.event === 'form_start' ? 'formStart'
+            : step.event === 'form_step1_complete' ? 'step1Complete'
+            : step.event === 'form_step2_open' ? 'step2Open'
+            : step.event === 'form_step2_complete' ? 'step2Complete'
+            : 'submit'
+        ];
         const previousTotal = index === 0 ? total : countEvents(items, funnelSteps[index - 1].event);
         const conversion = index === 0 ? 100 : (previousTotal > 0 ? (total / previousTotal) * 100 : 0);
         const dropoff = index === 0 ? 0 : Math.max(previousTotal - total, 0);
@@ -922,9 +1014,10 @@
     }
 
     function getCurrentAnalyticsScope(items) {
-      const pageScopedItems = filterAnalyticsByPage(items);
+      const homepageItems = items.filter((item) => isHomepageItem(item));
+      const pageScopedItems = filterAnalyticsByPage(homepageItems);
       const filteredItems = filterAnalyticsByRange(pageScopedItems);
-      const previousItems = filterAnalyticsByPage(getPreviousRangeItems(items));
+      const previousItems = filterAnalyticsByPage(getPreviousRangeItems(homepageItems));
       return { filteredItems, previousItems };
     }
 
@@ -970,7 +1063,7 @@
       const grouped = new Map();
 
       items.forEach((item) => {
-        const key = getUtmKey(item);
+        const key = getItemPosition(item) || 'n/d';
         if (!key) return;
         if (!grouped.has(key)) {
           grouped.set(key, []);
@@ -979,21 +1072,21 @@
       });
 
       const rows = Array.from(grouped.entries()).map(([key, groupItems]) => {
-        const stats = buildFunnelStats(groupItems);
-        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        const metrics = buildHomepageMetrics(groupItems);
+        const finalConversion = safeRate(metrics.submit, countEvents(groupItems, 'cta_click')) ?? 0;
         return {
           key,
-          cta: stats[0].total,
-          open: stats[1].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
+          cta: countEvents(groupItems, 'cta_click'),
+          hero: countEvents(groupItems, 'hero_cta_click'),
+          submit: metrics.submit,
+          whatsapp: metrics.whatsapp,
           finalConversion,
         };
-      }).sort((a, b) => b.finalConversion - a.finalConversion);
+      }).sort((a, b) => b.cta - a.cta || b.finalConversion - a.finalConversion);
 
       if (!rows.length) {
-        utmFunnelBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato UTM</td></tr>';
-        utmSummary.textContent = 'Nessun confronto canali disponibile.';
+        utmFunnelBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato posizione</td></tr>';
+        utmSummary.textContent = 'Nessun confronto posizioni disponibile.';
         return;
       }
 
@@ -1001,7 +1094,7 @@
         <tr>
           <td><strong>${row.key}</strong></td>
           <td>${row.cta}</td>
-          <td>${row.open}</td>
+          <td>${row.hero}</td>
           <td>${row.submit}</td>
           <td>${row.whatsapp}</td>
           <td>${formatPercent(row.finalConversion)}</td>
@@ -1010,61 +1103,49 @@
 
       const best = rows[0];
       const worst = rows[rows.length - 1];
-      utmSummary.textContent = `Canale migliore: ${best.key} (${formatPercent(best.finalConversion)}). Canale più debole: ${worst.key} (${formatPercent(worst.finalConversion)}).`;
+      utmSummary.textContent = `Posizione più cliccata: ${best.key} (${best.cta} click). Posizione più debole: ${worst.key} (${formatPercent(worst.finalConversion)} submit / CTA).`;
     }
 
     function renderPageRanking(items) {
-      const grouped = new Map();
-
-      items.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
-        if (!pagePath) return;
-        if (!grouped.has(pagePath)) {
-          grouped.set(pagePath, []);
-        }
-        grouped.get(pagePath).push(item);
-      });
-
-      const rows = Array.from(grouped.entries()).map(([pagePath, pageItems]) => {
-        const stats = buildFunnelStats(pageItems);
-        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
-        return {
-          pagePath,
-          cta: stats[0].total,
-          open: stats[1].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
-          finalConversion,
-        };
-      })
-        .filter((item) => item.cta > 0 || item.open > 0 || item.submit > 0 || item.whatsapp > 0)
-        .sort((a, b) => {
-          if (b.finalConversion !== a.finalConversion) {
-            return b.finalConversion - a.finalConversion;
-          }
-          return b.whatsapp - a.whatsapp;
-        });
+      const metrics = buildHomepageMetrics(items);
+      const rows = [
+        {
+          phase: 'Step 1',
+          abandon: metrics.abandonStep1,
+          base: metrics.formStart,
+          rate: safeRate(metrics.abandonStep1, metrics.formStart),
+          submit: metrics.submit,
+          note: 'Utenti che iniziano il form ma non arrivano allo step 2.',
+        },
+        {
+          phase: 'Step 2',
+          abandon: metrics.abandonStep2,
+          base: metrics.step2Open,
+          rate: safeRate(metrics.abandonStep2, metrics.step2Open),
+          submit: metrics.submit,
+          note: 'Utenti che aprono il secondo blocco ma non inviano.',
+        },
+      ];
 
       if (!rows.length) {
-        pageRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato pagine</td></tr>';
-        pageRankingSummary.textContent = 'Nessun ranking disponibile.';
+        pageRankingBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato abbandoni</td></tr>';
+        pageRankingSummary.textContent = 'Nessun dato abbandoni disponibile.';
         return;
       }
 
-      pageRankingBody.innerHTML = rows.slice(0, 10).map((row) => `
+      pageRankingBody.innerHTML = rows.map((row) => `
         <tr>
-          <td><strong>${row.pagePath}</strong></td>
-          <td>${row.cta}</td>
-          <td>${row.open}</td>
+          <td><strong>${row.phase}</strong></td>
+          <td>${row.abandon}</td>
+          <td>${row.base}</td>
+          <td>${formatRate(row.rate)}</td>
           <td>${row.submit}</td>
-          <td>${row.whatsapp}</td>
-          <td>${formatPercent(row.finalConversion)}</td>
+          <td>${row.note}</td>
         </tr>
       `).join('');
 
-      const best = rows[0];
-      const worst = rows[rows.length - 1];
-      pageRankingSummary.textContent = `Pagina migliore: ${best.pagePath} (${formatPercent(best.finalConversion)}). Pagina più debole: ${worst.pagePath} (${formatPercent(worst.finalConversion)}).`;
+      const worst = rows.slice().sort((a, b) => (b.rate ?? -1) - (a.rate ?? -1))[0];
+      pageRankingSummary.textContent = `Abbandono più alto su ${worst.phase}: ${worst.abandon} utenti, tasso ${formatRate(worst.rate)}.`;
     }
 
     function clamp(value, min, max) {
@@ -1079,19 +1160,23 @@
 
     function computeHealthScore(stats) {
       const cta = stats[0].total;
-      const open = stats[1].total;
-      const submit = stats[2].total;
-      const whatsapp = stats[3].total;
-      const openRate = cta > 0 ? (open / cta) * 100 : 0;
-      const submitRate = open > 0 ? (submit / open) * 100 : 0;
-      const whatsappRate = submit > 0 ? (whatsapp / submit) * 100 : 0;
-      const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+      const start = stats[1].total;
+      const step1 = stats[2].total;
+      const step2Open = stats[3].total;
+      const step2Complete = stats[4].total;
+      const submit = stats[5].total;
+      const startRate = cta > 0 ? (start / cta) * 100 : 0;
+      const step1Rate = start > 0 ? (step1 / start) * 100 : 0;
+      const step2Rate = step2Open > 0 ? (step2Complete / step2Open) * 100 : 0;
+      const submitRate = step2Open > 0 ? (submit / step2Open) * 100 : 0;
+      const finalRate = cta > 0 ? (submit / cta) * 100 : 0;
 
       const weighted = (
-        (openRate * 0.2) +
-        (submitRate * 0.3) +
-        (whatsappRate * 0.2) +
-        (finalRate * 0.3)
+        (startRate * 0.2) +
+        (step1Rate * 0.2) +
+        (step2Rate * 0.25) +
+        (submitRate * 0.15) +
+        (finalRate * 0.2)
       );
 
       return Math.round(clamp(weighted, 0, 100));
@@ -1101,48 +1186,52 @@
       const grouped = new Map();
 
       items.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
-        if (!pagePath) return;
-        if (!grouped.has(pagePath)) {
-          grouped.set(pagePath, []);
+        const deviceType = getItemDeviceType(item) || 'n/d';
+        if (!grouped.has(deviceType)) {
+          grouped.set(deviceType, []);
         }
-        grouped.get(pagePath).push(item);
+        grouped.get(deviceType).push(item);
       });
 
-      const rows = Array.from(grouped.entries()).map(([pagePath, pageItems]) => {
-        const stats = buildFunnelStats(pageItems);
+      const rows = Array.from(grouped.entries()).map(([deviceType, deviceItems]) => {
+        const stats = buildFunnelStats(deviceItems);
+        const metrics = buildHomepageMetrics(deviceItems);
         return {
-          pagePath,
-          score: computeHealthScore(stats),
-          label: getHealthLabel(computeHealthScore(stats)),
-          cta: stats[0].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
+          deviceType,
+          heroCta: metrics.heroCta,
+          formStart: metrics.formStart,
+          step1Complete: metrics.step1Complete,
+          step2Open: metrics.step2Open,
+          step2Complete: metrics.step2Complete,
+          submit: metrics.submit,
+          totalConversion: safeRate(metrics.submit, metrics.pageView),
         };
       })
-        .filter((item) => item.cta > 0 || item.submit > 0 || item.whatsapp > 0)
-        .sort((a, b) => b.score - a.score);
+        .filter((item) => item.heroCta > 0 || item.formStart > 0 || item.submit > 0)
+        .sort((a, b) => (b.totalConversion ?? -1) - (a.totalConversion ?? -1));
 
       if (!rows.length) {
-        healthScoreBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato score</td></tr>';
-        healthScoreSummary.textContent = 'Nessun Health Score disponibile.';
+        healthScoreBody.innerHTML = '<tr><td colspan="8" class="small">Nessun dato dispositivo</td></tr>';
+        healthScoreSummary.textContent = 'Nessun confronto device disponibile.';
         return;
       }
 
-      healthScoreBody.innerHTML = rows.slice(0, 10).map((row) => `
+      healthScoreBody.innerHTML = rows.map((row) => `
         <tr>
-          <td><strong>${row.pagePath}</strong></td>
-          <td>${row.score}/100</td>
-          <td>${row.label}</td>
-          <td>${row.cta}</td>
+          <td><strong>${row.deviceType}</strong></td>
+          <td>${row.heroCta}</td>
+          <td>${row.formStart}</td>
+          <td>${row.step1Complete}</td>
+          <td>${row.step2Open}</td>
+          <td>${row.step2Complete}</td>
           <td>${row.submit}</td>
-          <td>${row.whatsapp}</td>
+          <td>${formatRate(row.totalConversion)}</td>
         </tr>
       `).join('');
 
       const best = rows[0];
       const worst = rows[rows.length - 1];
-      healthScoreSummary.textContent = `Landing più sana: ${best.pagePath} (${best.score}/100). Landing più critica: ${worst.pagePath} (${worst.score}/100).`;
+      healthScoreSummary.textContent = `Device migliore: ${best.deviceType} (${formatRate(best.totalConversion)}). Device più debole: ${worst.deviceType} (${formatRate(worst.totalConversion)}).`;
     }
 
     function getFullUtmKey(item) {
@@ -1172,14 +1261,14 @@
       });
 
       const rows = Array.from(grouped.entries()).map(([key, utmItems]) => {
-        const stats = buildFunnelStats(utmItems);
-        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        const metrics = buildHomepageMetrics(utmItems);
+        const finalConversion = safeRate(metrics.submit, metrics.pageView) ?? 0;
         return {
           key,
-          cta: stats[0].total,
-          open: stats[1].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
+          cta: metrics.heroCta,
+          open: metrics.formStart,
+          submit: metrics.submit,
+          whatsapp: metrics.whatsapp,
           finalConversion,
         };
       })
@@ -1217,7 +1306,7 @@
       const grouped = new Map();
 
       items.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
+        const pagePath = getItemPagePath(item);
         const utmKey = getFullUtmKey(item);
         if (!pagePath || !utmKey) return;
         const key = `${pagePath}__${utmKey}`;
@@ -1232,14 +1321,14 @@
       });
 
       const rows = Array.from(grouped.values()).map((entry) => {
-        const stats = buildFunnelStats(entry.items);
-        const finalConversion = stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0;
+        const metrics = buildHomepageMetrics(entry.items);
+        const finalConversion = safeRate(metrics.submit, metrics.pageView) ?? 0;
         return {
-          pagePath: entry.pagePath,
+          pagePath: entry.pagePath === '/' ? 'Homepage IT' : 'Homepage EN',
           utmKey: entry.utmKey,
-          cta: stats[0].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
+          cta: metrics.heroCta,
+          submit: metrics.submit,
+          whatsapp: metrics.whatsapp,
           finalConversion,
         };
       })
@@ -1289,7 +1378,7 @@
       const comboGroups = new Map();
 
       items.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
+        const pagePath = getItemPagePath(item);
         if (pagePath) {
           if (!pageGroups.has(pagePath)) {
             pageGroups.set(pagePath, []);
@@ -1312,38 +1401,39 @@
       });
 
       pageGroups.forEach((pageItems, pagePath) => {
-        const stats = buildFunnelStats(pageItems);
-        const cta = stats[0].total;
-        const open = stats[1].total;
-        const submit = stats[2].total;
-        const whatsapp = stats[3].total;
-        const openRate = cta > 0 ? (open / cta) * 100 : 0;
-        const submitRate = open > 0 ? (submit / open) * 100 : 0;
-        const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+        const metrics = buildHomepageMetrics(pageItems);
+        const cta = metrics.heroCta;
+        const open = metrics.formStart;
+        const step2Open = metrics.step2Open;
+        const submit = metrics.submit;
+        const finalRate = safeRate(submit, metrics.pageView) ?? 0;
+        const openRate = safeRate(open, cta) ?? 0;
+        const submitRate = safeRate(submit, step2Open) ?? 0;
+        const pageLabel = pagePath === '/' ? 'Homepage IT' : 'Homepage EN';
 
         if (cta >= 20 && openRate < 35) {
-          alerts.push(buildAlert(95, pagePath, 'CTA forte ma poco accesso al form', `CTA ${cta}, form open ${open}, passaggio ${formatPercent(openRate)}.`, 'Rendi la CTA più coerente con il blocco successivo e verifica che il passaggio al form sia immediato e chiaro.'));
+          alerts.push(buildAlert(95, pageLabel, 'Hero CTA forte ma poco accesso al form', `Hero CTA ${cta}, form start ${open}, passaggio ${formatPercent(openRate)}.`, 'Verifica che il bottone hero e l’apertura del form siano immediati e comprensibili.'));
         }
-        if (open >= 15 && submitRate < 35) {
-          alerts.push(buildAlert(88, pagePath, 'Utenti aprono il form ma non inviano', `Form open ${open}, submit ${submit}, passaggio ${formatPercent(submitRate)}.`, 'Semplifica il form, riduci attrito nei campi iniziali e chiarisci cosa succede dopo l invio.'));
+        if (step2Open >= 15 && submitRate < 35) {
+          alerts.push(buildAlert(88, pageLabel, 'Utenti aprono lo step 2 ma non inviano', `Step 2 open ${step2Open}, submit ${submit}, passaggio ${formatPercent(submitRate)}.`, "Riduci l'attrito nello step 2 e verifica che il completamento finale sia rapido."));
         }
-        if (cta >= 20 && finalRate < 15) {
-          alerts.push(buildAlert(82, pagePath, 'Conversione finale bassa', `CTA ${cta}, WhatsApp ${whatsapp}, conversione finale ${formatPercent(finalRate)}.`, 'Rinforza fiducia, tempi di risposta, prova sociale e continuità tra promessa della pagina e step finale.'));
+        if (metrics.pageView >= 20 && finalRate < 15) {
+          alerts.push(buildAlert(82, pageLabel, 'Conversione finale bassa', `Page view ${metrics.pageView}, submit ${submit}, conversione finale ${formatPercent(finalRate)}.`, 'Rinforza la continuità tra hero, form e invio finale della richiesta.'));
         }
       });
 
       comboGroups.forEach((entry) => {
-        const stats = buildFunnelStats(entry.items);
-        const cta = stats[0].total;
-        const whatsapp = stats[3].total;
-        const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+        const metrics = buildHomepageMetrics(entry.items);
+        const cta = metrics.heroCta;
+        const submit = metrics.submit;
+        const finalRate = safeRate(submit, metrics.pageView) ?? 0;
 
         if (cta >= 10 && finalRate < 10) {
           alerts.push(buildAlert(
             75,
-            `${entry.pagePath} + ${entry.utmKey}`,
+            `${entry.pagePath === '/' ? 'Homepage IT' : 'Homepage EN'} + ${entry.utmKey}`,
             'Campagna con rendimento debole su landing specifica',
-            `CTA ${cta}, WhatsApp ${whatsapp}, conversione finale ${formatPercent(finalRate)}.`,
+            `Hero CTA ${cta}, submit ${submit}, conversione finale ${formatPercent(finalRate)}.`,
             'Allinea meglio creatività, targeting o messaggio della campagna al contenuto della landing.',
           ));
         }
@@ -1374,7 +1464,9 @@
       const grouped = new Map();
 
       items.forEach((item) => {
-        const key = String(item[fieldName] || '').trim() || fallbackLabel;
+        const key = fieldName === 'lang'
+          ? (getItemLang(item) || fallbackLabel)
+          : (getItemDeviceType(item) || fallbackLabel);
         if (!grouped.has(key)) {
           grouped.set(key, []);
         }
@@ -1382,21 +1474,22 @@
       });
 
       return Array.from(grouped.entries()).map(([key, groupItems]) => {
-        const stats = buildFunnelStats(groupItems);
+        const metrics = buildHomepageMetrics(groupItems);
         return {
           key,
-          cta: stats[0].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
-          finalConversion: stats[0].total > 0 ? (stats[3].total / stats[0].total) * 100 : 0,
+          pageView: metrics.pageView,
+          cta: metrics.heroCta,
+          submit: metrics.submit,
+          whatsapp: metrics.whatsapp,
+          finalConversion: safeRate(metrics.submit, metrics.pageView) ?? 0,
         };
       }).sort((a, b) => b.finalConversion - a.finalConversion);
     }
 
     function renderSegmentReport(items) {
       if (!items.length) {
-        languageSegmentBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato lingua</td></tr>';
-        deviceSegmentBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato dispositivo</td></tr>';
+        languageSegmentBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato lingua</td></tr>';
+        deviceSegmentBody.innerHTML = '<tr><td colspan="6" class="small">Nessun dato dispositivo</td></tr>';
         segmentSummary.textContent = 'Nessun report segmenti disponibile.';
         return;
       }
@@ -1407,6 +1500,7 @@
       languageSegmentBody.innerHTML = languageRows.map((row) => `
         <tr>
           <td><strong>${row.key}</strong></td>
+          <td>${row.pageView}</td>
           <td>${row.cta}</td>
           <td>${row.submit}</td>
           <td>${row.whatsapp}</td>
@@ -1417,6 +1511,7 @@
       deviceSegmentBody.innerHTML = deviceRows.map((row) => `
         <tr>
           <td><strong>${row.key}</strong></td>
+          <td>${row.pageView}</td>
           <td>${row.cta}</td>
           <td>${row.submit}</td>
           <td>${row.whatsapp}</td>
@@ -1426,7 +1521,7 @@
 
       const bestLang = languageRows[0];
       const bestDevice = deviceRows[0];
-      segmentSummary.textContent = `Lingua migliore: ${bestLang ? `${bestLang.key} (${formatPercent(bestLang.finalConversion)})` : 'n/d'}. Dispositivo migliore: ${bestDevice ? `${bestDevice.key} (${formatPercent(bestDevice.finalConversion)})` : 'n/d'}.`;
+      segmentSummary.textContent = `Homepage migliore: ${bestLang ? `${bestLang.key} (${formatPercent(bestLang.finalConversion)})` : 'n/d'}. Device migliore: ${bestDevice ? `${bestDevice.key} (${formatPercent(bestDevice.finalConversion)})` : 'n/d'}.`;
     }
 
     function renderSnapshots() {
@@ -1503,14 +1598,16 @@
       }
 
       const stats = buildFunnelStats(items);
-      const previousStats = buildFunnelStats(previousItems);
-      const scopeLabel = state.analyticsPage === 'all' ? 'tutte le landing' : state.analyticsPage;
-      const cta = stats[0].total;
-      const open = stats[1].total;
-      const submit = stats[2].total;
-      const whatsapp = stats[3].total;
-      const finalRate = cta > 0 ? Math.round((whatsapp / cta) * 100) : 0;
-      const previousFinalRate = previousStats[0].total > 0 ? Math.round((previousStats[3].total / previousStats[0].total) * 100) : 0;
+      const metrics = buildHomepageMetrics(items);
+      const previousMetrics = buildHomepageMetrics(previousItems);
+      const scopeLabel = state.analyticsPage === 'all' ? 'homepage IT + EN' : homepagePageOptions.find((item) => item.value === state.analyticsPage)?.label || state.analyticsPage;
+      const cta = metrics.heroCta;
+      const formStart = metrics.formStart;
+      const step2Open = metrics.step2Open;
+      const submit = metrics.submit;
+      const whatsapp = metrics.whatsapp;
+      const finalRate = Math.round(safeRate(submit, metrics.pageView) ?? 0);
+      const previousFinalRate = Math.round(safeRate(previousMetrics.submit, previousMetrics.pageView) ?? 0);
 
       let criticalIndex = 1;
       for (let index = 2; index < stats.length; index += 1) {
@@ -1523,7 +1620,7 @@
 
       const pageGroups = new Map();
       items.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
+        const pagePath = getItemPagePath(item);
         if (!pagePath) return;
         if (!pageGroups.has(pagePath)) {
           pageGroups.set(pagePath, []);
@@ -1532,10 +1629,10 @@
       });
 
       const bestPage = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
-        const pageStats = buildFunnelStats(pageItems);
+        const pageMetrics = buildHomepageMetrics(pageItems);
         return {
-          pagePath,
-          finalConversion: pageStats[0].total > 0 ? Math.round((pageStats[3].total / pageStats[0].total) * 100) : 0,
+          pagePath: pagePath === '/' ? 'Homepage IT' : 'Homepage EN',
+          finalConversion: Math.round(safeRate(pageMetrics.submit, pageMetrics.pageView) ?? 0),
         };
       }).sort((a, b) => b.finalConversion - a.finalConversion)[0];
 
@@ -1550,10 +1647,10 @@
       });
 
       const bestUtm = Array.from(utmGroups.entries()).map(([key, utmItems]) => {
-        const utmStats = buildFunnelStats(utmItems);
+        const utmMetrics = buildHomepageMetrics(utmItems);
         return {
           key,
-          finalConversion: utmStats[0].total > 0 ? Math.round((utmStats[3].total / utmStats[0].total) * 100) : 0,
+          finalConversion: Math.round(safeRate(utmMetrics.submit, utmMetrics.pageView) ?? 0),
         };
       }).sort((a, b) => b.finalConversion - a.finalConversion)[0];
 
@@ -1562,7 +1659,7 @@
         : `La conversione finale è ${finalRate >= previousFinalRate ? 'in miglioramento' : 'in calo'} rispetto al periodo precedente (${finalRate}% vs ${previousFinalRate}%).`;
 
       const lines = [
-        `Nel filtro corrente (${state.analyticsRange}, ${scopeLabel}) il funnel conta ${cta} CTA, ${open} form open, ${submit} submit e ${whatsapp} click WhatsApp.`,
+        `Nel filtro corrente (${state.analyticsRange}, ${scopeLabel}) il funnel conta ${cta} hero CTA, ${formStart} form start, ${step2Open} aperture step 2, ${submit} submit e ${whatsapp} click WhatsApp.`,
         `La conversione finale è ${finalRate}% e il punto di perdita più critico è tra ${previousStep.label} e ${criticalStep.label}, con passaggio al ${formatPercent(criticalStep.conversion)}.`,
         trendText,
         state.bookings.length ? `Sul lato business risultano ${state.bookings.filter((item) => String(item.status || '').toUpperCase() === 'CONFIRMED').length} booking confermati su ${state.bookings.length} richieste.` : 'Non ci sono ancora dati booking sufficienti per KPI business.',
@@ -1581,22 +1678,22 @@
       }
 
       const priorities = [];
-      const stats = buildFunnelStats(items);
-      const cta = stats[0].total;
-      const open = stats[1].total;
-      const submit = stats[2].total;
-      const whatsapp = stats[3].total;
-      const openRate = cta > 0 ? (open / cta) * 100 : 0;
-      const submitRate = open > 0 ? (submit / open) * 100 : 0;
-      const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
-      const scopeLabel = state.analyticsPage === 'all' ? 'landing principali' : state.analyticsPage;
+      const metrics = buildHomepageMetrics(items);
+      const cta = metrics.heroCta;
+      const open = metrics.formStart;
+      const step2Open = metrics.step2Open;
+      const submit = metrics.submit;
+      const finalRate = safeRate(submit, metrics.pageView) ?? 0;
+      const openRate = safeRate(open, cta) ?? 0;
+      const submitRate = safeRate(submit, step2Open) ?? 0;
+      const scopeLabel = state.analyticsPage === 'all' ? 'homepage principali' : homepagePageOptions.find((item) => item.value === state.analyticsPage)?.label || state.analyticsPage;
 
       if (cta >= 20 && openRate < 35) {
         priorities.push({
           rank: 1,
           scope: scopeLabel,
-          action: 'Rafforzare passaggio CTA → form',
-          reason: `Solo il ${formatPercent(openRate)} passa da CTA a form open su ${cta} click.`,
+          action: 'Rafforzare passaggio Hero CTA → form',
+          reason: `Solo il ${formatPercent(openRate)} passa da Hero CTA a form start su ${cta} click.`,
           score: 100 - openRate,
         });
       }
@@ -1606,24 +1703,24 @@
           rank: 2,
           scope: scopeLabel,
           action: 'Ridurre attrito del form',
-          reason: `Il passaggio Form open → Form submit è ${formatPercent(submitRate)} con ${open} aperture.`,
+          reason: `Il passaggio Step 2 open → Form submit è ${formatPercent(submitRate)} con ${step2Open} aperture.`,
           score: 100 - submitRate,
         });
       }
 
-      if (cta >= 20 && finalRate < 15) {
+      if (metrics.pageView >= 20 && finalRate < 15) {
         priorities.push({
           rank: 3,
           scope: scopeLabel,
-          action: 'Aumentare fiducia e chiusura finale',
-          reason: `La conversione finale WhatsApp/CTA è ${formatPercent(finalRate)} su ${cta} CTA.`,
+          action: 'Alzare la conversione finale della homepage',
+          reason: `La conversione finale submit/page view è ${formatPercent(finalRate)} su ${metrics.pageView} visite.`,
           score: 100 - finalRate,
         });
       }
 
       const pageGroups = new Map();
       items.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
+        const pagePath = getItemPagePath(item);
         if (!pagePath) return;
         if (!pageGroups.has(pagePath)) {
           pageGroups.set(pagePath, []);
@@ -1632,13 +1729,13 @@
       });
 
       const weakestPage = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
-        const pageStats = buildFunnelStats(pageItems);
+        const pageMetrics = buildHomepageMetrics(pageItems);
         return {
-          pagePath,
-          finalRate: pageStats[0].total > 0 ? (pageStats[3].total / pageStats[0].total) * 100 : 0,
-          cta: pageStats[0].total,
+          pagePath: pagePath === '/' ? 'Homepage IT' : 'Homepage EN',
+          finalRate: safeRate(pageMetrics.submit, pageMetrics.pageView) ?? 0,
+          pageView: pageMetrics.pageView,
         };
-      }).filter((item) => item.cta >= 10).sort((a, b) => a.finalRate - b.finalRate)[0];
+      }).filter((item) => item.pageView >= 10).sort((a, b) => a.finalRate - b.finalRate)[0];
 
       if (weakestPage) {
         priorities.push({
@@ -1673,6 +1770,8 @@
 
     function buildInsightsReport(items) {
       const { filteredItems, previousItems } = getCurrentAnalyticsScope(items);
+      const metrics = buildHomepageMetrics(filteredItems);
+      const previousMetrics = buildHomepageMetrics(previousItems);
       const funnel = buildFunnelStats(filteredItems).map((step, index) => ({
         step: step.label,
         total: step.total,
@@ -1690,7 +1789,7 @@
       const alerts = [];
 
       filteredItems.forEach((item) => {
-        const pagePath = String(item.pagePath || '').trim();
+        const pagePath = getItemPagePath(item);
         const utmKey = getFullUtmKey(item);
 
         if (pagePath) {
@@ -1717,72 +1816,74 @@
       });
 
       const topPages = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
-        const stats = buildFunnelStats(pageItems);
+        const pageMetrics = buildHomepageMetrics(pageItems);
         return {
-          pagePath,
-          cta: stats[0].total,
-          open: stats[1].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
-          finalConversion: stats[0].total > 0 ? Math.round((stats[3].total / stats[0].total) * 100) : 0,
+          pagePath: pagePath === '/' ? 'Homepage IT' : 'Homepage EN',
+          cta: pageMetrics.heroCta,
+          open: pageMetrics.formStart,
+          submit: pageMetrics.submit,
+          whatsapp: pageMetrics.whatsapp,
+          finalConversion: Math.round(safeRate(pageMetrics.submit, pageMetrics.pageView) ?? 0),
         };
       }).sort((a, b) => b.finalConversion - a.finalConversion).slice(0, 10);
 
       const healthScore = Array.from(pageGroups.entries()).map(([pagePath, pageItems]) => {
         const stats = buildFunnelStats(pageItems);
         const score = computeHealthScore(stats);
+        const pageMetrics = buildHomepageMetrics(pageItems);
         return {
-          pagePath,
+          pagePath: pagePath === '/' ? 'Homepage IT' : 'Homepage EN',
           score,
           status: getHealthLabel(score),
-          cta: stats[0].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
+          cta: pageMetrics.heroCta,
+          submit: pageMetrics.submit,
+          whatsapp: pageMetrics.whatsapp,
         };
       }).sort((a, b) => b.score - a.score).slice(0, 10);
 
       const topUtm = Array.from(utmGroups.entries()).map(([key, utmItems]) => {
-        const stats = buildFunnelStats(utmItems);
+        const utmMetrics = buildHomepageMetrics(utmItems);
         return {
           key,
-          cta: stats[0].total,
-          open: stats[1].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
-          finalConversion: stats[0].total > 0 ? Math.round((stats[3].total / stats[0].total) * 100) : 0,
+          cta: utmMetrics.heroCta,
+          open: utmMetrics.formStart,
+          submit: utmMetrics.submit,
+          whatsapp: utmMetrics.whatsapp,
+          finalConversion: Math.round(safeRate(utmMetrics.submit, utmMetrics.pageView) ?? 0),
         };
       }).sort((a, b) => b.finalConversion - a.finalConversion).slice(0, 10);
 
       const topPageUtm = Array.from(pageUtmGroups.values()).map((entry) => {
-        const stats = buildFunnelStats(entry.items);
+        const comboMetrics = buildHomepageMetrics(entry.items);
         return {
-          pagePath: entry.pagePath,
+          pagePath: entry.pagePath === '/' ? 'Homepage IT' : 'Homepage EN',
           utmKey: entry.utmKey,
-          cta: stats[0].total,
-          submit: stats[2].total,
-          whatsapp: stats[3].total,
-          finalConversion: stats[0].total > 0 ? Math.round((stats[3].total / stats[0].total) * 100) : 0,
+          cta: comboMetrics.heroCta,
+          submit: comboMetrics.submit,
+          whatsapp: comboMetrics.whatsapp,
+          finalConversion: Math.round(safeRate(comboMetrics.submit, comboMetrics.pageView) ?? 0),
         };
       }).sort((a, b) => b.finalConversion - a.finalConversion).slice(0, 10);
 
       pageGroups.forEach((pageItems, pagePath) => {
-        const stats = buildFunnelStats(pageItems);
-        const cta = stats[0].total;
-        const open = stats[1].total;
-        const submit = stats[2].total;
-        const whatsapp = stats[3].total;
-        const openRate = cta > 0 ? (open / cta) * 100 : 0;
-        const submitRate = open > 0 ? (submit / open) * 100 : 0;
-        const finalRate = cta > 0 ? (whatsapp / cta) * 100 : 0;
+        const pageMetrics = buildHomepageMetrics(pageItems);
+        const cta = pageMetrics.heroCta;
+        const open = pageMetrics.formStart;
+        const step2Open = pageMetrics.step2Open;
+        const submit = pageMetrics.submit;
+        const finalRate = safeRate(submit, pageMetrics.pageView) ?? 0;
+        const openRate = safeRate(open, cta) ?? 0;
+        const submitRate = safeRate(submit, step2Open) ?? 0;
+        const pageLabel = pagePath === '/' ? 'Homepage IT' : 'Homepage EN';
 
         if (cta >= 20 && openRate < 35) {
-          alerts.push(buildAlert(95, pagePath, 'CTA forte ma poco accesso al form', `CTA ${cta}, form open ${open}, passaggio ${formatPercent(openRate)}.`, 'Rendi la CTA più coerente con il blocco successivo e verifica che il passaggio al form sia immediato e chiaro.'));
+          alerts.push(buildAlert(95, pageLabel, 'Hero CTA forte ma poco accesso al form', `Hero CTA ${cta}, form start ${open}, passaggio ${formatPercent(openRate)}.`, 'Rendi immediato il passaggio tra bottone hero e form.'));
         }
-        if (open >= 15 && submitRate < 35) {
-          alerts.push(buildAlert(88, pagePath, 'Utenti aprono il form ma non inviano', `Form open ${open}, submit ${submit}, passaggio ${formatPercent(submitRate)}.`, 'Semplifica il form, riduci attrito nei campi iniziali e chiarisci cosa succede dopo l invio.'));
+        if (step2Open >= 15 && submitRate < 35) {
+          alerts.push(buildAlert(88, pageLabel, 'Utenti aprono lo step 2 ma non inviano', `Step 2 open ${step2Open}, submit ${submit}, passaggio ${formatPercent(submitRate)}.`, "Semplifica il secondo step e verifica che l'invio finale sia chiaro."));
         }
-        if (cta >= 20 && finalRate < 15) {
-          alerts.push(buildAlert(82, pagePath, 'Conversione finale bassa', `CTA ${cta}, WhatsApp ${whatsapp}, conversione finale ${formatPercent(finalRate)}.`, 'Rinforza fiducia, tempi di risposta, prova sociale e continuità tra promessa della pagina e step finale.'));
+        if (pageMetrics.pageView >= 20 && finalRate < 15) {
+          alerts.push(buildAlert(82, pageLabel, 'Conversione finale bassa', `Page view ${pageMetrics.pageView}, submit ${submit}, conversione finale ${formatPercent(finalRate)}.`, 'Rinforza continuità tra hero, form e invio finale.'));
         }
       });
 
@@ -1797,10 +1898,24 @@
         },
         totals: {
           events: filteredItems.length,
-          cta: countEvents(filteredItems, 'cta_click'),
-          formOpen: countEvents(filteredItems, 'form_open'),
-          formSubmit: countEvents(filteredItems, 'form_submit'),
-          whatsapp: countEvents(filteredItems, 'whatsapp_click'),
+          pageView: metrics.pageView,
+          heroCta: metrics.heroCta,
+          formStart: metrics.formStart,
+          step1Complete: metrics.step1Complete,
+          step2Open: metrics.step2Open,
+          step2Complete: metrics.step2Complete,
+          formSubmit: metrics.submit,
+          whatsapp: metrics.whatsapp,
+          abandonStep1: metrics.abandonStep1,
+          abandonStep2: metrics.abandonStep2,
+          ctrHero: safeRate(metrics.heroCta, metrics.pageView),
+          startRate: safeRate(metrics.formStart, metrics.heroCta),
+          step1Rate: safeRate(metrics.step1Complete, metrics.formStart),
+          step2OpenRate: safeRate(metrics.step2Open, metrics.step1Complete),
+          submitRate: safeRate(metrics.submit, metrics.step2Open),
+          totalConversion: safeRate(metrics.submit, metrics.pageView),
+          whatsappRate: safeRate(metrics.whatsapp, metrics.pageView),
+          previousTotalConversion: safeRate(previousMetrics.submit, previousMetrics.pageView),
         },
         funnel,
         previousPeriodFunnel,
@@ -1843,12 +1958,13 @@
     }
 
     function renderAnalytics(items) {
-      updatePageFilterOptions(items);
+      updatePageFilterOptions();
       const { filteredItems, previousItems } = getCurrentAnalyticsScope(items);
-      analyticsTotal.textContent = String(filteredItems.length);
-      analyticsCta.textContent = String(countEvents(filteredItems, 'cta_click'));
-      analyticsSubmit.textContent = String(countEvents(filteredItems, 'form_submit'));
-      analyticsWhatsapp.textContent = String(countEvents(filteredItems, 'whatsapp_click'));
+      const metrics = buildHomepageMetrics(filteredItems);
+      analyticsTotal.textContent = metrics.pageView > 0 ? String(metrics.pageView) : 'n/d';
+      analyticsCta.textContent = String(metrics.heroCta);
+      analyticsSubmit.textContent = String(metrics.submit);
+      analyticsWhatsapp.textContent = String(metrics.whatsapp);
       renderFunnel(filteredItems);
       renderUtmFunnel(filteredItems);
       renderTrend(filteredItems, previousItems);
@@ -1862,27 +1978,30 @@
       renderSegmentReport(filteredItems);
 
       if (!filteredItems.length) {
-        analyticsBody.innerHTML = '<tr><td colspan="5" class="small">Nessun dato</td></tr>';
+        analyticsBody.innerHTML = '<tr><td colspan="4" class="small">Nessun dato</td></tr>';
         return;
       }
 
-      analyticsBody.innerHTML = filteredItems.slice(0, 20).map((item) => {
-        const utm = [
-          item.utm && item.utm.source ? `src:${item.utm.source}` : '',
-          item.utm && item.utm.medium ? `med:${item.utm.medium}` : '',
-          item.utm && item.utm.campaign ? `cmp:${item.utm.campaign}` : '',
-        ].filter(Boolean).join(' | ') || '-';
-        const detail = item.formId || item.label || item.errorType || '-';
-        return `
-          <tr>
-            <td>${item.createdAt || '-'}</td>
-            <td><strong>${item.event || '-'}</strong><div class="small">${item.funnelStep || '-'}</div></td>
-            <td>${item.pagePath || '-'}</td>
-            <td>${detail}</td>
-            <td>${utm}</td>
-          </tr>
-        `;
-      }).join('');
+      const kpiRows = [
+        { label: 'CTR Hero', value: formatRate(safeRate(metrics.heroCta, metrics.pageView)), formula: 'hero_cta_click / page_view', note: `${metrics.heroCta} / ${metrics.pageView || 'n/d'}` },
+        { label: 'Start Rate', value: formatRate(safeRate(metrics.formStart, metrics.heroCta)), formula: 'form_start / hero_cta_click', note: `${metrics.formStart} / ${metrics.heroCta}` },
+        { label: 'Step 1 Completion', value: formatRate(safeRate(metrics.step1Complete, metrics.formStart)), formula: 'form_step1_complete / form_start', note: `${metrics.step1Complete} / ${metrics.formStart}` },
+        { label: 'Step 2 Open Rate', value: formatRate(safeRate(metrics.step2Open, metrics.step1Complete)), formula: 'form_step2_open / form_step1_complete', note: `${metrics.step2Open} / ${metrics.step1Complete}` },
+        { label: 'Submit Rate', value: formatRate(safeRate(metrics.submit, metrics.step2Open)), formula: 'form_submit / form_step2_open', note: `${metrics.submit} / ${metrics.step2Open}` },
+        { label: 'Conversione Totale', value: formatRate(safeRate(metrics.submit, metrics.pageView)), formula: 'form_submit / page_view', note: `${metrics.submit} / ${metrics.pageView || 'n/d'}` },
+        { label: 'WhatsApp Rate', value: formatRate(safeRate(metrics.whatsapp, metrics.pageView)), formula: 'whatsapp_click / page_view', note: `${metrics.whatsapp} / ${metrics.pageView || 'n/d'}` },
+        { label: 'Abandon Step 1', value: formatRate(safeRate(metrics.abandonStep1, metrics.formStart)), formula: 'form_abandon_step1 / form_start', note: `${metrics.abandonStep1} / ${metrics.formStart}` },
+        { label: 'Abandon Step 2', value: formatRate(safeRate(metrics.abandonStep2, metrics.step2Open)), formula: 'form_abandon_step2 / form_step2_open', note: `${metrics.abandonStep2} / ${metrics.step2Open}` },
+      ];
+
+      analyticsBody.innerHTML = kpiRows.map((row) => `
+        <tr>
+          <td><strong>${row.label}</strong></td>
+          <td>${row.value}</td>
+          <td>${row.formula}</td>
+          <td>${row.note}</td>
+        </tr>
+      `).join('');
     }
 
     async function loadAnalytics() {

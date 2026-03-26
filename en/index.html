@@ -13,13 +13,13 @@
     <meta property="og:title" content="Ischia Transfer Service | Private Transfers Airport Station Port Hotel">
     <meta property="og:description" content="Private transfers since 2006 between Naples Airport, Naples Centrale, Beverello and Ischia, with coordinated pickup all the way to the port or hotel.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="../assets/ischia-bg.jpg.jpg">
+    <meta property="og:image" content="../assets/ischia-bg.jpg">
     <meta property="og:url" content="https://www.ischiatransferservice.it/en/">
     <meta property="og:locale" content="en_US">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Ischia Transfer Service | Private Transfers Airport Station Port Hotel">
     <meta name="twitter:description" content="Private transfers since 2006 between Naples Airport, Naples Centrale, Beverello and Ischia.">
-    <meta name="twitter:image" content="https://www.ischiatransferservice.it/assets/ischia-bg.jpg.jpg">
+    <meta name="twitter:image" content="https://www.ischiatransferservice.it/assets/ischia-bg.jpg">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -29,7 +29,7 @@
           "@id": "https://www.ischiatransferservice.it/#localbusiness",
           "name": "I.T.S. Ischia Transfer Service S.r.l.",
           "url": "https://www.ischiatransferservice.it/en/",
-          "image": "https://www.ischiatransferservice.it/assets/ischia-bg.jpg.jpg",
+          "image": "https://www.ischiatransferservice.it/assets/ischia-bg.jpg",
           "telephone": "+39 0813331053",
           "email": "info@ischiatransferservice.it",
           "address": {
@@ -145,7 +145,6 @@
                     <a class="nav-link" href="#flotta">Fleet</a>
                     <a class="nav-link" href="#vantaggi">Benefits</a>
                     <a class="nav-link" href="#footer">Contacts</a>
-                    <a class="nav-link" href="https://ischia-transfer.vercel.app/login">Reserved area</a>
                     <a class="nav-link" href="../index.html">IT</a>
                     <a class="btn-primary" href="#richiedi-transfer">Check availability</a>
                 </div>
@@ -162,7 +161,6 @@
                     <a class="mobile-link" href="#faq-transfer">FAQ</a>
                     <a class="mobile-link" href="#footer">Contacts</a>
                     <a class="mobile-link" href="../index.html">Italian version</a>
-                    <a class="mobile-link" href="https://ischia-transfer.vercel.app/login">Reserved area</a>
                     <a class="btn-primary mt-2 justify-center" href="#richiedi-transfer">Check availability</a>
                 </div>
             </div>
@@ -175,7 +173,7 @@
                 <picture>
                     <source srcset="../assets/hero-ischia-drone.avif" type="image/avif">
                     <source srcset="../assets/hero-ischia-drone.webp" type="image/webp">
-                    <img src="../assets/ischia-bg.jpg.jpg" alt="Drone view of Ischia coastline and Aragonese Castle at sunset" class="hero-background-image" fetchpriority="high" decoding="async">
+                    <img src="../assets/ischia-bg.jpg" alt="Drone view of Ischia coastline and Aragonese Castle at sunset" class="hero-background-image" fetchpriority="high" decoding="async">
                 </picture>
             </div>
             <div class="hero-overlay"></div>
@@ -183,7 +181,7 @@
             <div class="hero-glow hero-glow-left"></div>
 
             <div class="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-10 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:pb-28">
-                <div class="flex flex-col justify-center">
+                <div class="hero-copy-panel flex flex-col justify-center">
                     <span class="eyebrow !bg-white/10 !text-lemonYellow">Ischia transfer since 2006</span>
                     <h1 class="mt-6 max-w-4xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-6xl xl:text-7xl">Naples to Ischia<br>transfer with no stress<br>from arrival to hotel</h1>
                     <p class="mt-6 max-w-2xl text-lg leading-8 text-blue-50 sm:text-xl">Landing at Capodichino, arriving at Naples Centrale or already at the port? Your driver will be waiting outside and will take you all the way to Ischia, step by step.</p>
@@ -207,16 +205,19 @@
                 </div>
 
                 <div class="relative" id="richiedi-transfer">
-                    <div class="booking-card">
+                    <div class="booking-card booking-card-hero">
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <p class="booking-label">Transfer request</p>
                                 <h2 class="mt-2 text-3xl font-semibold text-nightBlue">Check availability for your route</h2>
                             </div>
                         </div>
-                        <a href="https://ischia-transfer.vercel.app/login" class="reserved-top-link mt-4 hidden lg:inline-flex">Access reserved area</a>
+                        <div class="hero-form-progress" aria-hidden="true">
+                            <span class="hero-form-progress-dot is-active"></span>
+                            <span class="hero-form-progress-dot"></span>
+                        </div>
 
-                        <form id="hero-booking-form" class="mt-8 space-y-4">
+                        <form id="hero-booking-form" class="hero-booking-progressive mt-6 space-y-4" data-expanded="false">
                             <label class="booking-field">
                                 <span>Main route</span>
                                 <select name="hero-service" required>
@@ -231,7 +232,7 @@
                                 </select>
                             </label>
 
-                            <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="booking-field">
                                     <span>Name</span>
                                     <input type="text" name="hero-name" placeholder="Your name" required>
@@ -240,13 +241,9 @@
                                     <span>Email</span>
                                     <input type="email" name="hero-email" placeholder="Your email" required>
                                 </label>
-                                <label class="booking-field">
-                                    <span>Phone</span>
-                                    <input type="tel" name="hero-phone" placeholder="Your phone number">
-                                </label>
                             </div>
 
-                            <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="booking-field">
                                     <span>Arrival point</span>
                                     <select name="hero-arrival" required>
@@ -259,60 +256,69 @@
                                     </select>
                                 </label>
                                 <label class="booking-field">
-                                    <span>Date</span>
-                                    <input type="date" name="hero-date" min="2026-03-23">
-                                </label>
-                                <label class="booking-field">
-                                    <span>Arrival time</span>
-                                    <input type="time" name="hero-time">
+                                    <span>Hotel, villa or final address</span>
+                                    <input type="text" name="hero-route" placeholder="Hotel name, villa or area of the island" required>
                                 </label>
                             </div>
 
-                            <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="hero-booking-advanced space-y-4" data-hero-advanced>
                                 <label class="booking-field">
-                                    <span>Passengers</span>
-                                    <select name="hero-people" required>
-                                        <option value="">Select passengers</option>
-                                        <option>1 passenger</option>
-                                        <option>2 passengers</option>
-                                        <option>3 passengers</option>
-                                        <option>4 passengers</option>
-                                        <option>5 passengers</option>
-                                        <option>6 passengers</option>
-                                        <option>7 passengers</option>
-                                        <option>8 passengers</option>
-                                        <option>9 passengers</option>
-                                        <option>10 passengers</option>
-                                        <option>10+ passengers</option>
-                                    </select>
+                                    <span>Phone</span>
+                                    <input type="tel" name="hero-phone" placeholder="Your phone number">
                                 </label>
-                                <label class="booking-field">
-                                    <span>Luggage</span>
-                                    <select name="hero-luggage">
-                                        <option value="">Select luggage</option>
-                                        <option>1 bag</option>
-                                        <option>2 bags</option>
-                                        <option>3 bags</option>
-                                        <option>4 bags</option>
-                                        <option>5 bags</option>
-                                        <option>6 bags</option>
-                                        <option>7 bags</option>
-                                        <option>8 bags</option>
-                                        <option>9 bags</option>
-                                        <option>10 bags</option>
-                                        <option>10+ bags</option>
-                                    </select>
-                                </label>
-                            </div>
 
-                            <label class="booking-field">
-                                <span>Hotel, villa or final address</span>
-                                <input type="text" name="hero-route" placeholder="Hotel name, villa or area of the island" required>
-                            </label>
-                            <label class="booking-field">
-                                <span>Useful notes</span>
-                                <input type="text" name="hero-notes" placeholder="Flight, train, children, child seat, special requests">
-                            </label>
+                                <div class="grid gap-4 sm:grid-cols-3">
+                                    <label class="booking-field">
+                                        <span>Date</span>
+                                        <input type="date" name="hero-date" min="2026-03-23">
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Arrival time</span>
+                                        <input type="time" name="hero-time">
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Passengers</span>
+                                        <select name="hero-people" data-progressive-required="true">
+                                            <option value="">Select passengers</option>
+                                            <option>1 passenger</option>
+                                            <option>2 passengers</option>
+                                            <option>3 passengers</option>
+                                            <option>4 passengers</option>
+                                            <option>5 passengers</option>
+                                            <option>6 passengers</option>
+                                            <option>7 passengers</option>
+                                            <option>8 passengers</option>
+                                            <option>9 passengers</option>
+                                            <option>10 passengers</option>
+                                            <option>10+ passengers</option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <label class="booking-field">
+                                        <span>Luggage</span>
+                                        <select name="hero-luggage">
+                                            <option value="">Select luggage</option>
+                                            <option>1 bag</option>
+                                            <option>2 bags</option>
+                                            <option>3 bags</option>
+                                            <option>4 bags</option>
+                                            <option>5 bags</option>
+                                            <option>6 bags</option>
+                                            <option>7 bags</option>
+                                            <option>8 bags</option>
+                                            <option>9 bags</option>
+                                            <option>10 bags</option>
+                                            <option>10+ bags</option>
+                                        </select>
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Useful notes</span>
+                                        <input type="text" name="hero-notes" placeholder="Flight, train, children, child seat, special requests">
+                                    </label>
+                                </div>
+                            </div>
                             <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
                         </form>
 
@@ -352,6 +358,10 @@
                     <h3>On the day of travel</h3>
                     <p>Your driver will be waiting at the agreed meeting point. We'll tell you exactly where and when to be there.</p>
                 </article>
+            </div>
+            <div class="homepage-inline-cta homepage-inline-cta-soft mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
+                <a href="#richiedi-transfer" class="btn-primary justify-center">Check availability</a>
+                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Open WhatsApp for ITS bookings">WhatsApp</a>
             </div>
         </section>
 
@@ -437,6 +447,10 @@
                     <a href="excursions.html" class="service-link">View excursion program</a>
                 </article>
             </div>
+            <div class="homepage-inline-cta homepage-inline-cta-soft mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
+                <a href="#richiedi-transfer" class="btn-primary justify-center">Check availability</a>
+                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Open WhatsApp for ITS bookings">WhatsApp</a>
+            </div>
         </section>
 
         <section id="flotta" class="section-shell pt-0">
@@ -502,6 +516,10 @@
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Realistic timing</h3><p>We know traffic, ferry terminals and handovers between Naples and Ischia, so the transfer follows your actual arrival time.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Guided request</h3><p>You can select the route, arrival point and luggage in a few steps, without writing everything from scratch.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Luggage and changes covered</h3><p>We help when there are large bags, children, delays or last-minute changes before boarding.</p></div>
+            </div>
+            <div class="homepage-inline-cta homepage-inline-cta-soft homepage-inline-cta-softest mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
+                <a href="#richiedi-transfer" class="btn-primary justify-center">Check availability</a>
+                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Open WhatsApp for ITS bookings">WhatsApp</a>
             </div>
         </section>
 

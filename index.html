@@ -13,13 +13,13 @@
     <meta property="og:title" content="Transfer Ischia dal 2006 | Ischia Transfer Service">
     <meta property="og:description" content="Transfer privati dal 2006 tra Napoli Capodichino, Napoli Centrale, Beverello e Ischia, con pickup coordinato fino al porto o all'hotel.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="assets/ischia-bg.jpg.jpg">
+    <meta property="og:image" content="assets/ischia-bg.jpg">
     <meta property="og:url" content="https://www.ischiatransferservice.it/">
     <meta property="og:locale" content="it_IT">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Transfer Ischia dal 2006 | Aeroporto, Stazione, Porto, Hotel">
     <meta name="twitter:description" content="Transfer privati dal 2006 tra Napoli aeroporto, stazione, porto e hotel a Ischia.">
-    <meta name="twitter:image" content="https://www.ischiatransferservice.it/assets/ischia-bg.jpg.jpg">
+    <meta name="twitter:image" content="https://www.ischiatransferservice.it/assets/ischia-bg.jpg">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -29,7 +29,7 @@
           "@id": "https://www.ischiatransferservice.it/#localbusiness",
           "name": "I.T.S. Ischia Transfer Service S.r.l.",
           "url": "https://www.ischiatransferservice.it/",
-          "image": "https://www.ischiatransferservice.it/assets/ischia-bg.jpg.jpg",
+          "image": "https://www.ischiatransferservice.it/assets/ischia-bg.jpg",
           "telephone": "+39 0813331053",
           "email": "info@ischiatransferservice.it",
           "address": {
@@ -148,7 +148,6 @@
                     <a class="nav-link" href="#flotta">Flotta</a>
                     <a class="nav-link" href="#vantaggi">Vantaggi</a>
                     <a class="nav-link" href="#footer">Contatti</a>
-                    <a class="nav-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="nav-link" href="en/index.html">EN</a>
                     <a class="btn-primary" href="#richiedi-transfer">Verifica disponibilità</a>
                 </div>
@@ -165,7 +164,6 @@
                     <a class="mobile-link" href="#faq-transfer">FAQ</a>
                     <a class="mobile-link" href="#footer">Contatti</a>
                     <a class="mobile-link" href="en/index.html">English version</a>
-                    <a class="mobile-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                     <a class="btn-primary mt-2 justify-center" href="#richiedi-transfer">Verifica disponibilità</a>
                 </div>
             </div>
@@ -178,7 +176,7 @@
                 <picture>
                     <source srcset="assets/hero-ischia-drone.avif" type="image/avif">
                     <source srcset="assets/hero-ischia-drone.webp" type="image/webp">
-                    <img src="assets/ischia-bg.jpg.jpg" alt="Vista drone di Ischia e Castello Aragonese al tramonto" class="hero-background-image" fetchpriority="high" decoding="async">
+                    <img src="assets/ischia-bg.jpg" alt="Vista drone di Ischia e Castello Aragonese al tramonto" class="hero-background-image" fetchpriority="high" decoding="async">
                 </picture>
             </div>
             <div class="hero-overlay"></div>
@@ -186,7 +184,7 @@
             <div class="hero-glow hero-glow-left"></div>
 
             <div class="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-10 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:pb-28">
-                <div class="flex flex-col justify-center">
+                <div class="hero-copy-panel flex flex-col justify-center">
                     <span class="eyebrow !bg-white/10 !text-lemonYellow">Transfer Ischia dal 2006</span>
                     <h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-6xl xl:text-7xl">Transfer Napoli - Ischia<br>senza stress<br>dall'arrivo all'hotel</h1>
                     <p class="mt-6 max-w-2xl text-lg leading-8 text-blue-50 sm:text-xl">Atterri a Capodichino, scendi a Napoli Centrale o sei al porto? Il tuo autista ti aspetta all'uscita e ti accompagna fino a Ischia, passo dopo passo.</p>
@@ -210,16 +208,19 @@
                 </div>
 
                 <div class="relative" id="richiedi-transfer">
-                    <div class="booking-card">
+                    <div class="booking-card booking-card-hero">
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <p class="booking-label">Richiesta transfer</p>
                                 <h2 class="mt-2 text-3xl font-semibold text-nightBlue">Verifica disponibilità per la tua tratta</h2>
                             </div>
                         </div>
-                        <a href="https://ischia-transfer.vercel.app/login" class="reserved-top-link mt-4 hidden lg:inline-flex">Accedi all'area riservata</a>
+                        <div class="hero-form-progress" aria-hidden="true">
+                            <span class="hero-form-progress-dot is-active"></span>
+                            <span class="hero-form-progress-dot"></span>
+                        </div>
 
-                        <form id="hero-booking-form" class="mt-8 space-y-4">
+                        <form id="hero-booking-form" class="hero-booking-progressive mt-6 space-y-4" data-expanded="false">
                             <label class="booking-field">
                                 <span>Tratta principale</span>
                                 <select name="hero-service" required>
@@ -234,7 +235,7 @@
                                 </select>
                             </label>
 
-                            <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="booking-field">
                                     <span>Nome</span>
                                     <input type="text" name="hero-name" placeholder="Il tuo nome" required>
@@ -243,13 +244,9 @@
                                     <span>Email</span>
                                     <input type="email" name="hero-email" placeholder="La tua email" required>
                                 </label>
-                                <label class="booking-field">
-                                    <span>Telefono</span>
-                                    <input type="tel" name="hero-phone" placeholder="Il tuo telefono">
-                                </label>
                             </div>
 
-                            <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="booking-field">
                                     <span>Punto di arrivo</span>
                                     <select name="hero-arrival" required>
@@ -262,60 +259,69 @@
                                     </select>
                                 </label>
                                 <label class="booking-field">
-                                    <span>Data</span>
-                                    <input type="date" name="hero-date" min="2026-03-23">
-                                </label>
-                                <label class="booking-field">
-                                    <span>Orario di arrivo</span>
-                                    <input type="time" name="hero-time">
+                                    <span>Hotel, villa o indirizzo finale</span>
+                                    <input type="text" name="hero-route" placeholder="Nome hotel, villa o zona dell'isola" required>
                                 </label>
                             </div>
 
-                            <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="hero-booking-advanced space-y-4" data-hero-advanced>
                                 <label class="booking-field">
-                                    <span>Passeggeri</span>
-                                    <select name="hero-people" required>
-                                        <option value="">Seleziona i passeggeri</option>
-                                        <option>1 persona</option>
-                                        <option>2 persone</option>
-                                        <option>3 persone</option>
-                                        <option>4 persone</option>
-                                        <option>5 persone</option>
-                                        <option>6 persone</option>
-                                        <option>7 persone</option>
-                                        <option>8 persone</option>
-                                        <option>9 persone</option>
-                                        <option>10 persone</option>
-                                        <option>10+ persone</option>
-                                    </select>
+                                    <span>Telefono</span>
+                                    <input type="tel" name="hero-phone" placeholder="Il tuo telefono">
                                 </label>
-                                <label class="booking-field">
-                                    <span>Bagagli</span>
-                                    <select name="hero-luggage">
-                                        <option value="">Seleziona i bagagli</option>
-                                        <option>1 bagaglio</option>
-                                        <option>2 bagagli</option>
-                                        <option>3 bagagli</option>
-                                        <option>4 bagagli</option>
-                                        <option>5 bagagli</option>
-                                        <option>6 bagagli</option>
-                                        <option>7 bagagli</option>
-                                        <option>8 bagagli</option>
-                                        <option>9 bagagli</option>
-                                        <option>10 bagagli</option>
-                                        <option>10+ bagagli</option>
-                                    </select>
-                                </label>
-                            </div>
 
-                            <label class="booking-field">
-                                <span>Hotel, villa o indirizzo finale</span>
-                                <input type="text" name="hero-route" placeholder="Nome hotel, villa o zona dell'isola" required>
-                            </label>
-                            <label class="booking-field">
-                                <span>Note utili</span>
-                                <input type="text" name="hero-notes" placeholder="Volo, treno, bambini, seggiolino, richieste speciali">
-                            </label>
+                                <div class="grid gap-4 sm:grid-cols-3">
+                                    <label class="booking-field">
+                                        <span>Data</span>
+                                        <input type="date" name="hero-date" min="2026-03-23">
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Orario di arrivo</span>
+                                        <input type="time" name="hero-time">
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Passeggeri</span>
+                                        <select name="hero-people" data-progressive-required="true">
+                                            <option value="">Seleziona i passeggeri</option>
+                                            <option>1 persona</option>
+                                            <option>2 persone</option>
+                                            <option>3 persone</option>
+                                            <option>4 persone</option>
+                                            <option>5 persone</option>
+                                            <option>6 persone</option>
+                                            <option>7 persone</option>
+                                            <option>8 persone</option>
+                                            <option>9 persone</option>
+                                            <option>10 persone</option>
+                                            <option>10+ persone</option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <label class="booking-field">
+                                        <span>Bagagli</span>
+                                        <select name="hero-luggage">
+                                            <option value="">Seleziona i bagagli</option>
+                                            <option>1 bagaglio</option>
+                                            <option>2 bagagli</option>
+                                            <option>3 bagagli</option>
+                                            <option>4 bagagli</option>
+                                            <option>5 bagagli</option>
+                                            <option>6 bagagli</option>
+                                            <option>7 bagagli</option>
+                                            <option>8 bagagli</option>
+                                            <option>9 bagagli</option>
+                                            <option>10 bagagli</option>
+                                            <option>10+ bagagli</option>
+                                        </select>
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Note utili</span>
+                                        <input type="text" name="hero-notes" placeholder="Volo, treno, bambini, seggiolino, richieste speciali">
+                                    </label>
+                                </div>
+                            </div>
                             <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
                         </form>
 
@@ -355,6 +361,10 @@
                     <h3>Il giorno del viaggio</h3>
                     <p>L'autista ti aspetta nel punto concordato. Ti indichiamo esattamente dove e a che ora presentarti.</p>
                 </article>
+            </div>
+            <div class="homepage-inline-cta homepage-inline-cta-soft mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
+                <a href="#richiedi-transfer" class="btn-primary justify-center">Verifica disponibilità</a>
+                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Apri WhatsApp per le prenotazioni ITS">WhatsApp</a>
             </div>
         </section>
 
@@ -451,6 +461,10 @@
                     <a href="escursioni.html" class="service-link">Vedi programma escursioni</a>
                 </article>
             </div>
+            <div class="homepage-inline-cta homepage-inline-cta-soft mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
+                <a href="#richiedi-transfer" class="btn-primary justify-center">Verifica disponibilità</a>
+                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Apri WhatsApp per le prenotazioni ITS">WhatsApp</a>
+            </div>
         </section>
 
         <section id="flotta" class="section-shell pt-0">
@@ -517,6 +531,10 @@
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Tempi realistici</h3><p>Conosciamo traffico, moli e coincidenze tra Napoli e Ischia, quindi adattiamo il transfer all'orario reale di arrivo.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Richiesta guidata</h3><p>Compili la tratta, il punto di arrivo e i bagagli in pochi passaggi, senza dover spiegare tutto da zero.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Supporto su bagagli e cambi</h3><p>Ti aiutiamo quando ci sono valigie ingombranti, bambini, ritardi o cambi di programma prima dell'imbarco.</p></div>
+            </div>
+            <div class="homepage-inline-cta homepage-inline-cta-soft homepage-inline-cta-softest mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
+                <a href="#richiedi-transfer" class="btn-primary justify-center">Verifica disponibilità</a>
+                <a href="https://wa.me/390813331053" target="_blank" rel="noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Apri WhatsApp per le prenotazioni ITS">WhatsApp</a>
             </div>
         </section>
 
