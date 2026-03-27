@@ -892,6 +892,60 @@ img {
   box-shadow: 0 18px 34px rgba(37, 211, 102, 0.28);
 }
 
+a[href*="wa.me"].btn-primary,
+a[href*="wa.me"].btn-secondary,
+a[href*="wa.me"].service-link,
+a[href*="wa.me"].mobile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+a[href*="wa.me"].btn-primary,
+a[href*="wa.me"].btn-secondary,
+a[href*="wa.me"].service-link {
+  border-color: rgba(37, 211, 102, 0.95);
+  background-color: rgba(37, 211, 102, 1);
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 12px 28px rgba(37, 211, 102, 0.2);
+}
+
+a[href*="wa.me"].btn-primary:hover,
+a[href*="wa.me"].btn-primary:focus-visible,
+a[href*="wa.me"].btn-secondary:hover,
+a[href*="wa.me"].btn-secondary:focus-visible,
+a[href*="wa.me"].service-link:hover,
+a[href*="wa.me"].service-link:focus-visible {
+  border-color: rgba(31, 191, 90, 1);
+  background-color: rgba(31, 191, 90, 1);
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 18px 34px rgba(37, 211, 102, 0.28);
+}
+
+a[href*="wa.me"].mobile-link {
+  color: rgba(37, 211, 102, 1);
+}
+
+a[href*="wa.me"].btn-primary::before,
+a[href*="wa.me"].btn-secondary::before,
+a[href*="wa.me"].service-link::before,
+a[href*="wa.me"].mobile-link::before {
+  content: '';
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19.05 4.94A9.9 9.9 0 0 0 12 2a9.94 9.94 0 0 0-8.61 14.9L2 22l5.25-1.37A9.94 9.94 0 0 0 12 22h.01A10 10 0 0 0 22 12a9.9 9.9 0 0 0-2.95-7.06Zm-7.04 15.37h-.01a8.3 8.3 0 0 1-4.23-1.16l-.3-.18-3.12.82.83-3.04-.2-.31A8.3 8.3 0 1 1 20.3 12a8.31 8.31 0 0 1-8.29 8.31Zm4.56-6.2c-.25-.12-1.47-.73-1.7-.82-.23-.08-.4-.12-.57.13-.17.24-.65.81-.8.98-.15.16-.3.18-.56.06-.25-.13-1.07-.4-2.03-1.29-.75-.66-1.26-1.47-1.4-1.72-.15-.24-.02-.37.1-.49.11-.1.25-.27.37-.4.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.43-.06-.12-.57-1.37-.78-1.88-.21-.5-.42-.43-.57-.44h-.49c-.16 0-.43.06-.65.3-.22.24-.85.83-.85 2.02 0 1.18.87 2.33.99 2.49.12.16 1.71 2.62 4.14 3.67.58.25 1.03.4 1.39.51.58.18 1.1.15 1.51.09.46-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.22-.16-.47-.28Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19.05 4.94A9.9 9.9 0 0 0 12 2a9.94 9.94 0 0 0-8.61 14.9L2 22l5.25-1.37A9.94 9.94 0 0 0 12 22h.01A10 10 0 0 0 22 12a9.9 9.9 0 0 0-2.95-7.06Zm-7.04 15.37h-.01a8.3 8.3 0 0 1-4.23-1.16l-.3-.18-3.12.82.83-3.04-.2-.31A8.3 8.3 0 1 1 20.3 12a8.31 8.31 0 0 1-8.29 8.31Zm4.56-6.2c-.25-.12-1.47-.73-1.7-.82-.23-.08-.4-.12-.57.13-.17.24-.65.81-.8.98-.15.16-.3.18-.56.06-.25-.13-1.07-.4-2.03-1.29-.75-.66-1.26-1.47-1.4-1.72-.15-.24-.02-.37.1-.49.11-.1.25-.27.37-.4.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.43-.06-.12-.57-1.37-.78-1.88-.21-.5-.42-.43-.57-.44h-.49c-.16 0-.43.06-.65.3-.22.24-.85.83-.85 2.02 0 1.18.87 2.33.99 2.49.12.16 1.71 2.62 4.14 3.67.58.25 1.03.4 1.39.51.58.18 1.1.15 1.51.09.46-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.22-.16-.47-.28Z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
 .cta-actions-equal > .btn-primary,
 .cta-actions-equal > .btn-secondary {
   width: min(100%, 15rem);
@@ -1111,6 +1165,16 @@ img {
   width: min(100%, 15rem);
 }
 
+.btn-whatsapp {
+  gap: 0.55rem;
+}
+
+.whatsapp-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: 0 0 auto;
+}
+
 .hero-form-progress {
   display: inline-flex;
   align-items: center;
@@ -1159,7 +1223,14 @@ img {
   position: relative;
 }
 
+.hero-booking-initial {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
 .hero-booking-advanced {
+  position: relative;
   margin-top: 0.25rem;
   border-top: 1px solid rgba(30, 58, 138, 0.08);
   padding-top: 1rem;
@@ -1196,6 +1267,62 @@ img {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+@media (min-width: 1024px) {
+  .hero-booking-progressive[data-expanded="true"] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 1.25rem;
+    row-gap: 0.75rem;
+    align-items: start;
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-initial {
+    grid-column: 1;
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced {
+    grid-column: 2;
+    margin-top: 0;
+    min-height: 100%;
+    max-height: 28rem;
+    overflow-y: auto;
+    border-top-color: transparent;
+    border-left: 1px solid rgba(30, 58, 138, 0.08);
+    padding-top: 0.15rem;
+    padding-left: 1rem;
+    padding-right: 0.2rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 58, 138, 0.2) rgba(30, 58, 138, 0.06);
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced::-webkit-scrollbar {
+    width: 0.45rem;
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced::-webkit-scrollbar-track {
+    background: rgba(30, 58, 138, 0.06);
+    border-radius: 9999px;
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced::-webkit-scrollbar-thumb {
+    background: rgba(30, 58, 138, 0.2);
+    border-radius: 9999px;
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced::before {
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced > .grid:first-of-type {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced > .grid:first-of-type > .booking-field:last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 .hero-booking-progressive[data-expanded="true"] .hero-booking-advanced::before {

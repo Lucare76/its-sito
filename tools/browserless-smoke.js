@@ -60,11 +60,6 @@ async function run() {
     assertContains(landingHtml, 'Richiedi disponibilita', 'landing transfer');
     assertContains(landingHtml, 'wa.me/390813331053', 'landing transfer');
 
-    const opsHtml = await requestText(`${baseUrl}/ops.html`);
-    assertContains(opsHtml, 'Executive Summary', 'ops');
-    assertContains(opsHtml, 'Snapshot Storici', 'ops');
-    assertContains(opsHtml, 'Segmenti Lingua e Dispositivo', 'ops');
-
     const mainJs = await requestText(`${baseUrl}/scripts/main.js`);
     assertContains(mainJs, 'device_type', 'scripts/main.js');
     assertContains(mainJs, '/api/analytics-events', 'scripts/main.js');

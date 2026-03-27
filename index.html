@@ -221,47 +221,49 @@
                         </div>
 
                         <form id="hero-booking-form" class="hero-booking-progressive mt-6 space-y-4" data-expanded="false">
-                            <label class="booking-field">
-                                <span>Tratta principale</span>
-                                <select name="hero-service" required>
-                                    <option value="">Seleziona la tratta</option>
-                                    <option>Napoli Aeroporto -> Isola d'Ischia</option>
-                                    <option>Napoli Centrale -> Isola d'Ischia</option>
-                                    <option>Ischia Porto -> Hotel</option>
-                                    <option>Casamicciola -> Hotel</option>
-                                    <option>Transfer interno a Ischia</option>
-                                    <option>Transfer privato per gruppo</option>
-                                    <option>Altro</option>
-                                </select>
-                            </label>
-
-                            <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="hero-booking-initial space-y-4">
                                 <label class="booking-field">
-                                    <span>Nome</span>
-                                    <input type="text" name="hero-name" placeholder="Il tuo nome" required>
-                                </label>
-                                <label class="booking-field">
-                                    <span>Email</span>
-                                    <input type="email" name="hero-email" placeholder="La tua email" required>
-                                </label>
-                            </div>
-
-                            <div class="grid gap-4 sm:grid-cols-2">
-                                <label class="booking-field">
-                                    <span>Punto di arrivo</span>
-                                    <select name="hero-arrival" required>
-                                        <option value="">Seleziona il punto di arrivo</option>
-                                        <option>Ischia Porto</option>
-                                        <option>Casamicciola</option>
-                                        <option>Forio</option>
-                                        <option>Hotel / villa / appartamento</option>
-                                        <option>Non lo so ancora</option>
+                                    <span>Tratta principale</span>
+                                    <select name="hero-service" required>
+                                        <option value="">Seleziona la tratta</option>
+                                        <option>Napoli Aeroporto -> Isola d'Ischia</option>
+                                        <option>Napoli Centrale -> Isola d'Ischia</option>
+                                        <option>Ischia Porto -> Hotel</option>
+                                        <option>Casamicciola -> Hotel</option>
+                                        <option>Transfer interno a Ischia</option>
+                                        <option>Transfer privato per gruppo</option>
+                                        <option>Altro</option>
                                     </select>
                                 </label>
-                                <label class="booking-field">
-                                    <span>Hotel, villa o indirizzo finale</span>
-                                    <input type="text" name="hero-route" placeholder="Nome hotel, villa o zona dell'isola" required>
-                                </label>
+
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <label class="booking-field">
+                                        <span>Nome</span>
+                                        <input type="text" name="hero-name" placeholder="Il tuo nome" required>
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Email</span>
+                                        <input type="email" name="hero-email" placeholder="La tua email" required>
+                                    </label>
+                                </div>
+
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <label class="booking-field">
+                                        <span>Punto di arrivo</span>
+                                        <select name="hero-arrival" required>
+                                            <option value="">Seleziona il punto di arrivo</option>
+                                            <option>Ischia Porto</option>
+                                            <option>Casamicciola</option>
+                                            <option>Forio</option>
+                                            <option>Hotel / villa / appartamento</option>
+                                            <option>Non lo so ancora</option>
+                                        </select>
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Hotel, villa o indirizzo finale</span>
+                                        <input type="text" name="hero-route" placeholder="Nome hotel, villa o zona dell'isola" required>
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="hero-booking-advanced space-y-4" data-hero-advanced>
@@ -400,22 +402,6 @@
             <p class="mx-auto mt-6 max-w-7xl px-6 text-sm text-gray-500 lg:px-8">Tempi indicativi, variabili in base al traffico.</p>
         </section>
 
-        <section id="destinazioni-seo" class="section-shell pb-0">
-            <div class="section-heading">
-                <span class="eyebrow">Percorsi Più Richiesti</span>
-                <h2>Scopri le tratte più richieste per Ischia e dintorni</h2>
-                <p>Qui trovi le pagine dedicate ai percorsi che ci chiedono più spesso: arrivi da Napoli, transfer da aeroporto o stazione, collegamenti porto-hotel e soluzioni per gruppi.</p>
-            </div>
-            <div class="mx-auto grid max-w-7xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-8">
-                <a class="service-link" href="transfer-napoli-ischia.html">Transfer Napoli Ischia</a>
-                <a class="service-link" href="transfer-napoli-aeroporto.html">Transfer Aeroporto Napoli Ischia</a>
-                <a class="service-link" href="transfer-stazione-napoli-ischia.html">Transfer Stazione Napoli Ischia</a>
-                <a class="service-link" href="transfer-porto-ischia-hotel.html">Transfer Porto Ischia Hotel</a>
-                <a class="service-link" href="transfer-privato-ischia.html">Transfer Privato Ischia</a>
-                <a class="service-link" href="transfer-gruppi-ischia.html">Transfer Gruppi Ischia</a>
-            </div>
-        </section>
-
         <section id="servizi" class="section-shell section-shell-soft">
             <div class="section-heading">
                 <span class="eyebrow">I Nostri Servizi</span>
@@ -435,12 +421,6 @@
                     <h3>Transfer Napoli Aeroporto Ischia</h3>
                     <p>Dall'uscita di Capodichino al porto di Beverello ti indichiamo il punto d'incontro, coordiniamo l'orario del traghetto e, se serve, anche l'arrivo finale a Ischia.</p>
                     <a href="transfer-napoli-aeroporto.html" class="service-link">Verifica disponibilità</a>
-                </article>
-                <article class="service-card">
-                    <p class="service-kicker">Arrivo in stazione</p>
-                    <h3>Transfer Stazione Napoli Ischia Hotel</h3>
-                    <p>Se arrivi a Napoli Centrale, organizziamo il passaggio verso Beverello e il proseguimento fino all'hotel, con tempi adatti a chi ha valigie o bambini.</p>
-                    <a href="transfer-stazione-napoli-ischia.html" class="service-link">Scopri il servizio</a>
                 </article>
                 <article class="service-card">
                     <p class="service-kicker">Servizi dedicati</p>
@@ -529,7 +509,7 @@
             <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Punto d'incontro definito</h3><p>Prima dell'arrivo ricevi indicazioni sul pickup, così non perdi tempo tra uscite aeroporto, taxi e terminal.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Tempi realistici</h3><p>Conosciamo traffico, moli e coincidenze tra Napoli e Ischia, quindi adattiamo il transfer all'orario reale di arrivo.</p></div>
-                <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Richiesta guidata</h3><p>Compili la tratta, il punto di arrivo e i bagagli in pochi passaggi, senza dover spiegare tutto da zero.</p></div>
+                <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Richiesta guidata</h3><p>Tu scegli dove andare, noi pensiamo al viaggio. Bastano pochi dettagli.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Supporto su bagagli e cambi</h3><p>Ti aiutiamo quando ci sono valigie ingombranti, bambini, ritardi o cambi di programma prima dell'imbarco.</p></div>
             </div>
             <div class="homepage-inline-cta homepage-inline-cta-soft homepage-inline-cta-softest mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
@@ -635,6 +615,7 @@
                 <p class="footer-title">Link utili</p>
                 <a class="footer-link" href="contatti.html">Verifica disponibilità<br><span class="text-xs">Tratta, bagagli e destinazione finale</span></a>
                 <a class="footer-link" href="transfer-ischia.html">Transfer locali a Ischia<br><span class="text-xs">Porto, hotel e spostamenti sull'isola</span></a>
+                <a class="footer-link" href="transfer-gruppi-ischia.html">Transfer gruppi Ischia<br><span class="text-xs">Minivan, bus e logistica dedicata</span></a>
                 <a class="footer-link" href="cookie-policy.html">Cookie Policy</a>
                 <a class="footer-link" href="https://ischia-transfer.vercel.app/login">Area Riservata</a>
                 <a class="footer-link" href="en/index.html">English version</a>

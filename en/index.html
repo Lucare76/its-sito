@@ -218,47 +218,49 @@
                         </div>
 
                         <form id="hero-booking-form" class="hero-booking-progressive mt-6 space-y-4" data-expanded="false">
-                            <label class="booking-field">
-                                <span>Main route</span>
-                                <select name="hero-service" required>
-                                    <option value="">Select your route</option>
-                                    <option>Naples Airport -> Ischia Island</option>
-                                    <option>Naples Centrale -> Ischia Island</option>
-                                    <option>Ischia Porto -> Hotel</option>
-                                    <option>Casamicciola -> Hotel</option>
-                                    <option>Local transfer in Ischia</option>
-                                    <option>Private group transfer</option>
-                                    <option>Other</option>
-                                </select>
-                            </label>
-
-                            <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="hero-booking-initial space-y-4">
                                 <label class="booking-field">
-                                    <span>Name</span>
-                                    <input type="text" name="hero-name" placeholder="Your name" required>
-                                </label>
-                                <label class="booking-field">
-                                    <span>Email</span>
-                                    <input type="email" name="hero-email" placeholder="Your email" required>
-                                </label>
-                            </div>
-
-                            <div class="grid gap-4 sm:grid-cols-2">
-                                <label class="booking-field">
-                                    <span>Arrival point</span>
-                                    <select name="hero-arrival" required>
-                                        <option value="">Select arrival point</option>
-                                        <option>Ischia Porto</option>
-                                        <option>Casamicciola</option>
-                                        <option>Forio</option>
-                                        <option>Hotel / villa / apartment</option>
-                                        <option>I don't know yet</option>
+                                    <span>Main route</span>
+                                    <select name="hero-service" required>
+                                        <option value="">Select your route</option>
+                                        <option>Naples Airport -> Ischia Island</option>
+                                        <option>Naples Centrale -> Ischia Island</option>
+                                        <option>Ischia Porto -> Hotel</option>
+                                        <option>Casamicciola -> Hotel</option>
+                                        <option>Local transfer in Ischia</option>
+                                        <option>Private group transfer</option>
+                                        <option>Other</option>
                                     </select>
                                 </label>
-                                <label class="booking-field">
-                                    <span>Hotel, villa or final address</span>
-                                    <input type="text" name="hero-route" placeholder="Hotel name, villa or area of the island" required>
-                                </label>
+
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <label class="booking-field">
+                                        <span>Name</span>
+                                        <input type="text" name="hero-name" placeholder="Your name" required>
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Email</span>
+                                        <input type="email" name="hero-email" placeholder="Your email" required>
+                                    </label>
+                                </div>
+
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <label class="booking-field">
+                                        <span>Arrival point</span>
+                                        <select name="hero-arrival" required>
+                                            <option value="">Select arrival point</option>
+                                            <option>Ischia Porto</option>
+                                            <option>Casamicciola</option>
+                                            <option>Forio</option>
+                                            <option>Hotel / villa / apartment</option>
+                                            <option>I don't know yet</option>
+                                        </select>
+                                    </label>
+                                    <label class="booking-field">
+                                        <span>Hotel, villa or final address</span>
+                                        <input type="text" name="hero-route" placeholder="Hotel name, villa or area of the island" required>
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="hero-booking-advanced space-y-4" data-hero-advanced>
@@ -397,22 +399,6 @@
             <p class="mx-auto mt-6 max-w-7xl px-6 text-sm text-gray-500 lg:px-8">Travel times are indicative and may vary with traffic.</p>
         </section>
 
-        <section id="destinazioni-seo" class="section-shell pb-0">
-            <div class="section-heading">
-                <span class="eyebrow">Most Requested Routes</span>
-                <h2>Discover the most requested routes for Ischia and nearby destinations</h2>
-                <p>Here you can find the pages dedicated to the routes travelers ask for most often: arrivals from Naples, airport or train station transfers, port-to-hotel connections and group solutions.</p>
-            </div>
-            <div class="mx-auto grid max-w-7xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-8">
-                <a class="service-link" href="naples-airport-to-ischia-transfer.html">Naples Airport to Ischia</a>
-                <a class="service-link" href="transfer-naples-train-station-ischia.html">Naples Train Station to Ischia</a>
-                <a class="service-link" href="transfer-porto-ischia-hotel.html">Ischia Port to Hotel</a>
-                <a class="service-link" href="transfer-privato-ischia.html">Private Transfer Ischia</a>
-                <a class="service-link" href="transfer-gruppi-ischia.html">Group Transfer Ischia</a>
-                <a class="service-link" href="transfer-ischia.html">Local Transfer Ischia</a>
-            </div>
-        </section>
-
         <section id="servizi" class="section-shell">
             <div class="section-heading">
                 <span class="eyebrow">Our Services</span>
@@ -430,11 +416,6 @@
                     <h3>Naples Airport to Ischia</h3>
                     <p>From the exit at Capodichino to Beverello port, we send the meeting point, coordinate ferry timing and, if needed, the final arrival in Ischia too.</p>
                     <a href="naples-airport-to-ischia-transfer.html" class="service-link">Airport details</a>
-                </article>
-                <article class="service-card">
-                    <h3>Naples Station to Ischia Hotel</h3>
-                    <p>If you arrive at Naples Centrale, we arrange the transfer to Beverello and the continuation to your hotel, with timing suited to luggage or children.</p>
-                    <a href="transfer-naples-train-station-ischia.html" class="service-link">Station details</a>
                 </article>
                 <article class="service-card">
                     <h3>Private and group services</h3>
@@ -514,7 +495,7 @@
             <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Meeting point confirmed</h3><p>Before arrival you receive pickup details, so you do not waste time between exits, taxis and terminals.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Realistic timing</h3><p>We know traffic, ferry terminals and handovers between Naples and Ischia, so the transfer follows your actual arrival time.</p></div>
-                <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Guided request</h3><p>You can select the route, arrival point and luggage in a few steps, without writing everything from scratch.</p></div>
+                <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Guided request</h3><p>You choose where to go, we take care of the journey. Just a few details are enough.</p></div>
                 <div class="benefit-card"><span class="benefit-icon">✔</span><h3>Luggage and changes covered</h3><p>We help when there are large bags, children, delays or last-minute changes before boarding.</p></div>
             </div>
             <div class="homepage-inline-cta homepage-inline-cta-soft homepage-inline-cta-softest mx-auto mt-8 flex max-w-7xl flex-col gap-3 px-6 sm:flex-row sm:justify-center lg:px-8">
@@ -620,6 +601,7 @@
                 <p class="footer-title">Useful links</p>
                 <a class="footer-link" href="contacts.html">Check availability<br><span class="text-xs">Route, luggage and final destination</span></a>
                 <a class="footer-link" href="transfer-ischia.html">Local transfers in Ischia<br><span class="text-xs">Port, hotel and island transfers</span></a>
+                <a class="footer-link" href="transfer-gruppi-ischia.html">Ischia group transfers<br><span class="text-xs">Minivans, buses and dedicated logistics</span></a>
                 <a class="footer-link" href="cookie-policy.html">Cookie Policy</a>
                 <a class="footer-link" href="https://ischia-transfer.vercel.app/login">Reserved area</a>
                 <a class="footer-link" href="../index.html">Italian version</a>

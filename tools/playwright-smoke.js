@@ -86,38 +86,6 @@ async function run() {
 
     await publicPage.locator('a[href*="wa.me/"]').first().click({ noWaitAfter: true });
 
-    const opsContext = await browser.newContext({
-      viewport: { width: 1440, height: 1200 },
-    });
-    const opsPage = await opsContext.newPage();
-    await opsPage.goto(`${baseUrl}/ops.html`, { waitUntil: 'domcontentloaded' });
-
-    await opsPage.fill('#email', smokeOperatorEmail);
-    await opsPage.fill('#password', smokeOperatorPassword);
-    await opsPage.click('button[type="submit"]');
-    await opsPage.waitForSelector('text=Executive Summary');
-    await opsPage.waitForTimeout(1200);
-
-    const userLabel = await opsPage.locator('#user-label').innerText();
-    if (!userLabel.includes('Operatore ITS')) {
-      throw new Error('Login OPS fallito nel test Playwright');
-    }
-
-    const analyticsTotal = await opsPage.locator('#analytics-total').innerText();
-    if (Number(analyticsTotal) < 3) {
-      throw new Error(`Eventi analytics insufficienti in OPS: ${analyticsTotal}`);
-    }
-
-    const executiveSummary = await opsPage.locator('#executive-summary').innerText();
-    if (!executiveSummary || executiveSummary.includes('Nessun riepilogo disponibile')) {
-      throw new Error('Executive Summary non popolato');
-    }
-
-    const segmentSummary = await opsPage.locator('#segment-summary').innerText();
-    if (!segmentSummary || segmentSummary.includes('Nessun report segmenti disponibile')) {
-      throw new Error('Report segmenti non popolato');
-    }
-
     console.log('PLAYWRIGHT_SMOKE_OK');
   } finally {
     if (browser) {

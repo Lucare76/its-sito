@@ -45,6 +45,7 @@ const BLOCKED_ROOT_STATIC_FILES = new Set([
   '.eslintignore',
   '.eslintrc.cjs',
   '.gitignore',
+  'ops.html',
   'package.json',
   'package-lock.json',
   'pnpm-lock.yaml',
@@ -1070,7 +1071,7 @@ function handleApi(req, res, pathname) {
   if (pathname === '/api/health' && req.method === 'GET') {
     return sendJson(res, 200, {
       ok: true,
-      service: 'its-beta-api',
+      service: 'its-api',
       now: nowIso()
     });
   }
