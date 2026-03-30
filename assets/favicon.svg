@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0b2f4a"/>
+  <path d="M10 18h44a4 4 0 0 1 4 4v20a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4Z" fill="#f4f8fb"/>
+  <rect x="13" y="23" width="38" height="10" rx="2" fill="#0b2f4a"/>
+  <circle cx="20" cy="41" r="4" fill="#0b2f4a"/>
+  <circle cx="44" cy="41" r="4" fill="#0b2f4a"/>
+  <text x="32" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="700" fill="#f4f8fb">ITS</text>
+</svg>
