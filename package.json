@@ -20,9 +20,10 @@
     "tailwindcss": "^2.2.19"
   },
   "devDependencies": {
+    "@axe-core/cli": "^4.11.1",
+    "axe-core": "^4.11.1",
     "esbuild": "^0.25.12",
     "eslint": "^8.57.1",
-    "live-server": "^1.2.1",
     "playwright": "^1.58.2"
   },
   "author": "I.T.S. Ischia Transfer Service S.r.l.",

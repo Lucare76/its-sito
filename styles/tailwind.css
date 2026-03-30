@@ -9,7 +9,18 @@
     font-display: swap;
     src:
         local('Montserrat'),
+        url('../assets/fonts/Montserrat-Regular.woff2') format('woff2'),
         url('../assets/fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src:
+        local('Montserrat SemiBold'),
+        url('../assets/fonts/Montserrat-SemiBold.woff2') format('woff2');
 }
 
 @layer base {

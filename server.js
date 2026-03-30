@@ -1527,6 +1527,8 @@ function serveStatic(req, res, pathname) {
     headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
     headers.Pragma = 'no-cache';
     headers.Expires = '0';
+  } else if (['.css', '.js', '.webp', '.avif', '.jpg', '.jpeg', '.png', '.svg', '.woff', '.woff2'].includes(ext)) {
+    headers['Cache-Control'] = 'public, max-age=31536000, immutable';
   }
 
   res.writeHead(200, headers);

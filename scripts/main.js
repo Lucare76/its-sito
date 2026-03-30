@@ -328,6 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const banner = document.createElement('div');
         banner.id = 'cookie-banner';
         banner.className = 'cookie-banner';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-label', language === 'en' ? 'Cookie consent' : 'Consenso cookie');
+        banner.setAttribute('aria-modal', 'false');
         banner.innerHTML = `
             <div class="cookie-banner__content">
                 <p class="cookie-banner__title">${messages.cookieTitle}</p>
@@ -812,7 +815,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <span>${language === 'en' ? 'Chat Now' : 'WhatsApp'}</span>
         `;
 
-        document.body.appendChild(whatsappLink);
+        const wrapper = document.createElement('div');
+        wrapper.setAttribute('role', 'complementary');
+        wrapper.setAttribute('aria-label', language === 'en' ? 'Quick contact' : 'Contatto rapido');
+        wrapper.appendChild(whatsappLink);
+        document.body.appendChild(wrapper);
     };
 
     const syncNavState = () => {
