@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init('kPLCj-5Q49NIzb1Co');
+    }
+
     const nav = document.getElementById('site-nav');
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');

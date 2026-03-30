@@ -4,7 +4,9 @@
   "description": "A modern single-page website for I.T.S. Ischia Transfer Service S.r.l.",
   "main": "server.js",
   "scripts": {
-    "build": "tailwindcss build styles/tailwind.css -o styles/generated.css",
+    "build:css": "tailwindcss build styles/tailwind.css -o styles/generated.css",
+    "build:js": "esbuild scripts/main.js --minify --outfile=scripts/main.min.js",
+    "build": "npm run build:css && npm run build:js",
     "watch": "tailwindcss build styles/tailwind.css -o styles/generated.css --watch",
     "start": "node server.js",
     "test": "node tools/smoke-test.js",
@@ -18,6 +20,7 @@
     "tailwindcss": "^2.2.19"
   },
   "devDependencies": {
+    "esbuild": "^0.25.12",
     "eslint": "^8.57.1",
     "live-server": "^1.2.1",
     "playwright": "^1.58.2"

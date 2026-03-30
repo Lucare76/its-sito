@@ -635,7 +635,7 @@ function sendCsv(res, filename, body) {
       'X-Frame-Options': 'DENY',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.emailjs.com; frame-src https://maps.google.com https://www.google.com; frame-ancestors 'none'"
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.emailjs.com; frame-ancestors 'none'"
     };
   if (process.env.NODE_ENV === 'production') {
     headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';
