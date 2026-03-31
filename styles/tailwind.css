@@ -126,6 +126,19 @@
         color: #fff;
     }
 
+    /* Equal-width button pairs */
+    .cta-actions-equal .btn-primary,
+    .cta-actions-equal .btn-secondary,
+    .cta-actions-equal .btn-whatsapp,
+    .homepage-inline-cta .btn-primary,
+    .homepage-inline-cta .btn-secondary,
+    .homepage-inline-cta .btn-whatsapp {
+        flex: 0 0 auto;
+        min-width: 11rem;
+        max-width: 13rem;
+        width: 13rem;
+    }
+
     .eyebrow {
         @apply inline-flex rounded-full px-4 py-2 text-xs font-semibold uppercase text-nightBlue;
         width: fit-content;
@@ -429,8 +442,19 @@
         box-shadow: 0 22px 54px rgba(30, 58, 138, 0.08);
     }
 
+    .fleet-grid .fleet-card {
+        grid-template-rows: 320px 1fr;
+        align-content: start;
+    }
+
     .fleet-image-shell {
-        @apply relative min-h-[320px] overflow-hidden;
+        @apply relative overflow-hidden;
+        min-height: 260px;
+    }
+
+    .fleet-grid .fleet-card .fleet-image-shell {
+        height: 320px;
+        min-height: unset;
     }
 
     .fleet-image-shell::after {
@@ -464,10 +488,12 @@
 
     .fleet-copy {
         @apply flex flex-col p-8 sm:p-10;
+        align-content: start;
     }
 
     .fleet-copy h3 {
-        @apply mt-6 text-2xl font-semibold text-nightBlue sm:text-3xl;
+        @apply text-2xl font-semibold text-nightBlue sm:text-3xl;
+        margin-top: 0;
     }
 
     .fleet-copy p {

@@ -897,6 +897,19 @@ img {
   color: #fff;
 }
 
+/* Equal-width button pairs */
+.cta-actions-equal .btn-primary,
+.cta-actions-equal .btn-secondary,
+.cta-actions-equal .btn-whatsapp,
+.homepage-inline-cta .btn-primary,
+.homepage-inline-cta .btn-secondary,
+.homepage-inline-cta .btn-whatsapp {
+  flex: 0 0 auto;
+  min-width: 11rem;
+  max-width: 13rem;
+  width: 13rem;
+}
+
 .eyebrow {
   display: inline-flex;
   border-radius: 9999px;
@@ -1352,10 +1365,20 @@ img {
   box-shadow: 0 22px 54px rgba(30, 58, 138, 0.08);
 }
 
+.fleet-grid .fleet-card {
+  grid-template-rows: 320px 1fr;
+  align-content: start;
+}
+
 .fleet-image-shell {
   position: relative;
-  min-height: 320px;
+  min-height: 260px;
   overflow: hidden;
+}
+
+.fleet-grid .fleet-card .fleet-image-shell {
+  height: 320px;
+  min-height: unset;
 }
 
 .fleet-image-shell::after {
@@ -1411,6 +1434,7 @@ img {
   display: flex;
   flex-direction: column;
   padding: 2rem;
+  align-content: start;
 }
 
 @media (min-width: 640px) {
@@ -1420,7 +1444,7 @@ img {
 }
 
 .fleet-copy h3 {
-  margin-top: 1.5rem;
+  margin-top: 0;
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 600;
@@ -2659,8 +2683,8 @@ img {
     row-gap: 0.9rem;
   }
 
-  .fleet-image-shell {
-    min-height: 240px;
+  .fleet-grid .fleet-card .fleet-image-shell {
+    height: 240px;
   }
 
   .booking-card {
@@ -2741,8 +2765,8 @@ img {
     letter-spacing: 0.14em;
   }
 
-  .fleet-image-shell {
-    min-height: 220px;
+  .fleet-grid .fleet-card .fleet-image-shell {
+    height: 220px;
   }
 
   #mobile-menu {
