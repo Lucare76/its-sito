@@ -2,11 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const dns = require('dns');
-const nodemailer = require('nodemailer');
-
-// Prefer IPv4 for all DNS lookups (fixes SMTP on IPv6-only or dual-stack hosts)
-dns.setDefaultResultOrder('ipv4first');
+const { Resend } = require('resend');
 
 function loadEnvFile() {
   const envPath = path.join(__dirname, '.env');
@@ -77,7 +73,8 @@ const SMTP_SECURE = String(process.env.SMTP_SECURE || '').trim().toLowerCase() =
 const SMTP_USER = String(process.env.SMTP_USER || '').trim();
 const SMTP_PASS = String(process.env.SMTP_PASS || '');
 const BOOKING_NOTIFICATION_TO = String(process.env.BOOKING_NOTIFICATION_TO || '').trim();
-const BOOKING_NOTIFICATION_FROM = String(process.env.BOOKING_NOTIFICATION_FROM || SMTP_USER || '').trim();
+const BOOKING_NOTIFICATION_FROM = String(process.env.BOOKING_NOTIFICATION_FROM || '').trim();
+const RESEND_API_KEY = String(process.env.RESEND_API_KEY || '').trim();
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -100,31 +97,11 @@ function log(message) {
   console.log(`[${new Date().toISOString()}] ${message}`);
 }
 
-let mailTransporter = null;
-
-function getMailTransporter() {
-  if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS || !BOOKING_NOTIFICATION_TO || !BOOKING_NOTIFICATION_FROM) {
+function getResendClient() {
+  if (!RESEND_API_KEY || !BOOKING_NOTIFICATION_TO || !BOOKING_NOTIFICATION_FROM) {
     return null;
   }
-
-  if (!mailTransporter) {
-    mailTransporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_SECURE,
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-      family: 4,
-      tls: { rejectUnauthorized: false },
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
-      }
-    });
-  }
-
-  return mailTransporter;
+  return new Resend(RESEND_API_KEY);
 }
 
 function nowIso() {
@@ -388,9 +365,9 @@ function escapeHtml(value) {
 }
 
 async function sendBookingNotificationEmail(booking) {
-  const transporter = getMailTransporter();
-  if (!transporter) {
-    return { sent: false, skipped: true, reason: 'smtp_not_configured' };
+  const resend = getResendClient();
+  if (!resend) {
+    return { sent: false, skipped: true, reason: 'resend_not_configured' };
   }
 
   const details = booking.details ? escapeHtml(booking.details) : 'Nessun dettaglio aggiuntivo';
@@ -524,7 +501,7 @@ async function sendBookingNotificationEmail(booking) {
     </html>
   `;
 
-  await transporter.sendMail({
+  await resend.emails.send({
     from: BOOKING_NOTIFICATION_FROM,
     to: BOOKING_NOTIFICATION_TO,
     replyTo: booking.email,
@@ -1157,32 +1134,27 @@ function handleApi(req, res, pathname) {
       return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
     }
 
-    const transporter = getMailTransporter();
-    if (!transporter) {
+    const resend = getResendClient();
+    if (!resend) {
       return sendJson(res, 503, {
         ok: false,
-        error: 'SMTP non configurato',
+        error: 'Resend non configurato',
         config: {
-          host: SMTP_HOST || '(vuoto)',
-          port: SMTP_PORT,
-          secure: SMTP_SECURE,
-          user: SMTP_USER || '(vuoto)',
-          passSet: Boolean(SMTP_PASS),
+          apiKeySet: Boolean(RESEND_API_KEY),
           notificationTo: BOOKING_NOTIFICATION_TO || '(vuoto)',
           notificationFrom: BOOKING_NOTIFICATION_FROM || '(vuoto)'
         }
       });
     }
 
-    return transporter.verify()
-      .then(() => transporter.sendMail({
-        from: BOOKING_NOTIFICATION_FROM,
-        to: BOOKING_NOTIFICATION_TO,
-        subject: '[ITS] Test connessione email',
-        text: `Test email inviata il ${nowIso()} da ${user.email} (${user.role})`
-      }))
-      .then((info) => sendJson(res, 200, { ok: true, messageId: info.messageId }))
-      .catch((err) => sendJson(res, 500, { ok: false, error: err.message, code: err.code || null }));
+    return resend.emails.send({
+      from: BOOKING_NOTIFICATION_FROM,
+      to: BOOKING_NOTIFICATION_TO,
+      subject: '[ITS] Test connessione email',
+      text: `Test email inviata il ${nowIso()} da ${user.email} (${user.role})`
+    })
+      .then((result) => sendJson(res, 200, { ok: true, id: result.id }))
+      .catch((err) => sendJson(res, 500, { ok: false, error: err.message }));
   }
 
   if (pathname === '/api/bookings' && req.method === 'GET') {

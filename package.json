@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "nodemailer": "^8.0.3",
+    "resend": "^6.10.0",
     "tailwindcss": "^2.2.19"
   },
   "devDependencies": {
