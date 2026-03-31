@@ -25,7 +25,9 @@ function loadEnvFile() {
       return;
     }
     const key = line.slice(0, separator).trim();
-    const value = line.slice(separator + 1).trim();
+    const raw = line.slice(separator + 1).trim();
+    // Strip surrounding single or double quotes (e.g. FROM="Name <a@b.com>")
+    const value = raw.replace(/^(["'])(.*)\1$/, '$2');
     if (key && process.env[key] === undefined) {
       process.env[key] = value;
     }
