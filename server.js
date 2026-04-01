@@ -43,7 +43,6 @@ const BLOCKED_ROOT_STATIC_FILES = new Set([
   '.eslintignore',
   '.eslintrc.cjs',
   '.gitignore',
-  'ops.html',
   'package.json',
   'package-lock.json',
   'pnpm-lock.yaml',
