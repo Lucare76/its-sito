@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <title>Ischia excursions | Program from 16.02 to 30.03.2026</title>
-  <meta name="description" content="Ischia excursion program from 16 February to 30 March 2026 with Naples, the Aragonese Castle, La Mortella, Procida, Pompeii and the Royal Palace of Caserta.">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <title>Ischia Excursions 2026 | Programme from 1 April</title>
+  <meta name="description" content="Ischia excursion programme 2026 from 1 April: Capri, Procida, Positano, Amalfi, Sorrento, Pompeii, Caserta. Updated prices and days.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://www.ischiatransferservice.it/en/excursions">
   <link rel="alternate" hreflang="it" href="https://www.ischiatransferservice.it/escursioni">
   <link rel="alternate" hreflang="en" href="https://www.ischiatransferservice.it/en/excursions">
   <link rel="alternate" hreflang="x-default" href="https://www.ischiatransferservice.it/escursioni">
-  <meta property="og:title" content="Ischia excursions | Program from 16.02 to 30.03.2026">
-  <meta property="og:description" content="See the excursion program with day, included services and selling price.">
+  <meta property="og:title" content="Ischia Excursions 2026 | Programme from 1 April">
+  <meta property="og:description" content="Capri, Procida, Positano, Amalfi, Sorrento, Pompeii and Caserta. Updated prices and days for the 2026 season.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="../assets/ischia-bg.jpg">
   <meta property="og:url" content="https://www.ischiatransferservice.it/en/excursions">
@@ -21,45 +21,54 @@
   <meta name="twitter:image" content="../assets/ischia-bg.jpg">
   <link href="../styles/generated.css" rel="stylesheet">
   <style>
-    .excursion-meta {
-      display: grid;
-      gap: 0.7rem;
-      margin-top: 1rem;
-    }
-    .excursion-meta-row {
-      padding: 0.85rem 1rem;
-      border-radius: 1rem;
-      background: rgba(246, 245, 241, 0.8);
-      border: 1px solid rgba(20, 44, 110, 0.08);
-    }
-    .excursion-meta-label {
-      display: block;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
+    .exc-day-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: rgba(30, 58, 138, 0.7);
-      font-weight: 700;
-    }
-    .excursion-meta-value {
-      display: block;
-      margin-top: 0.3rem;
+      background: #e7f1ff;
       color: #1e3a8a;
-      line-height: 1.55;
+      margin: 2px 2px 2px 0;
     }
-    .excursion-price {
+    .exc-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #00204a;
+      line-height: 1;
+    }
+    .exc-includes {
+      font-size: 0.82rem;
+      color: #374151;
+      margin-top: 6px;
+    }
+    .exc-includes strong {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
       display: block;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #1e3a8a;
-      line-height: 1.2;
+      margin-bottom: 2px;
     }
+    .exc-notes {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-top: 6px;
+      font-style: italic;
+    }
+    #exc-grid { min-height: 200px; }
   </style>
 </head>
 <body class="bg-marbleWhite text-gray-900">
   <header class="fixed inset-x-0 top-0 z-50">
     <nav id="site-nav" class="nav-shell">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <a href="index.html" class="flex items-center gap-3 text-nightBlue"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-nightBlue text-sm font-semibold tracking-[0.28em] text-marbleWhite">ITS</span><span class="block text-sm font-semibold sm:text-base">I.T.S. Ischia Transfer Service</span></a>
+        <a href="index.html" class="flex items-center gap-3 text-nightBlue">
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-nightBlue text-sm font-semibold tracking-[0.28em] text-marbleWhite">ITS</span>
+          <span class="block text-sm font-semibold sm:text-base">I.T.S. Ischia Transfer Service</span>
+        </a>
         <div class="hidden items-center gap-6 lg:flex">
           <a class="nav-link" href="index.html">Home</a>
           <a class="nav-link" href="contacts.html">Contacts</a>
@@ -73,96 +82,18 @@
     <section class="section-shell pt-10">
       <div class="section-heading">
         <span class="eyebrow">Excursions</span>
-        <h1>Excursion program from 16.02 to 30.03.2026</h1>
-        <p>Here you can find the excursion program taken from the PDF you shared, with day, included services and selling price.</p>
+        <h1 id="exc-title">Excursion programme 2026</h1>
+        <p id="exc-subtitle">Loading…</p>
       </div>
 
-      <div class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 xl:grid-cols-3 lg:px-8">
-        <article class="service-card">
-          <p class="service-kicker">Tuesday</p>
-          <h3>Naples at leisure</h3>
-          <p>SNAV departure 09:45, return 16:20. Round-trip hydrofoil included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip hydrofoil</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€30.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">From 01.03.2026</p>
-          <h3>Aragonese Castle excursion</h3>
-          <p>Round-trip transfer, Castle entrance and guide included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip transfer · Castle entrance · Guide</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€35.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">Wednesday</p>
-          <h3>Island tour by minibus</h3>
-          <p>Minibus and guide included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Minibus · Guide</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€15.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">Thursday</p>
-          <h3>La Mortella Gardens excursion</h3>
-          <p>Round-trip transfer, Mortella entrance and guide included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip transfer · Mortella entrance · Guide</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€28.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">Friday</p>
-          <h3>Procida excursion</h3>
-          <p>SNAV departure 14:00, return 17:05. Round-trip transfer, round-trip hydrofoil, guide and m-taxi included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip transfer · Round-trip hydrofoil · Guide · MTaxi</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€40.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">Sunday</p>
-          <h3>Walk in Naples</h3>
-          <p>SNAV departure 07:10, return 17:05. Round-trip transfer, round-trip hydrofoil and guide included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip transfer · Round-trip hydrofoil · Guide</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€50.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">Excursion program</p>
-          <h3>Pompeii excursion</h3>
-          <p>Round-trip transfer, round-trip hydrofoil and guide included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip transfer · Round-trip hydrofoil · Guide</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€60.00</span></div>
-          </div>
-        </article>
-
-        <article class="service-card">
-          <p class="service-kicker">Excursion program</p>
-          <h3>Royal Palace of Caserta excursion</h3>
-          <p>Round-trip transfer, round-trip hydrofoil and guide included.</p>
-          <div class="excursion-meta">
-            <div class="excursion-meta-row"><span class="excursion-meta-label">Included</span><span class="excursion-meta-value">Round-trip transfer · Round-trip hydrofoil · Guide</span></div>
-            <div class="excursion-meta-row"><span class="excursion-price">€60.00</span></div>
-          </div>
-        </article>
+      <div id="exc-grid" class="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-2 xl:grid-cols-3 lg:px-8">
+        <p class="text-gray-400 text-sm col-span-full text-center py-10">Loading excursions…</p>
       </div>
 
-      <div class="mx-auto mt-10 grid max-w-7xl gap-6 px-6 lg:px-8">
+      <div class="mx-auto mt-10 max-w-7xl px-6 lg:px-8">
         <article class="service-card">
-          <h2 class="text-2xl font-semibold text-nightBlue">Operating note</h2>
-          <p class="mt-2">Visits will take place when a minimum of 20 participants is reached, with mandatory booking.</p>
+          <h2 class="text-xl font-semibold text-nightBlue">Operating note</h2>
+          <p id="exc-note" class="mt-2 text-gray-600 text-sm"></p>
           <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-start">
             <a class="btn-secondary btn-whatsapp justify-center" href="https://wa.me/390813331053" target="_blank" rel="noopener noreferrer">WhatsApp</a>
           </div>
@@ -170,10 +101,70 @@
       </div>
     </section>
   </main>
+
+  <script>
+    const DAY_IT_TO_EN = {
+      'Lunedì': 'Monday', 'Martedì': 'Tuesday', 'Mercoledì': 'Wednesday',
+      'Giovedì': 'Thursday', 'Venerdì': 'Friday', 'Sabato': 'Saturday', 'Domenica': 'Sunday'
+    };
+    const ORDER = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+
+    fetch('/api/escursioni')
+      .then((r) => r.json())
+      .then((data) => {
+        const grid = document.getElementById('exc-grid');
+        const subtitle = document.getElementById('exc-subtitle');
+        const noteEl = document.getElementById('exc-note');
+
+        if (data.validFrom) {
+          const [y, m, d] = data.validFrom.split('-');
+          subtitle.textContent = 'In effect from ' + d + '/' + m + '/' + y;
+        } else {
+          subtitle.textContent = '';
+        }
+
+        noteEl.textContent = data.note
+          ? data.note.replace('Le escursioni si effettuano al raggiungimento di un minimo di 20 partecipanti.', 'Excursions take place when a minimum of 20 participants is reached.')
+              .replace('Prenotazioni:', 'Bookings:')
+          : '';
+
+        const items = (data.items || []).filter((i) => i.visible !== false);
+        if (!items.length) {
+          grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full text-center py-10">No excursions available at the moment.</p>';
+          return;
+        }
+
+        items.sort((a, b) => {
+          const ia = Math.min(...(a.days || []).map((d) => ORDER.indexOf(d)).filter((n) => n >= 0));
+          const ib = Math.min(...(b.days || []).map((d) => ORDER.indexOf(d)).filter((n) => n >= 0));
+          return ia - ib;
+        });
+
+        grid.innerHTML = items.map((item) => {
+          const badges = (item.days || []).map((d) => `<span class="exc-day-badge">${DAY_IT_TO_EN[d] || d}</span>`).join('');
+          const priceStr = item.priceNote ? item.priceNote : (item.price ? `€${Number(item.price).toFixed(0)}` : '');
+          const includesHtml = item.includes
+            ? `<div class="exc-includes"><strong>Included</strong>${item.includes}</div>`
+            : '';
+          const notesHtml = item.notes
+            ? `<p class="exc-notes">${item.notes}</p>`
+            : '';
+          return `
+            <article class="service-card flex flex-col">
+              <div class="mb-2">${badges}</div>
+              <h3 class="mt-0">${item.name}</h3>
+              ${includesHtml}
+              ${notesHtml}
+              <div class="mt-auto pt-4">
+                <span class="exc-price">${priceStr}</span>
+              </div>
+            </article>`;
+        }).join('');
+      })
+      .catch(() => {
+        document.getElementById('exc-grid').innerHTML =
+          '<p class="text-red-500 text-sm col-span-full text-center py-10">Error loading excursions.</p>';
+      });
+  </script>
 </body>
 </html>
-
-
-
-
-
