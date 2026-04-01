@@ -71,14 +71,52 @@
     }).join('');
   }
 
-  var lang = document.documentElement.lang === 'en' ? 'en' : 'it';
-  var apiBase = lang === 'en' ? '/api/escursioni' : '/api/escursioni';
+  function fetchJson(url) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) {
+        throw new Error('HTTP ' + r.status + ' on ' + url);
+      }
+      return r.json();
+    });
+  }
 
-  fetch(apiBase)
-    .then(function (r) { return r.json(); })
+  function getFallbackDataUrl() {
+    var scriptEl = document.currentScript;
+    if (scriptEl && scriptEl.src) {
+      return new URL('../assets/escursioni-default.json', scriptEl.src).toString();
+    }
+    return '/assets/escursioni-default.json';
+  }
+
+  function shouldUseApi() {
+    var host = window.location.hostname;
+    return host === 'localhost' || host === '127.0.0.1';
+  }
+
+  var lang = document.documentElement.lang === 'en' ? 'en' : 'it';
+  var fallbackUrl = getFallbackDataUrl();
+
+  var dataPromise = shouldUseApi()
+    ? fetchJson('/api/escursioni').catch(function () {
+        // Fallback per ambienti locali senza endpoint API.
+        return fetchJson(fallbackUrl);
+      })
+    : fetchJson(fallbackUrl);
+
+  dataPromise
     .then(function (data) { renderExcursions(data, lang); })
     .catch(function (err) {
       var g = document.getElementById('exc-grid');
-      if (g) g.innerHTML = '<p class="text-red-500 text-sm col-span-full text-center py-10">Errore: ' + (err && err.message ? err.message : String(err)) + '</p>';
+      if (g) {
+        g.innerHTML = '<p class="text-red-500 text-sm col-span-full text-center py-10">' +
+          (lang === 'en' ? 'Unable to load excursions.' : 'Impossibile caricare le escursioni.') +
+          '</p>';
+      }
+      var subtitle = document.getElementById('exc-subtitle');
+      if (subtitle) {
+        subtitle.textContent = lang === 'en'
+          ? 'Temporarily unavailable. Please contact us on WhatsApp.'
+          : 'Temporaneamente non disponibile. Contattaci su WhatsApp.';
+      }
     });
 }());
