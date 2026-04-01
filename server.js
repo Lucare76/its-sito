@@ -345,13 +345,42 @@ function writeDb(db) {
   fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
 }
 
+const DEFAULT_EXCURSIONS = {
+  validFrom: '2026-04-01',
+  note: 'Le escursioni si effettuano al raggiungimento di un minimo di 20 partecipanti. Prenotazioni: 081.3331053 dalle 09:00 alle 19:30.',
+  updatedAt: '2026-04-01T00:00:00.000Z',
+  items: [
+    { id: 'exc_01', name: 'Giro Isola Motonave', days: ['Lunedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 25, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
+    { id: 'exc_02', name: 'Capri Solo Motonave', days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 55, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
+    { id: 'exc_03', name: 'Capri con Guida', days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 90, priceNote: '', includes: 'Motonave A/R · Guida', notes: '', visible: true },
+    { id: 'exc_04', name: 'Capri con Giro Isola via Mare', days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 85, priceNote: '', includes: 'Motonave A/R · Giro isola', notes: '', visible: true },
+    { id: 'exc_05', name: 'Castello Aragonese (mattina)', days: ['Martedì','Venerdì'], price: 35, priceNote: '€35 / €40', includes: 'Transfer A/R · Ingresso', notes: '', visible: true },
+    { id: 'exc_06', name: 'Procida Solo Motonave', days: ['Martedì','Mercoledì','Venerdì'], price: 25, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
+    { id: 'exc_07', name: 'Amalfi & Positano', days: ['Martedì','Giovedì','Domenica'], price: 60, priceNote: '', includes: 'Motonave A/R', notes: 'Martedì dal 21/04', visible: true },
+    { id: 'exc_08', name: 'Giro Isola Minibus', days: ['Mercoledì','Venerdì'], price: 15, priceNote: '', includes: 'Minibus · Guida', notes: '', visible: true },
+    { id: 'exc_09', name: 'Procida con Guida', days: ['Mercoledì','Venerdì'], price: 40, priceNote: '', includes: 'Motonave A/R · Guida', notes: '', visible: true },
+    { id: 'exc_10', name: 'Sorrento', days: ['Mercoledì'], price: 60, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
+    { id: 'exc_11', name: 'La Mortella', days: ['Giovedì'], price: 30, priceNote: '', includes: 'Transfer A/R · Ingresso', notes: '', visible: true },
+    { id: 'exc_12', name: 'Nitrodi', days: ['Giovedì','Sabato'], price: 28, priceNote: '', includes: 'Transfer A/R · Ingresso', notes: '', visible: true },
+    { id: 'exc_13', name: 'Procida Solo Passaggio Marittimo', days: ['Giovedì'], price: 25, priceNote: '', includes: 'Passaggio marittimo A/R', notes: '', visible: true },
+    { id: 'exc_14', name: 'Cooking Class Dolci Tipici Campani', days: ['Giovedì'], price: 60, priceNote: '', includes: '', notes: '', visible: true },
+    { id: 'exc_15', name: 'Escursione Crateri', days: ['Sabato'], price: 25, priceNote: '', includes: '', notes: '', visible: true },
+    { id: 'exc_16', name: 'Passeggiata a Napoli', days: ['Domenica'], price: 55, priceNote: '', includes: 'Aliscafo A/R', notes: '', visible: true },
+    { id: 'exc_17', name: 'Pompei', days: ['Domenica'], price: 60, priceNote: '', includes: 'Transfer A/R · Guida', notes: 'Ingresso €20 + auricolari €3 non inclusi', visible: true },
+    { id: 'exc_18', name: 'Caserta', days: ['Domenica'], price: 60, priceNote: '', includes: 'Transfer A/R · Guida', notes: 'Ingresso €20 + auricolari €3 non inclusi', visible: true }
+  ]
+};
+
 function normalizeDb(db) {
   return {
     ...db,
     users: Array.isArray(db.users) ? db.users : [],
     bookings: Array.isArray(db.bookings) ? db.bookings : [],
     analyticsEvents: Array.isArray(db.analyticsEvents) ? db.analyticsEvents : [],
-    analyticsSnapshots: Array.isArray(db.analyticsSnapshots) ? db.analyticsSnapshots : []
+    analyticsSnapshots: Array.isArray(db.analyticsSnapshots) ? db.analyticsSnapshots : [],
+    excursions: db.excursions && Array.isArray(db.excursions.items)
+      ? db.excursions
+      : DEFAULT_EXCURSIONS
   };
 }
 
@@ -1155,6 +1184,27 @@ function handleApi(req, res, pathname) {
     })
       .then((result) => sendJson(res, 200, { ok: true, id: result.id }))
       .catch((err) => sendJson(res, 500, { ok: false, error: err.message }));
+  }
+
+  if (pathname === '/api/escursioni' && req.method === 'GET') {
+    const db = readDb();
+    return sendJson(res, 200, normalizeDb(db).excursions);
+  }
+
+  if (pathname === '/api/escursioni' && req.method === 'PUT') {
+    const user = extractAuthUser(req);
+    if (!isAllowedRole(user, ['operator', 'admin'])) {
+      return sendJson(res, 403, { error: 'Ruolo non autorizzato' });
+    }
+    return parseRequestBody(req).then((payload) => {
+      const db = normalizeDb(readDb());
+      if (payload.validFrom !== undefined) db.excursions.validFrom = String(payload.validFrom);
+      if (payload.note !== undefined) db.excursions.note = String(payload.note);
+      if (Array.isArray(payload.items)) db.excursions.items = payload.items;
+      db.excursions.updatedAt = new Date().toISOString();
+      writeDb(db);
+      return sendJson(res, 200, db.excursions);
+    }).catch(() => sendJson(res, 400, { error: 'Body non valido' }));
   }
 
   if (pathname === '/api/bookings' && req.method === 'GET') {

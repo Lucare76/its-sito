@@ -516,6 +516,33 @@
       </table>
       <div id="snapshot-summary" class="hint">Nessuno snapshot disponibile.</div>
     </div>
+    <div class="card" id="excursions-card">
+      <div class="card-header">
+        <div>
+          <strong>Gestione Escursioni</strong>
+          <p class="small">Modifica prezzi, testi e visibilità delle escursioni. Clicca Salva per aggiornare il sito.</p>
+        </div>
+        <button class="toggle-btn" onclick="this.closest('.card').querySelector('.card-content').classList.toggle('is-collapsed');this.textContent=this.textContent==='▲'?'▼':'▲'">▼</button>
+      </div>
+      <div class="card-content is-collapsed">
+        <div style="margin-top:12px;display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px;">
+          <div class="field">
+            <label>In vigore dal (AAAA-MM-GG)</label>
+            <input id="exc-valid-from" type="text" placeholder="2026-04-01">
+          </div>
+          <div class="field">
+            <label>Nota operativa</label>
+            <input id="exc-note" type="text" placeholder="Minimo 20 partecipanti…">
+          </div>
+        </div>
+        <div id="exc-items-list" style="display:grid;gap:6px;"></div>
+        <div class="toolbar" style="margin-top:12px;">
+          <button id="exc-save-btn" type="button" disabled>Salva modifiche</button>
+          <button id="exc-add-btn" type="button" class="secondary" disabled>+ Aggiungi escursione</button>
+        </div>
+        <div id="exc-feedback" style="margin-top:8px;font-size:13px;"></div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -2087,6 +2114,7 @@
         await loadAnalytics();
         await loadInsightsReport();
         await loadSnapshots();
+        await loadExcursions();
       } catch (error) {
         setFeedback(error.message, 'err');
       }
@@ -2266,6 +2294,126 @@
         target.disabled = false;
       }
     });
+
+    // ── Escursioni ────────────────────────────────────────────
+    const excSaveBtn = document.getElementById('exc-save-btn');
+    const excAddBtn = document.getElementById('exc-add-btn');
+    const excItemsList = document.getElementById('exc-items-list');
+    const excValidFrom = document.getElementById('exc-valid-from');
+    const excNoteInput = document.getElementById('exc-note');
+    const excFeedback = document.getElementById('exc-feedback');
+    const DAYS_ORDER = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+
+    function excSetFeedback(msg, cls) {
+      excFeedback.textContent = msg;
+      excFeedback.style.color = cls === 'ok' ? 'var(--ok)' : cls === 'err' ? 'var(--warn)' : 'var(--muted)';
+    }
+
+    function excItemRow(item, idx) {
+      const daysChecked = DAYS_ORDER.map((d) =>
+        `<label style="font-size:12px;display:inline-flex;align-items:center;gap:3px;margin-right:6px;">
+          <input type="checkbox" data-exc-day="${idx}" value="${d}" ${(item.days||[]).includes(d)?'checked':''}> ${d}
+        </label>`
+      ).join('');
+      return `<div data-exc-idx="${idx}" style="border:1px solid var(--line);border-radius:10px;padding:10px;background:#f8fbff;">
+        <div style="display:grid;gap:8px;grid-template-columns:2fr 1fr 1fr auto;">
+          <input type="text" data-exc-name="${idx}" value="${item.name||''}" placeholder="Nome escursione" style="font-size:13px;">
+          <input type="number" data-exc-price="${idx}" value="${item.price||''}" placeholder="Prezzo €" style="font-size:13px;">
+          <input type="text" data-exc-price-note="${idx}" value="${item.priceNote||''}" placeholder="Es. €35/€40" style="font-size:13px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;">
+            <input type="checkbox" data-exc-visible="${idx}" ${item.visible!==false?'checked':''}> Visibile
+          </label>
+        </div>
+        <input type="text" data-exc-includes="${idx}" value="${item.includes||''}" placeholder="Incluso (es: Motonave A/R · Guida)" style="font-size:12px;margin-top:6px;width:100%;">
+        <input type="text" data-exc-notes="${idx}" value="${item.notes||''}" placeholder="Note (opzionale)" style="font-size:12px;margin-top:4px;width:100%;">
+        <div style="margin-top:6px;">${daysChecked}</div>
+        <button type="button" onclick="excDeleteRow(${idx})" style="margin-top:6px;background:var(--warn);font-size:11px;padding:4px 10px;">Elimina</button>
+      </div>`;
+    }
+
+    function excRenderItems(items) {
+      excItemsList.innerHTML = (items||[]).map((item, idx) => excItemRow(item, idx)).join('');
+    }
+
+    function excCollectItems() {
+      const rows = excItemsList.querySelectorAll('[data-exc-idx]');
+      return Array.from(rows).map((row, idx) => {
+        const days = Array.from(row.querySelectorAll(`[data-exc-day="${idx}"]:checked`)).map((cb) => cb.value);
+        return {
+          id: row.dataset.excId || ('exc_new_' + idx),
+          name: row.querySelector(`[data-exc-name="${idx}"]`).value.trim(),
+          days,
+          price: Number(row.querySelector(`[data-exc-price="${idx}"]`).value) || 0,
+          priceNote: row.querySelector(`[data-exc-price-note="${idx}"]`).value.trim(),
+          includes: row.querySelector(`[data-exc-includes="${idx}"]`).value.trim(),
+          notes: row.querySelector(`[data-exc-notes="${idx}"]`).value.trim(),
+          visible: row.querySelector(`[data-exc-visible="${idx}"]`).checked,
+        };
+      });
+    }
+
+    function excDeleteRow(idx) {
+      const row = excItemsList.querySelector(`[data-exc-idx="${idx}"]`);
+      if (row) row.remove();
+      // re-index
+      excItemsList.querySelectorAll('[data-exc-idx]').forEach((el, i) => {
+        el.dataset.excIdx = i;
+        el.querySelectorAll('[data-exc-name],[data-exc-price],[data-exc-price-note],[data-exc-includes],[data-exc-notes],[data-exc-visible],[data-exc-day]').forEach((input) => {
+          const keys = ['data-exc-name','data-exc-price','data-exc-price-note','data-exc-includes','data-exc-notes','data-exc-visible','data-exc-day'];
+          keys.forEach((k) => { if (input.hasAttribute(k)) input.setAttribute(k, i); });
+        });
+      });
+    }
+    window.excDeleteRow = excDeleteRow;
+
+    async function loadExcursions() {
+      try {
+        const data = await fetch('/api/escursioni').then((r) => r.json());
+        excValidFrom.value = data.validFrom || '';
+        excNoteInput.value = data.note || '';
+        state.excursions = data;
+        excRenderItems(data.items || []);
+        excSaveBtn.disabled = false;
+        excAddBtn.disabled = false;
+        // store ids on rows
+        (data.items || []).forEach((item, idx) => {
+          const row = excItemsList.querySelector(`[data-exc-idx="${idx}"]`);
+          if (row) row.dataset.excId = item.id || '';
+        });
+        excSetFeedback('Escursioni caricate', 'ok');
+      } catch (e) {
+        excSetFeedback('Errore caricamento escursioni: ' + e.message, 'err');
+      }
+    }
+
+    excAddBtn.addEventListener('click', () => {
+      const items = excCollectItems();
+      const newItem = { id: 'exc_new_' + Date.now(), name: '', days: [], price: 0, priceNote: '', includes: '', notes: '', visible: true };
+      items.push(newItem);
+      excRenderItems(items);
+    });
+
+    excSaveBtn.addEventListener('click', async () => {
+      excSaveBtn.disabled = true;
+      excSetFeedback('Salvataggio…', '');
+      try {
+        const payload = {
+          validFrom: excValidFrom.value.trim(),
+          note: excNoteInput.value.trim(),
+          items: excCollectItems(),
+        };
+        const data = await api('/api/escursioni', {
+          method: 'PUT',
+          body: JSON.stringify(payload)
+        });
+        excSetFeedback('Salvato alle ' + new Date(data.updatedAt).toLocaleTimeString('it-IT'), 'ok');
+      } catch (e) {
+        excSetFeedback('Errore: ' + e.message, 'err');
+      } finally {
+        excSaveBtn.disabled = false;
+      }
+    });
+    // ── Fine Escursioni ───────────────────────────────────────
   </script>
 </body>
 </html>
