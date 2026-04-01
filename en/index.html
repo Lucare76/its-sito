@@ -245,7 +245,7 @@
                                 <div class="grid gap-4 sm:grid-cols-2">
                                     <label class="booking-field">
                                         <span>Arrival point</span>
-                                        <select name="hero-arrival" required>
+                                        <select name="hero-arrival">
                                             <option value="">Select arrival point</option>
                                             <option>Ischia Porto</option>
                                             <option>Casamicciola</option>
@@ -264,17 +264,17 @@
                             <div class="hero-booking-advanced space-y-4" data-hero-advanced>
                                 <label class="booking-field">
                                     <span>Phone</span>
-                                    <input type="tel" name="hero-phone" placeholder="Your phone number">
+                                    <input type="tel" name="hero-phone" placeholder="Your phone number" data-progressive-required="true">
                                 </label>
 
                                 <div class="grid gap-4 sm:grid-cols-3">
                                     <label class="booking-field">
                                         <span>Date</span>
-                                        <input type="date" name="hero-date" min="2026-03-23">
+                                        <input type="date" name="hero-date" min="2026-03-23" data-progressive-required="true">
                                     </label>
                                     <label class="booking-field">
                                         <span>Arrival time</span>
-                                        <input type="time" name="hero-time">
+                                        <input type="time" name="hero-time" data-progressive-required="true">
                                     </label>
                                     <label class="booking-field">
                                         <span>Passengers</span>
@@ -323,7 +323,7 @@
                         </form>
 
                         <div class="mt-8 flex flex-col gap-4 border-t border-nightBlue/10 pt-6">
-                            <p class="max-w-sm text-sm leading-7 text-gray-600">Reply within a few hours during operating times • No advance payment • Confirmation by WhatsApp or email</p>
+                            <p class="max-w-sm text-sm leading-7 text-gray-600">Reply within a few hours during operating times • Confirmation by WhatsApp or email</p>
                             <div class="cta-actions-equal flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <button id="hero-booking-submit" type="submit" form="hero-booking-form" class="btn-primary justify-center border-0">Check availability</button>
                                 <a href="https://wa.me/390813331053" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-whatsapp justify-center" aria-label="Open WhatsApp to check availability">WhatsApp</a>
@@ -412,7 +412,7 @@
                 </article>
                 <article class="service-card">
                     <h3>Naples Airport to Ischia</h3>
-                    <p>From the exit at Capodichino to Beverello port, we send the meeting point, coordinate ferry timing and, if needed, the final arrival in Ischia too.</p>
+                    <p>From the exit at Capodichino to Beverello port, we send you the meeting point, coordinate the ferry schedule and the final arrival in Ischia.</p>
                     <a href="naples-airport-to-ischia-transfer.html" class="service-link">Airport details</a>
                 </article>
                 <article class="service-card">

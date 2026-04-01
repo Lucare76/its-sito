@@ -1133,11 +1133,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const missingFields = [];
 
             if (!service) missingFields.push('hero-service');
-            if (!arrivalPoint) missingFields.push('hero-arrival');
             if (!name) missingFields.push('hero-name');
             if (!email) missingFields.push('hero-email');
-            if (!date) missingFields.push('hero-date');
             if (!route) missingFields.push('hero-route');
+            if (!phone) missingFields.push('hero-phone');
+            if (!date) missingFields.push('hero-date');
+            if (!time) missingFields.push('hero-time');
             if (requiresPeople && !people) missingFields.push('hero-people');
 
             if (missingFields.length) {
