@@ -52,11 +52,21 @@
         ? '<div class="exc-includes"><strong>' + includesLabel + '</strong>' + item.includes + '</div>'
         : '';
       var notesHtml = item.notes ? '<p class="exc-notes">' + item.notes + '</p>' : '';
+      var daysList = (item.days || []).map(function (d) { return dayMap ? (dayMap[d] || d) : d; }).join(', ');
+      var waText = lang === 'en'
+        ? 'Hi, I would like to book the excursion: ' + item.name + ' (' + daysList + ')' + (priceStr ? ' - ' + priceStr : '')
+        : 'Ciao, vorrei prenotare l\'escursione: ' + item.name + ' (' + daysList + ')' + (priceStr ? ' - ' + priceStr : '');
+      var waUrl = 'https://wa.me/390813331053?text=' + encodeURIComponent(waText);
+      var btnLabel = lang === 'en' ? 'Book on WhatsApp' : 'Prenota su WhatsApp';
+
       return '<article class="service-card flex flex-col">' +
         '<div class="mb-2">' + badges + '</div>' +
         '<h3 class="mt-0">' + item.name + '</h3>' +
         includesHtml + notesHtml +
-        '<div class="mt-auto pt-4"><span class="exc-price">' + priceStr + '</span></div>' +
+        '<div class="mt-auto pt-4 flex items-center justify-between gap-4">' +
+          '<span class="exc-price">' + priceStr + '</span>' +
+          '<a href="' + waUrl + '" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-whatsapp" style="font-size:0.8rem;padding:8px 14px;">' + btnLabel + '</a>' +
+        '</div>' +
         '</article>';
     }).join('');
   }
