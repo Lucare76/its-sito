@@ -6,6 +6,12 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function buildFutureIsoDate(daysAhead = 7) {
+  const target = new Date();
+  target.setDate(target.getDate() + daysAhead);
+  return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
+}
+
 async function call(baseUrl, path, options = {}) {
   const res = await fetch(`${baseUrl}${path}`, options);
   const body = await res.json().catch(() => ({}));
@@ -20,12 +26,19 @@ async function run() {
   const tempDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'its-smoke-'));
   const smokeOperatorEmail = process.env.SMOKE_TEST_OPERATOR_EMAIL || 'smoke.operator@its.local';
   const smokeOperatorPassword = process.env.SMOKE_TEST_OPERATOR_PASSWORD || 'smoke-operator-password';
+  const bookingDate = buildFutureIsoDate(7);
 
   process.env.PORT = String(port);
   process.env.DATA_DIR = tempDataDir;
   process.env.DB_PATH = path.join(tempDataDir, 'db.json');
   process.env.BOOTSTRAP_OPERATOR_EMAIL = smokeOperatorEmail;
   process.env.BOOTSTRAP_OPERATOR_PASSWORD = smokeOperatorPassword;
+  process.env.RESEND_API_KEY = '';
+  process.env.SMTP_HOST = '';
+  process.env.SMTP_USER = '';
+  process.env.SMTP_PASS = '';
+  process.env.BOOKING_NOTIFICATION_TO = '';
+  process.env.BOOKING_NOTIFICATION_FROM = '';
 
   const baseUrl = `http://localhost:${port}`;
   const { startServer } = require('../server');
@@ -57,7 +70,7 @@ async function run() {
         email: 'smoke@its.test',
         service: 'Smoke Transfer',
         route: 'Napoli > Ischia',
-        date: '2026-03-30',
+        date: bookingDate,
         source: 'SMOKE_TEST',
       }),
     });

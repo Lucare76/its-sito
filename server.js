@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const { Resend } = require('resend');
 
 function loadEnvFile() {
@@ -71,6 +72,10 @@ const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 const SMTP_SECURE = String(process.env.SMTP_SECURE || '').trim().toLowerCase() === 'true';
 const SMTP_USER = String(process.env.SMTP_USER || '').trim();
 const SMTP_PASS = String(process.env.SMTP_PASS || '');
+const SMTP_TLS_SERVERNAME = String(process.env.SMTP_TLS_SERVERNAME || '').trim();
+const SMTP_CONNECTION_TIMEOUT = Number(process.env.SMTP_CONNECTION_TIMEOUT || 10000);
+const SMTP_GREETING_TIMEOUT = Number(process.env.SMTP_GREETING_TIMEOUT || 10000);
+const SMTP_SOCKET_TIMEOUT = Number(process.env.SMTP_SOCKET_TIMEOUT || 10000);
 const BOOKING_NOTIFICATION_TO = String(process.env.BOOKING_NOTIFICATION_TO || '').trim();
 const BOOKING_NOTIFICATION_FROM = String(process.env.BOOKING_NOTIFICATION_FROM || '').trim();
 const RESEND_API_KEY = String(process.env.RESEND_API_KEY || '').trim();
@@ -101,6 +106,32 @@ function getResendClient() {
     return null;
   }
   return new Resend(RESEND_API_KEY);
+}
+
+let smtpTransporter = null;
+
+function getSmtpTransporter() {
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !BOOKING_NOTIFICATION_TO || !BOOKING_NOTIFICATION_FROM) {
+    return null;
+  }
+  if (!smtpTransporter) {
+    smtpTransporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      connectionTimeout: SMTP_CONNECTION_TIMEOUT,
+      greetingTimeout: SMTP_GREETING_TIMEOUT,
+      socketTimeout: SMTP_SOCKET_TIMEOUT,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS
+      },
+      tls: {
+        servername: SMTP_TLS_SERVERNAME || SMTP_HOST
+      }
+    });
+  }
+  return smtpTransporter;
 }
 
 function nowIso() {
@@ -349,24 +380,24 @@ const DEFAULT_EXCURSIONS = {
   note: 'Le escursioni si effettuano al raggiungimento di un minimo di 20 partecipanti. Prenotazioni: 081.3331053 dalle 09:00 alle 19:30.',
   updatedAt: '2026-04-01T00:00:00.000Z',
   items: [
-    { id: 'exc_01', name: 'Giro Isola Motonave', days: ['Lunedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 25, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
-    { id: 'exc_02', name: 'Capri Solo Motonave', days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 55, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
-    { id: 'exc_03', name: 'Capri con Guida', days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 90, priceNote: '', includes: 'Motonave A/R · Guida', notes: '', visible: true },
-    { id: 'exc_04', name: 'Capri con Giro Isola via Mare', days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 85, priceNote: '', includes: 'Motonave A/R · Giro isola', notes: '', visible: true },
-    { id: 'exc_05', name: 'Castello Aragonese (mattina)', days: ['Martedì','Venerdì'], price: 35, priceNote: '€35 / €40', includes: 'Transfer A/R · Ingresso', notes: '', visible: true },
-    { id: 'exc_06', name: 'Procida Solo Motonave', days: ['Martedì','Mercoledì','Venerdì'], price: 25, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
-    { id: 'exc_07', name: 'Amalfi & Positano', days: ['Martedì','Giovedì','Domenica'], price: 60, priceNote: '', includes: 'Motonave A/R', notes: 'Martedì dal 21/04', visible: true },
-    { id: 'exc_08', name: 'Giro Isola Minibus', days: ['Mercoledì','Venerdì'], price: 15, priceNote: '', includes: 'Minibus · Guida', notes: '', visible: true },
-    { id: 'exc_09', name: 'Procida con Guida', days: ['Mercoledì','Venerdì'], price: 40, priceNote: '', includes: 'Motonave A/R · Guida', notes: '', visible: true },
-    { id: 'exc_10', name: 'Sorrento', days: ['Mercoledì'], price: 60, priceNote: '', includes: 'Motonave A/R', notes: '', visible: true },
-    { id: 'exc_11', name: 'La Mortella', days: ['Giovedì'], price: 30, priceNote: '', includes: 'Transfer A/R · Ingresso', notes: '', visible: true },
-    { id: 'exc_12', name: 'Nitrodi', days: ['Giovedì','Sabato'], price: 28, priceNote: '', includes: 'Transfer A/R · Ingresso', notes: '', visible: true },
-    { id: 'exc_13', name: 'Procida Solo Passaggio Marittimo', days: ['Giovedì'], price: 25, priceNote: '', includes: 'Passaggio marittimo A/R', notes: '', visible: true },
-    { id: 'exc_14', name: 'Cooking Class Dolci Tipici Campani', days: ['Giovedì'], price: 60, priceNote: '', includes: '', notes: '', visible: true },
-    { id: 'exc_15', name: 'Escursione Crateri', days: ['Sabato'], price: 25, priceNote: '', includes: '', notes: '', visible: true },
-    { id: 'exc_16', name: 'Passeggiata a Napoli', days: ['Domenica'], price: 55, priceNote: '', includes: 'Aliscafo A/R', notes: '', visible: true },
-    { id: 'exc_17', name: 'Pompei', days: ['Domenica'], price: 60, priceNote: '', includes: 'Transfer A/R · Guida', notes: 'Ingresso €20 + auricolari €3 non inclusi', visible: true },
-    { id: 'exc_18', name: 'Caserta', days: ['Domenica'], price: 60, priceNote: '', includes: 'Transfer A/R · Guida', notes: 'Ingresso €20 + auricolari €3 non inclusi', visible: true }
+    { id: 'exc_01', name: { it: 'Giro Isola Motonave', en: 'Boat Island Tour' }, days: ['Lunedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 25, priceNote: '', includes: 'Motonave A/R', description: { it: 'Un pomeriggio via mare lungo i 36 km di costa di Ischia, tra baie nascoste, Sant\'Angelo e scorci accessibili solo dalla motonave.', en: 'An afternoon by sea along Ischia\'s 36 km coastline, with hidden bays, Sant\'Angelo and viewpoints reachable only by boat.' }, notes: '', visible: true },
+    { id: 'exc_02', name: { it: 'Capri Solo Motonave', en: 'Capri by Boat' }, days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 55, priceNote: '', includes: 'Motonave A/R', description: { it: 'Giornata libera a Capri con passaggio marittimo A/R e assistenza in partenza, per visitare in autonomia la Piazzetta, Anacapri, Faraglioni e Grotta Azzurra.', en: 'Free day in Capri with round-trip boat ticket and boarding assistance, ideal for visiting the Piazzetta, Anacapri, the Faraglioni and the Blue Grotto on your own.' }, notes: '', visible: true },
+    { id: 'exc_03', name: { it: 'Capri con Guida', en: 'Capri with Guide' }, days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 90, priceNote: '', includes: 'Motonave A/R · Guida', description: { it: 'La classica escursione a Capri con guida turistica per tutta la giornata, perfetta per scoprire i luoghi simbolo dell\'isola senza pensieri.', en: 'The classic Capri excursion with a professional guide for the whole day, ideal for discovering the island\'s highlights with no stress.' }, notes: '', visible: true },
+    { id: 'exc_04', name: { it: 'Capri con Giro Isola via Mare', en: 'Capri with Island Tour by Sea' }, days: ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'], price: 85, priceNote: '', includes: 'Motonave A/R · Giro isola', description: { it: 'Capri da vivere via terra e via mare, con passaggio marittimo e giro panoramico dell\'isola per ammirare coste, grotte e Faraglioni da una prospettiva unica.', en: 'Experience Capri by land and by sea, with round-trip crossing and a panoramic island tour to admire cliffs, caves and the Faraglioni from a unique angle.' }, notes: '', visible: true },
+    { id: 'exc_05', name: { it: 'Castello Aragonese (mattina)', en: 'Aragonese Castle (morning)' }, days: ['Martedì','Venerdì'], price: 35, priceNote: '€35 / €40', includes: 'Transfer A/R · Ingresso', description: { it: 'Visita tra le mura del Castello Aragonese e il borgo di Ischia Ponte, tra panorami spettacolari, vicoli storici e racconti legati alla storia dell\'isola.', en: 'A visit through the Aragonese Castle and the old village of Ischia Ponte, with scenic views, historic lanes and stories tied to the island\'s past.' }, notes: '', visible: true },
+    { id: 'exc_06', name: { it: 'Procida Solo Motonave', en: 'Procida by Boat' }, days: ['Martedì','Mercoledì','Venerdì'], price: 25, priceNote: '', includes: 'Motonave A/R', description: { it: 'Tempo libero sull\'isola più autentica del Golfo di Napoli, tra case color pastello, limoneti, marina, silenzio e atmosfere mediterranee.', en: 'Free time on the most authentic island in the Gulf of Naples, among pastel-coloured houses, lemon groves, marinas and relaxed Mediterranean charm.' }, notes: '', visible: true },
+    { id: 'exc_07', name: { it: 'Amalfi & Positano', en: 'Amalfi & Positano' }, days: ['Martedì','Giovedì','Domenica'], price: 60, priceNote: '', includes: 'Motonave A/R', description: { it: 'Mini-cruise giornaliera lungo la Costiera Amalfitana per scoprire Positano e Amalfi via mare, tra paesaggi iconici, botteghe e scorci UNESCO.', en: 'A full-day mini cruise along the Amalfi Coast to discover Positano and Amalfi by sea, with iconic scenery, shops and UNESCO views.' }, notes: 'Martedì dal 21/04', visible: true },
+    { id: 'exc_08', name: { it: 'Giro Isola Minibus', en: 'Island Tour by Minibus' }, days: ['Mercoledì','Venerdì'], price: 15, priceNote: '', includes: 'Minibus · Guida', description: { it: 'Tour panoramico in minibus tra i comuni di Ischia, con soste nei punti più suggestivi per conoscere borghi, tradizioni e viste sul mare.', en: 'A panoramic minibus tour across Ischia\'s towns, with stops at the island\'s most scenic spots to discover villages, traditions and sea views.' }, notes: '', visible: true },
+    { id: 'exc_09', name: { it: 'Procida con Guida', en: 'Procida with Guide' }, days: ['Mercoledì','Venerdì'], price: 40, priceNote: '', includes: 'Motonave A/R · Guida', description: { it: 'Procida con guida professionale per entrare meglio nell\'anima dell\'isola, tra marina, chiese, case colorate e angoli meno evidenti a una visita libera.', en: 'Procida with a professional guide to better understand the island\'s character, from the marina and churches to colourful houses and hidden corners.' }, notes: '', visible: true },
+    { id: 'exc_10', name: { it: 'Sorrento', en: 'Sorrento' }, days: ['Mercoledì'], price: 60, priceNote: '', includes: 'Motonave A/R', description: { it: 'Mezza giornata a Sorrento tra Piazza Tasso, il centro storico, il Chiostro di San Francesco e i profumi di limone della costa sorrentina.', en: 'Half a day in Sorrento among Piazza Tasso, the old town, the Cloister of San Francesco and the lemon scents of the Sorrento coast.' }, notes: '', visible: true },
+    { id: 'exc_11', name: { it: 'La Mortella', en: 'La Mortella' }, days: ['Giovedì'], price: 30, priceNote: '', includes: 'Transfer A/R · Ingresso', description: { it: 'Ingresso ai Giardini La Mortella, uno dei più affascinanti giardini botanici d\'Europa, tra piante rare, terrazze panoramiche, laghetti e fontane.', en: 'Entry to La Mortella Gardens, one of Europe\'s most fascinating botanical gardens, with rare plants, panoramic terraces, ponds and fountains.' }, notes: '', visible: true },
+    { id: 'exc_12', name: { it: 'Nitrodi', en: 'Nitrodi' }, days: ['Giovedì','Sabato'], price: 28, priceNote: '', includes: 'Transfer A/R · Ingresso', description: { it: 'Esperienza rigenerante alle celebri sorgenti di Nitrodi, immerse nel verde e note fin dall\'antichità per le proprietà benefiche delle loro acque.', en: 'A restorative experience at the famous Nitrodi springs, surrounded by greenery and known since ancient times for the beneficial properties of their waters.' }, notes: '', visible: true },
+    { id: 'exc_13', name: { it: 'Procida Solo Passaggio Marittimo', en: 'Procida Sea Transfer Only' }, days: ['Giovedì'], price: 25, priceNote: '', includes: 'Passaggio marittimo A/R', description: { it: 'Formula semplice con passaggio marittimo A/R per visitare Procida in autonomia, tra Marina Grande, scorci colorati e atmosfera autentica.', en: 'Simple round-trip sea transfer to visit Procida independently, with Marina Grande, colourful views and an authentic island atmosphere.' }, notes: '', visible: true },
+    { id: 'exc_14', name: { it: 'Cooking Class Dolci Tipici Campani', en: 'Campanian Dessert Cooking Class' }, days: ['Giovedì'], price: 60, priceNote: '', includes: '', description: { it: 'Lezione golosa dedicata ai dolci tipici campani, con preparazione, degustazione finale e ricette da portare a casa.', en: 'A delicious class focused on traditional Campanian desserts, including preparation, final tasting and recipes to take home.' }, notes: '', visible: true },
+    { id: 'exc_15', name: { it: 'Escursione Crateri', en: 'Crater Excursion' }, days: ['Sabato'], price: 25, priceNote: '', includes: '', notes: '', visible: true },
+    { id: 'exc_16', name: { it: 'Passeggiata a Napoli', en: 'Naples Walking Tour' }, days: ['Domenica'], price: 55, priceNote: '', includes: 'Aliscafo A/R', notes: '', visible: true },
+    { id: 'exc_17', name: { it: 'Pompei', en: 'Pompeii' }, days: ['Domenica'], price: 60, priceNote: '', includes: 'Transfer A/R · Guida', description: { it: 'Escursione dedicata agli scavi di Pompei con guida, per entrare nella storia della città romana tra domus, foro, botteghe e vie antiche.', en: 'Guided excursion to the Pompeii ruins, exploring the story of the Roman city through houses, the forum, workshops and ancient streets.' }, notes: 'Ingresso €20 + auricolari €3 non inclusi', visible: true },
+    { id: 'exc_18', name: { it: 'Caserta', en: 'Caserta' }, days: ['Domenica'], price: 60, priceNote: '', includes: 'Transfer A/R · Guida', description: { it: 'Visita alla Reggia di Caserta e ai suoi giardini monumentali, tra appartamenti reali, fontane scenografiche e uno dei complessi borbonici più celebri d\'Europa.', en: 'Visit to the Royal Palace of Caserta and its monumental gardens, with royal apartments, grand fountains and one of Europe\'s most famous Bourbon complexes.' }, notes: 'Ingresso €20 + auricolari €3 non inclusi', visible: true }
   ]
 };
 
@@ -393,11 +424,6 @@ function escapeHtml(value) {
 }
 
 async function sendBookingNotificationEmail(booking) {
-  const resend = getResendClient();
-  if (!resend) {
-    return { sent: false, skipped: true, reason: 'resend_not_configured' };
-  }
-
   const details = booking.details ? escapeHtml(booking.details) : 'Nessun dettaglio aggiuntivo';
   const time = booking.time ? escapeHtml(booking.time) : 'Non indicato';
   const phone = booking.phone ? escapeHtml(booking.phone) : 'Non indicato';
@@ -529,16 +555,33 @@ async function sendBookingNotificationEmail(booking) {
     </html>
   `;
 
-  await resend.emails.send({
-    from: BOOKING_NOTIFICATION_FROM,
-    to: BOOKING_NOTIFICATION_TO,
-    replyTo: booking.email,
-    subject,
-    text,
-    html
-  });
+  const resend = getResendClient();
+  if (resend) {
+    await resend.emails.send({
+      from: BOOKING_NOTIFICATION_FROM,
+      to: BOOKING_NOTIFICATION_TO,
+      replyTo: booking.email,
+      subject,
+      text,
+      html
+    });
+    return { sent: true, skipped: false, provider: 'resend' };
+  }
 
-  return { sent: true, skipped: false };
+  const smtp = getSmtpTransporter();
+  if (smtp) {
+    await smtp.sendMail({
+      from: BOOKING_NOTIFICATION_FROM,
+      to: BOOKING_NOTIFICATION_TO,
+      replyTo: booking.email,
+      subject,
+      text,
+      html
+    });
+    return { sent: true, skipped: false, provider: 'smtp' };
+  }
+
+  return { sent: false, skipped: true, reason: 'email_not_configured' };
 }
 
 function sanitizeAnalyticsSnapshot(body) {
@@ -1163,24 +1206,34 @@ function handleApi(req, res, pathname) {
     }
 
     const resend = getResendClient();
-    if (!resend) {
+    const smtp = getSmtpTransporter();
+    if (!resend && !smtp) {
       return sendJson(res, 503, {
         ok: false,
-        error: 'Resend non configurato',
+        error: 'Email non configurata',
         config: {
           apiKeySet: Boolean(RESEND_API_KEY),
+          smtpHostSet: Boolean(SMTP_HOST),
+          smtpUserSet: Boolean(SMTP_USER),
+          smtpPassSet: Boolean(SMTP_PASS),
           notificationTo: BOOKING_NOTIFICATION_TO || '(vuoto)',
           notificationFrom: BOOKING_NOTIFICATION_FROM || '(vuoto)'
         }
       });
     }
 
-    return resend.emails.send({
+    const testMessage = {
       from: BOOKING_NOTIFICATION_FROM,
       to: BOOKING_NOTIFICATION_TO,
       subject: '[ITS] Test connessione email',
       text: `Test email inviata il ${nowIso()} da ${user.email} (${user.role})`
-    })
+    };
+
+    const sendPromise = resend
+      ? resend.emails.send(testMessage)
+      : smtp.sendMail(testMessage);
+
+    return sendPromise
       .then((result) => sendJson(res, 200, { ok: true, id: result.id }))
       .catch((err) => sendJson(res, 500, { ok: false, error: err.message }));
   }
@@ -1284,16 +1337,23 @@ function handleApi(req, res, pathname) {
         db.bookings.push(booking);
         writeDb(db);
 
-        sendBookingNotificationEmail(booking)
-          .then((emailResult) => {
-            if (emailResult && emailResult.sent) {
-              log(`Email booking inviata per ${booking.reference} a ${BOOKING_NOTIFICATION_TO}`);
-            } else if (emailResult && emailResult.skipped) {
-              log(`Email booking saltata per ${booking.reference}: ${emailResult.reason}`);
-            }
+          sendBookingNotificationEmail(booking)
+            .then((emailResult) => {
+              if (emailResult && emailResult.sent) {
+                log(`Email booking inviata per ${booking.reference} a ${BOOKING_NOTIFICATION_TO} via ${emailResult.provider || 'unknown'}`);
+              } else if (emailResult && emailResult.skipped) {
+                log(`Email booking saltata per ${booking.reference}: ${emailResult.reason}`);
+              }
           })
           .catch((error) => {
-            log(`Invio email booking fallito per ${booking.reference}: ${error.message}`);
+            const errorBits = [
+              error && error.code ? `code=${error.code}` : '',
+              error && error.syscall ? `syscall=${error.syscall}` : '',
+              error && error.command ? `command=${error.command}` : '',
+              error && error.responseCode ? `responseCode=${error.responseCode}` : '',
+              error && error.message ? `message=${error.message}` : 'errore_sconosciuto'
+            ].filter(Boolean).join(' ');
+            log(`Invio email booking fallito per ${booking.reference}: ${errorBits}`);
           });
 
         return sendJson(res, 201, {

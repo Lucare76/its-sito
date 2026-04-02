@@ -536,10 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'transfer-stazione-napoli-ischia.html': 'Napoli Stazione -> Ischia Hotel',
             'transfer-naples-train-station-ischia.html': 'Naples Station -> Ischia Hotel',
             'transfer-napoli-aeroporto.html': 'Napoli Aeroporto -> Ischia',
-            'transfer-aeroporto-napoli-ischia.html': 'Napoli Aeroporto -> Ischia',
             'transfer-porto-ischia-hotel.html': 'Porto Ischia -> Hotel',
             'transfer-naples-airport-port.html': 'Naples Airport -> Naples Port',
-            'naples-airport-to-ischia-transfer.html': 'Naples Airport -> Ischia',
         };
 
         if (routeMap[key]) {
