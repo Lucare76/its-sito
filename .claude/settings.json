@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"ischia-transfer.vercel.app\" /c/Users/user/its-sito/*.html)",
+      "Bash(sed 's/<loc>//g')",
+      "Bash(sed 's/^ *//')",
+      "Bash(sed 's/ *$//')",
+      "Bash(grep -rn \"og:image\" c:/Users/user/its-sito/transfer-*.html c:/Users/user/its-sito/en/transfer-*.html)",
+      "Bash(node -e \"const c=require\\('crypto'\\); console.log\\('SECRET='+c.randomBytes\\(32\\).toString\\('hex'\\)\\); console.log\\('SALT='+c.randomBytes\\(16\\).toString\\('hex'\\)\\);\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('users:', len\\(d.get\\('users',[]\\)\\), json.dumps\\(d.get\\('users',[]\\), indent=2\\)[:500]\\)\")",
+      "Bash(node -e \"const d=require\\('./data/db.json'\\); console.log\\('users count:', d.users?.length\\); console.log\\(JSON.stringify\\(d.users?.map\\(u=>\\({email:u.email,role:u.role}\\)\\)\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const d=JSON.parse\\(fs.readFileSync\\('./data/db.json','utf8'\\)\\); console.log\\('users:', d.users?.length\\)\")",
+      "Bash(node -e ':*)",
+      "Bash(curl -s -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' -d '{\\\\\"email\\\\\":\\\\\"info@ischiatransferservice.it\\\\\",\\\\\"password\\\\\":\\\\\"ITS-Operatore-2026!\\\\\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/api/auth/login -H 'Content-Type: application/json' --data-raw '{\"email\":\"info@ischiatransferservice.it\",\"password\":\"ITS-Operatore-2026!\"}')",
+      "Bash(node -e \"const fs=require\\('fs'\\); const d=JSON.parse\\(fs.readFileSync\\('c:/Users/user/its-sito/data/db.json','utf8'\\)\\); console.log\\('users:', JSON.stringify\\(d.users\\)\\)\")"
+    ]
+  }
+}

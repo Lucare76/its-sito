@@ -643,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        setHeroFormExpanded(heroAdvancedHasValues());
+        setHeroFormExpanded(true);
     };
 
     const bindTracking = () => {
@@ -1378,7 +1378,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bindFormOpenTracking(contactForm, 'contact-form', 'PUBLIC_CONTACT_FORM');
     bindDraftPersistence(contactForm, storageKeys.contactDraft, ['name', 'route', 'people', 'date']);
     bindDraftPersistence(heroBookingForm, storageKeys.heroDraft, ['hero-name', 'hero-service', 'hero-arrival', 'hero-route', 'hero-people', 'hero-luggage', 'hero-date']);
-    setHeroFormExpanded(false);
     prefillHeroForm();
     prefillContactForm();
     applyDateTimeConstraints();

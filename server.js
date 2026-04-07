@@ -1603,7 +1603,11 @@ function serveStatic(req, res, pathname) {
 
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-  const headers = { ...getSecurityHeaders(), 'Content-Type': contentType };
+  const secHeaders = getSecurityHeaders();
+  if (pathname === '/ops.html') {
+    secHeaders['Content-Security-Policy'] = secHeaders['Content-Security-Policy'].replace("script-src 'self'", "script-src 'self' 'unsafe-inline'");
+  }
+  const headers = { ...secHeaders, 'Content-Type': contentType };
 
   // Avoid stale homepage/content after deploys.
   if (ext === '.html') {

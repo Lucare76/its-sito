@@ -2419,6 +2419,10 @@ img {
   letter-spacing: -0.025em;
 }
 
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
 .tracking-\[0\.2em\] {
   letter-spacing: 0.2em;
 }
