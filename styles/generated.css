@@ -3005,4 +3005,5 @@ html, body {
   width: auto;
   max-width: 12rem;
   display: block;
+  mix-blend-mode: multiply;
 }
