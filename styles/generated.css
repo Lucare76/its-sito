@@ -736,7 +736,7 @@ img {
 .nav-shell {
   margin-left: auto;
   margin-right: auto;
-  margin-top: 1rem;
+  margin-top: 1.75rem;
   max-width: 80rem;
   border-radius: 9999px;
   border-width: 1px;
@@ -2544,12 +2544,14 @@ img {
 
   .nav-shell {
     margin-top: 0.75rem;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
     border-radius: 1.5rem;
   }
 
   #site-nav > div {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 
   .btn-primary,
@@ -2999,11 +3001,28 @@ html, body {
   }
 }
 
+/* ── Navbar altezza ridotta ──────────────────────────────── */
+#site-nav > div {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
 /* ── Logo navbar ─────────────────────────────────────────── */
 #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-  height: 6rem;
+  height: 16rem;
   width: auto;
-  max-width: 12rem;
+  max-width: 26rem;
   display: block;
   mix-blend-mode: multiply;
+  margin-top: -5rem;
+  margin-bottom: -7rem;
+}
+
+@media (max-width: 640px) {
+  #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
+    height: 10rem;
+    max-width: 18rem;
+    margin-top: -2.75rem;
+    margin-bottom: -4.25rem;
+  }
 }
