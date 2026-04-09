@@ -2986,3 +2986,15 @@ img {
     line-height: 1;
   }
 }
+
+/* ── Fix mobile: nessun overflow orizzontale ─────────────── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .hero-section h1 span.whitespace-nowrap {
+    white-space: normal;
+  }
+}
