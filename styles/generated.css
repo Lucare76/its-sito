@@ -3001,8 +3001,8 @@ html, body {
 
 /* ── Logo navbar ─────────────────────────────────────────── */
 #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-  height: 2.5rem;
+  height: 3.25rem;
   width: auto;
-  max-width: 10rem;
+  max-width: 12rem;
   display: block;
 }
