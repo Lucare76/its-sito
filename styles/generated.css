@@ -2998,3 +2998,11 @@ html, body {
     white-space: normal;
   }
 }
+
+/* ── Logo navbar ─────────────────────────────────────────── */
+#site-nav img[alt="I.T.S. Ischia Transfer Service"] {
+  height: 2.5rem;
+  width: auto;
+  max-width: 10rem;
+  display: block;
+}
