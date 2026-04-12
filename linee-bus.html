@@ -64,15 +64,50 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
+    .bus-page-logo {
+      width: auto;
+      height: 6rem;
+      max-width: 7rem;
+      display: block;
+      margin-top: -1.5rem;
+      margin-bottom: -1.5rem;
+      mix-blend-mode: multiply;
+    }
+    .bus-page-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .bus-page-home-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.75rem;
+      padding: 0.7rem 1.1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(30, 58, 138, 0.15);
+      background: rgba(255, 255, 255, 0.8);
+      color: #1e3a8a;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(30, 58, 138, 0.08);
+    }
+    @media (min-width: 768px) {
+      .bus-page-logo {
+        height: 7rem;
+        max-width: 8rem;
+      }
+    }
   </style>
 </head>
 <body class="bg-marbleWhite text-gray-900">
   <header class="fixed inset-x-0 top-0 z-50">
     <nav id="site-nav" class="nav-shell">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <a href="index.html" class="flex items-center gap-3 text-nightBlue"><img src="assets/logo.png" alt="I.T.S. Ischia Transfer Service" class="h-10 w-auto"></a>
-        <div class="hidden items-center gap-6 lg:flex">
-          <a class="nav-link" href="index.html">Home</a>
+        <a href="index.html" class="flex items-center gap-3 text-nightBlue"><img src="assets/logo.png" alt="I.T.S. Ischia Transfer Service" class="bus-page-logo"></a>
+        <div class="bus-page-nav-actions">
+          <a class="bus-page-home-link" href="index.html">Home</a>
           <a class="nav-link" href="contatti.html">Contatti</a>
         </div>
       </div>
