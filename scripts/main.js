@@ -1038,16 +1038,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             event.preventDefault();
+            closeMobileMenu();
 
-            const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 92;
+            const navBar = nav && nav.firstElementChild ? nav.firstElementChild : nav;
+            const navHeight = navBar ? Math.ceil(navBar.getBoundingClientRect().height) : 92;
             const offset = navHeight + 16;
             const position = targetElement.getBoundingClientRect().top + window.scrollY - offset;
             window.scrollTo({
                 top: position,
                 behavior: 'smooth',
             });
-
-            closeMobileMenu();
 
             if (targetId === '#richiedi-transfer') {
                 focusHeroForm();
