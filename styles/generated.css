@@ -761,22 +761,30 @@ header.fixed.inset-x-0.top-0 {
   box-shadow: 0 20px 60px rgba(30, 58, 138, 0.12);
 }
 
-#site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-  height: 7.25rem;
+#site-nav .site-nav-logo,
+#site-nav img[alt="I.T.S. Ischia Transfer Service"],
+#site-nav img[alt="Ischia Transfer Service logo"] {
+  height: 54px;
   width: auto;
-  max-width: 8.5rem;
+  max-width: 132px;
   display: block;
   mix-blend-mode: multiply;
-  margin-top: -2rem;
-  margin-bottom: -2rem;
+  margin-top: -12px;
+  margin-bottom: -12px;
 }
 
-@media (min-width: 768px) {
-  #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-    height: 8.5rem;
-    max-width: 10rem;
-    margin-top: -2.35rem;
-    margin-bottom: -2.35rem;
+@media (min-width: 1024px) {
+  #site-nav .site-nav-logo,
+  #site-nav img[alt="I.T.S. Ischia Transfer Service"],
+  #site-nav img[alt="Ischia Transfer Service logo"] {
+    height: 48px;
+    max-width: 118px;
+    margin-top: -6px;
+    margin-bottom: -6px;
+  }
+
+  #site-nav > div {
+    min-height: 72px;
   }
 }
 
@@ -3148,4 +3156,3 @@ header.whatsapp-float.inset-x-0.top-0 {
     line-height: 1;
   }
 }
-

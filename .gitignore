@@ -3,4 +3,7 @@ npm.env
 data/db.json
 node_modules/
 server.log
+server-local*.log
+.chrome-clean-profile/
+chrome-desktop*.png
 bus-lines*.txt
