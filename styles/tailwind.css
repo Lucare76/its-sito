@@ -875,6 +875,8 @@
 
         .nav-shell {
             margin-top: 0.75rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
             border-radius: 1.5rem;
         }
 
