@@ -815,6 +815,17 @@ img {
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 
+.mobile-nav-shortcuts {
+  display: none;
+}
+
+.mobile-nav-shortcuts a {
+  color: #1e3a8a;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -2595,16 +2606,24 @@ img {
 
   .nav-shell {
     margin-top: 0.75rem;
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
+    margin-left: clamp(1.25rem, 7vw, 2rem);
+            margin-right: clamp(1.25rem, 7vw, 2rem);
     border-radius: 1.5rem;
   }
 
   #site-nav > div {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
+  }
+
+  .mobile-nav-shortcuts {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+            margin-left: auto;
+            margin-right: 0.55rem;
   }
 
   .btn-primary,

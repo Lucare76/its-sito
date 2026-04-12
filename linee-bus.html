@@ -16,7 +16,7 @@
   <meta property="og:locale" content="it_IT">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://www.ischiatransferservice.it/assets/ischia-bg.jpg">
-  <link href="styles/generated.css?v=20260412e" rel="stylesheet">
+  <link href="styles/generated.css?v=20260412g" rel="stylesheet">
   <style>
     .bus-lines-grid > .service-card p {
       flex: 0 0 auto;
@@ -69,6 +69,11 @@
       align-items: center;
       gap: 0.75rem;
     }
+    @media (max-width: 768px) {
+      .bus-page-nav-actions {
+        display: none;
+      }
+    }
     .bus-page-home-link {
       display: inline-flex;
       align-items: center;
@@ -91,6 +96,10 @@
     <nav id="site-nav" class="nav-shell">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <a href="index.html" class="flex items-center gap-3 text-nightBlue"><img src="assets/logo.png" alt="I.T.S. Ischia Transfer Service" class="h-10 w-auto"></a>
+        <div class="mobile-nav-shortcuts lg:hidden" aria-label="Navigazione rapida">
+          <a href="index.html">Home</a>
+          <a href="contatti.html">Contatti</a>
+        </div>
         <div class="bus-page-nav-actions">
           <a class="bus-page-home-link" href="index.html">Home</a>
           <a class="nav-link" href="contatti.html">Contatti</a>
@@ -365,6 +374,7 @@
   <script src="scripts/main.min.js?v=20260412b"></script>
 </body>
 </html>
+
 
 
 

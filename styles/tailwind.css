@@ -97,6 +97,17 @@
         @apply rounded-2xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-nightBlue hover:text-white;
     }
 
+    .mobile-nav-shortcuts {
+        display: none;
+    }
+
+    .mobile-nav-shortcuts a {
+        color: #1e3a8a;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
     .btn-primary {
         @apply inline-flex items-center justify-center gap-2 rounded-full bg-lemonYellow px-7 py-3 text-center text-sm font-semibold text-nightBlue transition duration-300 hover:-translate-y-0.5 hover:shadow-lg;
         min-height: 3rem;
@@ -877,16 +888,24 @@
 
         .nav-shell {
             margin-top: 0.75rem;
-            margin-left: 1.5rem;
-            margin-right: 1.5rem;
+            margin-left: clamp(1.25rem, 7vw, 2rem);
+            margin-right: clamp(1.25rem, 7vw, 2rem);
             border-radius: 1.5rem;
         }
 
         #site-nav > div {
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 0.85rem;
+            padding-right: 0.85rem;
             padding-top: 0.75rem;
             padding-bottom: 0.75rem;
+        }
+
+        .mobile-nav-shortcuts {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-left: auto;
+            margin-right: 0.55rem;
         }
 
         .btn-primary,
