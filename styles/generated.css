@@ -736,7 +736,7 @@ img {
 .nav-shell {
   margin-left: auto;
   margin-right: auto;
-  margin-top: 1.75rem;
+  margin-top: 1rem;
   max-width: 80rem;
   border-radius: 9999px;
   border-width: 1px;
@@ -898,12 +898,13 @@ img {
 }
 
 /* Equal-width button pairs */
+
 .cta-actions-equal .btn-primary,
-.cta-actions-equal .btn-secondary,
-.cta-actions-equal .btn-whatsapp,
-.homepage-inline-cta .btn-primary,
-.homepage-inline-cta .btn-secondary,
-.homepage-inline-cta .btn-whatsapp {
+    .cta-actions-equal .btn-secondary,
+    .cta-actions-equal .btn-whatsapp,
+    .homepage-inline-cta .btn-primary,
+    .homepage-inline-cta .btn-secondary,
+    .homepage-inline-cta .btn-whatsapp {
   flex: 0 0 auto;
   min-width: 11rem;
   max-width: 13rem;
@@ -1372,8 +1373,8 @@ img {
 
 .fleet-image-shell {
   position: relative;
-  min-height: 260px;
   overflow: hidden;
+  min-height: 260px;
 }
 
 .fleet-grid .fleet-card .fleet-image-shell {
@@ -1434,7 +1435,6 @@ img {
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  align-content: start;
 }
 
 @media (min-width: 640px) {
@@ -1443,8 +1443,11 @@ img {
   }
 }
 
+.fleet-copy {
+  align-content: start;
+}
+
 .fleet-copy h3 {
-  margin-top: 0;
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 600;
@@ -1457,6 +1460,10 @@ img {
     font-size: 1.875rem;
     line-height: 2.25rem;
   }
+}
+
+.fleet-copy h3 {
+  margin-top: 0;
 }
 
 .fleet-copy p {
@@ -2000,10 +2007,6 @@ img {
   transform: translateY(0);
 }
 
-.site-brand-copy {
-  max-width: 15rem;
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -2014,6 +2017,10 @@ img {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.visible {
+  visibility: visible;
 }
 
 .static {
@@ -2028,10 +2035,6 @@ img {
   position: relative;
 }
 
-.sticky {
-  position: sticky;
-}
-
 .inset-x-0 {
   left: 0px;
   right: 0px;
@@ -2043,6 +2046,10 @@ img {
 
 .z-50 {
   z-index: 50;
+}
+
+.col-span-full {
+  grid-column: 1 / -1;
 }
 
 .mx-auto {
@@ -2087,12 +2094,24 @@ img {
   margin-top: 0.75rem;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .mt-12 {
   margin-top: 3rem;
 }
 
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.mt-0 {
+  margin-top: 0px;
+}
+
+.mt-auto {
+  margin-top: auto;
 }
 
 .block {
@@ -2119,12 +2138,20 @@ img {
   display: none;
 }
 
+.h-10 {
+  height: 2.5rem;
+}
+
 .h-11 {
   height: 2.75rem;
 }
 
 .h-5 {
   height: 1.25rem;
+}
+
+.w-auto {
+  width: auto;
 }
 
 .w-11 {
@@ -2155,8 +2182,16 @@ img {
   max-width: 56rem;
 }
 
+.flex-shrink {
+  flex-shrink: 1;
+}
+
 .border-collapse {
   border-collapse: collapse;
+}
+
+.transform {
+  transform: var(--tw-transform);
 }
 
 .resize {
@@ -2241,12 +2276,16 @@ img {
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
-.rounded-full {
-  border-radius: 9999px;
+.whitespace-nowrap {
+  white-space: nowrap;
 }
 
 .rounded-\[2rem\] {
   border-radius: 2rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
 }
 
 .rounded-3xl {
@@ -2276,11 +2315,6 @@ img {
 .bg-marbleWhite {
   --tw-bg-opacity: 1;
   background-color: rgba(248, 250, 252, var(--tw-bg-opacity));
-}
-
-.bg-nightBlue {
-  --tw-bg-opacity: 1;
-  background-color: rgba(30, 58, 138, var(--tw-bg-opacity));
 }
 
 .bg-white {
@@ -2323,6 +2357,11 @@ img {
   padding-bottom: 3rem;
 }
 
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
 .pt-32 {
   padding-top: 8rem;
 }
@@ -2351,9 +2390,12 @@ img {
   padding-top: 0px;
 }
 
-.text-sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .text-3xl {
@@ -2366,14 +2408,19 @@ img {
   line-height: 1rem;
 }
 
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
 }
 
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .text-5xl {
@@ -2386,9 +2433,9 @@ img {
   line-height: 1.75rem;
 }
 
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .font-semibold {
@@ -2407,20 +2454,8 @@ img {
   line-height: 1.75rem;
 }
 
-.tracking-\[0\.28em\] {
-  letter-spacing: 0.28em;
-}
-
-.tracking-\[0\.35em\] {
-  letter-spacing: 0.35em;
-}
-
 .tracking-tight {
   letter-spacing: -0.025em;
-}
-
-.whitespace-nowrap {
-  white-space: nowrap;
 }
 
 .tracking-\[0\.2em\] {
@@ -2435,11 +2470,6 @@ img {
 .text-nightBlue {
   --tw-text-opacity: 1;
   color: rgba(30, 58, 138, var(--tw-text-opacity));
-}
-
-.text-marbleWhite {
-  --tw-text-opacity: 1;
-  color: rgba(248, 250, 252, var(--tw-text-opacity));
 }
 
 .text-white {
@@ -2457,8 +2487,14 @@ img {
   color: rgba(55, 65, 81, var(--tw-text-opacity));
 }
 
-.text-nightBlue\/70 {
-  color: rgba(30, 58, 138, 0.7);
+.text-gray-400 {
+  --tw-text-opacity: 1;
+  color: rgba(156, 163, 175, var(--tw-text-opacity));
+}
+
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgba(75, 85, 99, var(--tw-text-opacity));
 }
 
 .\!text-lemonYellow {
@@ -2469,11 +2505,6 @@ img {
 .text-blue-50 {
   --tw-text-opacity: 1;
   color: rgba(239, 246, 255, var(--tw-text-opacity));
-}
-
-.text-gray-600 {
-  --tw-text-opacity: 1;
-  color: rgba(75, 85, 99, var(--tw-text-opacity));
 }
 
 .text-gray-500 {
@@ -2500,11 +2531,6 @@ img {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.shadow-lg {
-  --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -2522,6 +2548,12 @@ img {
 .backdrop-blur {
   --tw-backdrop-blur: blur(8px);
   backdrop-filter: var(--tw-backdrop-filter);
+}
+
+.transition {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
 @keyframes whatsapp-pulse {
@@ -2544,14 +2576,12 @@ img {
 
   .nav-shell {
     margin-top: 0.75rem;
-    margin-left: 0.75rem;
-    margin-right: 0.75rem;
     border-radius: 1.5rem;
   }
 
   #site-nav > div {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .btn-primary,
@@ -2578,6 +2608,51 @@ img {
     margin-bottom: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  #come-funziona .section-heading,
+        #how-it-works .section-heading,
+        #tempi-percorrenza .section-heading,
+        #travel-times .section-heading,
+        #flotta .section-heading,
+        #vantaggi .section-heading,
+        #recensioni .section-heading,
+        #reviews .section-heading,
+        #info-utili .section-heading,
+        #faq-transfer .section-heading,
+        #servizi .section-heading {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  #come-funziona .section-heading p,
+        #how-it-works .section-heading p,
+        #tempi-percorrenza .section-heading p,
+        #travel-times .section-heading p,
+        #flotta .section-heading p,
+        #vantaggi .section-heading p,
+        #recensioni .section-heading p,
+        #reviews .section-heading p,
+        #info-utili .section-heading p,
+        #faq-transfer .section-heading p,
+        #servizi .section-heading p {
+    margin-left: 1.6rem;
+  }
+
+  #tempi-percorrenza .section-heading p,
+        #travel-times .section-heading p,
+        #flotta .section-heading p,
+        #vantaggi .section-heading p,
+        #recensioni .section-heading p,
+        #reviews .section-heading p,
+        #info-utili .section-heading p,
+        #faq-transfer .section-heading p,
+        #servizi .section-heading p {
+    margin-left: calc(1.6rem + 1px);
+  }
+
+  #vantaggi .section-heading p {
+    margin-left: calc(1.75rem + 1px);
   }
 
   .service-card,
@@ -2681,6 +2756,11 @@ img {
     align-items: center;
   }
 
+  .homepage-inline-cta {
+    align-items: center;
+    justify-content: center;
+  }
+
   .section-heading,
         .hero-section > div,
         .cta-banner,
@@ -2689,8 +2769,8 @@ img {
     row-gap: 0.9rem;
   }
 
-  .fleet-grid .fleet-card .fleet-image-shell {
-    height: 240px;
+  .fleet-image-shell {
+    min-height: 240px;
   }
 
   .booking-card {
@@ -2724,6 +2804,12 @@ img {
   .hero-section h1 {
     font-size: clamp(2rem, 9vw, 2.55rem);
     line-height: 1.18;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-section h1 .whitespace-nowrap {
+    white-space: normal;
   }
 
   .hero-section p {
@@ -2771,8 +2857,8 @@ img {
     letter-spacing: 0.14em;
   }
 
-  .fleet-grid .fleet-card .fleet-image-shell {
-    height: 220px;
+  .fleet-image-shell {
+    min-height: 220px;
   }
 
   #mobile-menu {
@@ -2888,11 +2974,6 @@ img {
     padding: 2.5rem;
   }
 
-  .sm\:text-base {
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
-
   .sm\:text-6xl {
     font-size: 3.75rem;
     line-height: 1;
@@ -2972,6 +3053,11 @@ img {
     padding-bottom: 7rem;
   }
 
+  .lg\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+
   .lg\:text-6xl {
     font-size: 3.75rem;
     line-height: 1;
@@ -2983,46 +3069,14 @@ img {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .xl\:text-6xl {
+    font-size: 3.75rem;
+    line-height: 1;
+  }
+
   .xl\:text-7xl {
     font-size: 4.5rem;
     line-height: 1;
   }
 }
 
-/* ── Fix mobile: nessun overflow orizzontale ─────────────── */
-html, body {
-  overflow-x: hidden;
-  max-width: 100%;
-}
-
-@media (max-width: 640px) {
-  .hero-section h1 span.whitespace-nowrap {
-    white-space: normal;
-  }
-}
-
-/* ── Navbar altezza ridotta ──────────────────────────────── */
-#site-nav > div {
-  padding-top: 0.4rem;
-  padding-bottom: 0.4rem;
-}
-
-/* ── Logo navbar ─────────────────────────────────────────── */
-#site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-  height: 16rem;
-  width: auto;
-  max-width: 26rem;
-  display: block;
-  mix-blend-mode: multiply;
-  margin-top: -5rem;
-  margin-bottom: -7rem;
-}
-
-@media (max-width: 640px) {
-  #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-    height: 10rem;
-    max-width: 18rem;
-    margin-top: -2.75rem;
-    margin-bottom: -4.25rem;
-  }
-}

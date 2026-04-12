@@ -892,6 +892,51 @@
             padding-right: 1rem;
         }
 
+        #come-funziona .section-heading,
+        #how-it-works .section-heading,
+        #tempi-percorrenza .section-heading,
+        #travel-times .section-heading,
+        #flotta .section-heading,
+        #vantaggi .section-heading,
+        #recensioni .section-heading,
+        #reviews .section-heading,
+        #info-utili .section-heading,
+        #faq-transfer .section-heading,
+        #servizi .section-heading {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        #come-funziona .section-heading p,
+        #how-it-works .section-heading p,
+        #tempi-percorrenza .section-heading p,
+        #travel-times .section-heading p,
+        #flotta .section-heading p,
+        #vantaggi .section-heading p,
+        #recensioni .section-heading p,
+        #reviews .section-heading p,
+        #info-utili .section-heading p,
+        #faq-transfer .section-heading p,
+        #servizi .section-heading p {
+            margin-left: 1.6rem;
+        }
+
+        #tempi-percorrenza .section-heading p,
+        #travel-times .section-heading p,
+        #flotta .section-heading p,
+        #vantaggi .section-heading p,
+        #recensioni .section-heading p,
+        #reviews .section-heading p,
+        #info-utili .section-heading p,
+        #faq-transfer .section-heading p,
+        #servizi .section-heading p {
+            margin-left: calc(1.6rem + 1px);
+        }
+
+        #vantaggi .section-heading p {
+            margin-left: calc(1.75rem + 1px);
+        }
+
         .service-card,
         .fleet-copy,
         .trust-panel,
@@ -992,6 +1037,11 @@
             align-items: center;
         }
 
+        .homepage-inline-cta {
+            align-items: center;
+            justify-content: center;
+        }
+
         .section-heading,
         .hero-section > div,
         .cta-banner,
@@ -1035,6 +1085,12 @@
         .hero-section h1 {
             font-size: clamp(2rem, 9vw, 2.55rem);
             line-height: 1.18;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .hero-section h1 .whitespace-nowrap {
+            white-space: normal;
         }
 
         .hero-section p {
@@ -1141,3 +1197,4 @@
         }
     }
 }
+
