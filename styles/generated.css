@@ -758,19 +758,21 @@ img {
 }
 
 #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-  height: 5rem;
+  height: 6rem;
   width: auto;
-  max-width: 6rem;
+  max-width: 7rem;
   display: block;
   mix-blend-mode: multiply;
-  margin-top: -1.35rem;
-  margin-bottom: -1.35rem;
+  margin-top: -1.7rem;
+  margin-bottom: -1.7rem;
 }
 
 @media (min-width: 768px) {
   #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
-    height: 6rem;
-    max-width: 7rem;
+    height: 7rem;
+    max-width: 8rem;
+    margin-top: -2rem;
+    margin-bottom: -2rem;
   }
 }
 
@@ -2593,8 +2595,8 @@ img {
 
   .nav-shell {
     margin-top: 0.75rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
     border-radius: 1.5rem;
   }
 
