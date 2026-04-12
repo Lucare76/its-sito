@@ -70,6 +70,23 @@
         box-shadow: 0 20px 60px rgba(30, 58, 138, 0.12);
     }
 
+    #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
+        height: 6rem;
+        width: auto;
+        max-width: 7rem;
+        display: block;
+        mix-blend-mode: multiply;
+        margin-top: -1.5rem;
+        margin-bottom: -1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        #site-nav img[alt="I.T.S. Ischia Transfer Service"] {
+            height: 7rem;
+            max-width: 8rem;
+        }
+    }
+
     .nav-link {
         @apply text-sm font-medium text-gray-600 transition hover:text-nightBlue;
     }
