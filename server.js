@@ -37,6 +37,16 @@ const ROOT_DIR = __dirname;
 const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(ROOT_DIR, 'data'));
 const DB_PATH = path.resolve(process.env.DB_PATH || path.join(DATA_DIR, 'db.json'));
 const STATIC_DIRS = [ROOT_DIR];
+const CANONICAL_ORIGIN = 'https://ischiatransferservice.it';
+const LEGACY_REDIRECTS = new Map([
+  ['/autoparco.html', '/'],
+  ['/dove.html', '/'],
+  ['/preventivi.html', '/'],
+  ['/azienda.html', '/']
+]);
+const API_ROBOTS_HEADERS = {
+  'X-Robots-Tag': 'noindex, nofollow, noarchive'
+};
 const BLOCKED_STATIC_SEGMENTS = new Set(['.git', '.pnpm-store', 'node_modules', 'data', 'tools']);
 const BLOCKED_ROOT_STATIC_FILES = new Set([
   '.env',
@@ -651,6 +661,7 @@ function sendJson(res, statusCode, payload, extraHeaders) {
   const body = JSON.stringify(payload);
   res.writeHead(statusCode, {
     ...getSecurityHeaders(),
+    ...API_ROBOTS_HEADERS,
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store',
@@ -671,6 +682,7 @@ function sendText(res, statusCode, body) {
 function sendCsv(res, filename, body) {
   res.writeHead(200, {
     ...getSecurityHeaders(),
+    ...API_ROBOTS_HEADERS,
     'Content-Type': 'text/csv; charset=utf-8',
     'Content-Disposition': `attachment; filename="${filename}"`,
     'Content-Length': Buffer.byteLength(body),
@@ -1595,6 +1607,34 @@ function resolveStaticPath(pathname) {
   return null;
 }
 
+function getLegacyRedirectPath(pathname) {
+  if (LEGACY_REDIRECTS.has(pathname)) {
+    return LEGACY_REDIRECTS.get(pathname);
+  }
+
+  if (pathname === '/index.html') {
+    return '/';
+  }
+
+  if (pathname.endsWith('/index.html')) {
+    return pathname.slice(0, -'index.html'.length);
+  }
+
+  if (!pathname.endsWith('.html') || pathname === '/ops.html') {
+    return null;
+  }
+
+  const cleanPath = pathname.slice(0, -'.html'.length) || '/';
+  const legacyFile = resolveStaticPath(pathname);
+  const cleanFile = resolveStaticPath(cleanPath);
+  return legacyFile && cleanFile && legacyFile === cleanFile ? cleanPath : null;
+}
+
+function isWwwHost(hostHeader) {
+  const host = String(hostHeader || '').toLowerCase().split(':')[0];
+  return host === 'www.ischiatransferservice.it';
+}
+
 function serveStatic(req, res, pathname) {
   const filePath = resolveStaticPath(pathname);
   if (!filePath) {
@@ -1635,6 +1675,25 @@ function createAppServer() {
   return http.createServer((req, res) => {
     const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     const pathname = requestUrl.pathname || '/';
+    const legacyRedirectPath = getLegacyRedirectPath(pathname);
+
+    if (isWwwHost(req.headers.host)) {
+      res.writeHead(301, {
+        ...getSecurityHeaders(),
+        Location: `${CANONICAL_ORIGIN}${legacyRedirectPath || pathname}${requestUrl.search}`,
+        'Cache-Control': 'public, max-age=86400'
+      });
+      return res.end();
+    }
+
+    if (legacyRedirectPath) {
+      res.writeHead(301, {
+        ...getSecurityHeaders(),
+        Location: `${legacyRedirectPath}${requestUrl.search}`,
+        'Cache-Control': 'public, max-age=86400'
+      });
+      return res.end();
+    }
 
     if (pathname.startsWith('/api/')) {
       return handleApi(req, res, pathname);
