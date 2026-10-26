@@ -50,14 +50,16 @@ async function run() {
     await sleep(1500);
 
     const indexHtml = await requestText(`${baseUrl}/`);
-    assertContains(indexHtml, '<script src="scripts/main.js"></script>', 'homepage');
+    if (!/<script\b[^>]*src="scripts\/main(?:\.min)?\.js(?:\?[^"<>]*)?"[^>]*><\/script>/.test(indexHtml)) {
+      throw new Error('Script principale mancante nella homepage');
+    }
 
     const contactHtml = await requestText(`${baseUrl}/contatti.html`);
     assertContains(contactHtml, 'id="contact-form"', 'contatti');
     assertContains(contactHtml, 'name="email"', 'contatti');
 
     const landingHtml = await requestText(`${baseUrl}/transfer-stazione-napoli-ischia.html`);
-    assertContains(landingHtml, 'Richiedi disponibilita', 'landing transfer');
+    assertContains(landingHtml, 'Richiedi disponibilità', 'landing transfer');
     assertContains(landingHtml, 'wa.me/390813331053', 'landing transfer');
 
     const mainJs = await requestText(`${baseUrl}/scripts/main.js`);

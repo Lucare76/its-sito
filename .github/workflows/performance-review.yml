@@ -1,0 +1,46 @@
+name: Homepage performance review
+on:
+  pull_request:
+    paths: ['index.html', 'styles/**', 'assets/**', 'package.json', 'tools/performance-review.mjs', '.github/workflows/performance-review.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CHROME_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: baseline
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install and build
+        working-directory: candidate
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          npm test
+          npm run test:pages
+      - name: Install isolated audit tools
+        run: npm install --prefix "$RUNNER_TEMP/audit-tools" lighthouse@13.5.0 chrome-launcher --no-audit --no-fund
+      - name: Compare baseline and candidate (three mobile runs each)
+        env:
+          AUDIT_TOOLS_ROOT: ${{ runner.temp }}/audit-tools/node_modules
+        run: |
+          python3 -m http.server 4174 --bind 127.0.0.1 --directory baseline > /tmp/baseline-http.log 2>&1 &
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory candidate > /tmp/candidate-http.log 2>&1 &
+          node candidate/tools/performance-review.mjs
+          cat performance-results/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve reports and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-performance
+          path: performance-results
