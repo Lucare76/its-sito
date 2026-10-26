@@ -25,7 +25,7 @@
 
 @layer base {
     :root {
-        --hero-safe-offset: 7.5rem;
+        --hero-safe-offset: 96px;
     }
 
     html {

@@ -92,7 +92,10 @@
       ]
     }
     </script>
-    <link href="styles/generated.css?v=20260412k" rel="stylesheet">
+    <link rel="preload" href="assets/fonts/Montserrat-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/Montserrat-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/hero-ischia-drone-1200.webp" as="image" type="image/webp" media="(max-width: 767px)" fetchpriority="high">
+    <link href="styles/generated.css?v=20261026a" rel="stylesheet">
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -127,7 +130,7 @@
         <nav id="site-nav" class="nav-shell">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
                 <a href="#hero" class="flex items-center gap-3 text-nightBlue">
-                    <img src="assets/logo-nav.png?v=20260412c" alt="I.T.S. Ischia Transfer Service" class="site-nav-logo h-10 w-auto">
+                    <img src="assets/logo-nav.png?v=20260412c" alt="I.T.S. Ischia Transfer Service" class="site-nav-logo h-10 w-auto" width="311" height="129">
                     
                 </a>
 
@@ -174,9 +177,10 @@
         <section id="hero" class="hero-section">
             <div class="hero-media">
                 <picture>
+                    <source media="(max-width: 767px)" srcset="assets/hero-ischia-drone-1200.webp" type="image/webp">
                     <source srcset="assets/hero-ischia-drone.avif" type="image/avif">
                     <source srcset="assets/hero-ischia-drone.webp" type="image/webp">
-                    <img src="assets/ischia-bg.jpg" alt="Vista drone di Ischia e Castello Aragonese al tramonto" class="hero-background-image" fetchpriority="high" decoding="async">
+                    <img src="assets/ischia-bg.jpg" alt="Vista drone di Ischia e Castello Aragonese al tramonto" class="hero-background-image" fetchpriority="high" decoding="async" width="683" height="512">
                 </picture>
             </div>
             <div class="hero-overlay"></div>
@@ -454,8 +458,8 @@
                 <article class="fleet-card lg:grid-cols-[1.05fr_0.95fr]">
                     <div class="fleet-image-shell">
                         <picture>
-                            <source srcset="assets/fleet-sedan.webp" type="image/webp">
-                                <img src="assets/fleet-sedan.webp" alt="Mercedes E 270 per transfer privati tra Napoli e Ischia" loading="lazy" decoding="async" class="fleet-image fleet-image-sedan">
+                            <source srcset="assets/fleet-sedan-480.webp 480w, assets/fleet-sedan-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 50vw, 640px" type="image/webp">
+                                <img src="assets/fleet-sedan-960.webp" srcset="assets/fleet-sedan-480.webp 480w, assets/fleet-sedan-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 50vw, 640px" alt="Mercedes E 270 per transfer privati tra Napoli e Ischia" loading="lazy" decoding="async" class="fleet-image fleet-image-sedan" width="1536" height="1024">
                         </picture>
                         <span class="fleet-badge">Privato</span>
                     </div>
@@ -468,8 +472,8 @@
                     <article class="fleet-card">
                         <div class="fleet-image-shell">
                             <picture>
-                                <source srcset="assets/fleet-minivan.webp" type="image/webp">
-                                <img src="assets/fleet-minivan.webp" alt="Mercedes Vito per famiglie e piccoli gruppi con bagagli" loading="lazy" decoding="async" class="fleet-image fleet-image-bus">
+                                <source srcset="assets/fleet-minivan-480.webp 480w, assets/fleet-minivan-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 50vw, 640px" type="image/webp">
+                                <img src="assets/fleet-minivan-960.webp" srcset="assets/fleet-minivan-480.webp 480w, assets/fleet-minivan-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 50vw, 640px" alt="Mercedes Vito per famiglie e piccoli gruppi con bagagli" loading="lazy" decoding="async" class="fleet-image fleet-image-bus" width="1536" height="1024">
                             </picture>
                             <span class="fleet-badge">Famiglie</span>
                         </div>
@@ -481,8 +485,8 @@
                     <article class="fleet-card">
                         <div class="fleet-image-shell">
                             <picture>
-                                <source srcset="assets/fleet-bus.jpg" type="image/jpeg">
-                                <img src="assets/fleet-bus.jpg" alt="Autobus transfer per gruppi davanti al Castello Aragonese di Ischia" loading="lazy" decoding="async" class="fleet-image fleet-image-bus">
+                                <source srcset="assets/fleet-bus-480.webp 480w, assets/fleet-bus-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 50vw, 640px" type="image/webp">
+                                <img src="assets/fleet-bus-960.webp" srcset="assets/fleet-bus-480.webp 480w, assets/fleet-bus-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 50vw, 640px" alt="Autobus transfer per gruppi davanti al Castello Aragonese di Ischia" loading="lazy" decoding="async" class="fleet-image fleet-image-bus" width="1536" height="1024">
                             </picture>
                             <span class="fleet-badge">Gruppi</span>
                         </div>
@@ -627,8 +631,8 @@
         </svg>
     </button>
 
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="scripts/main.min.js?v=20260412h"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script defer src="scripts/main.min.js?v=20261026a"></script>
 </body>
 </html>
 
