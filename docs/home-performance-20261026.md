@@ -36,3 +36,21 @@ Fleet total: 8,460,110 B before, 99,416–327,082 B after, depending on viewport
 ## Risks and review gates
 
 Check image detail after lossy resizing, particularly the background on tall mobile hero sections. Review screenshots and actual LCP/CLS audit nodes before accepting the PR. Font preloads may compete for bandwidth; use the comparison to check the net effect. The CSS spacing change also applies to other pages using the shared stylesheet and should be checked on representative Italian/English landing pages. Changes are confined to a feature branch; no production merge or deployment is authorized.
+
+## Completed GitHub comparison
+
+Workflow 40309819526 completed successfully on commit 5c1ef25083f2d17c218d1b7883eeeb09725fcb84. Three cold mobile runs per revision, same runner and Lighthouse 13.5.0 settings; medians:
+
+| Metric | Base | Candidate |
+|---|---:|---:|
+| Performance | 83 | 96 |
+| LCP | 4.354 s | 2.712 s |
+| CLS | 0.073 | 0.000 |
+| FCP | 1.804 s | 1.059 s |
+| Initial transfer | 627,310 B | 365,995 B |
+
+The LCP node is the hero H1 (`section#hero > div.mx-auto > div.hero-copy-panel > h1.mt-6`), not the background image. The baseline CLS trace identifies the hero content container and both late Montserrat weights. Candidate traces contain no layout shift entries. Optimizing the background reduces competing transfer; prioritizing fonts helps the measured text LCP.
+
+The essential stylesheet still appears as render blocking (451 → 305 ms in run 1). Remaining image-delivery advice includes the hero compression and original logo. The logo file is deliberately untouched. SEO, accessibility and best-practices scores remain 100 in all six runs. No production score or TTFB improvement is inferred from localhost results.
+
+Reviewed baseline/candidate top-of-page screenshots at 390px and 1440px: content, wrapping and final geometry are preserved. Fleet screenshots are captured after rejecting cookies locally and waiting for reveal animation opacity, so image detail can be inspected. Cookie rejection is limited to isolated browser test contexts and submits no forms.
