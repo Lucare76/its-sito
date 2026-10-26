@@ -42,14 +42,14 @@ try {
             return { width: canvas.width, height: canvas.height, pixels: ctx.getImageData(0, 0, canvas.width, canvas.height).data };
           };
           const [original, optimized] = await Promise.all([
-            readPixels('/assets/logo-nav.png'), readPixels('/assets/logo-nav-lossless.webp')
+            readPixels('/assets/logo-nav.png'), readPixels('/assets/logo-nav-lossless.png')
           ]);
           return original.width === optimized.width && original.height === optimized.height
             && original.pixels.every((value, i) => value === optimized.pixels[i]);
         });
         if (!logoMatch) throw new Error('Logo pixels changed');
         const logo = page.locator('.site-nav-logo');
-        if (!(await logo.getAttribute('src')).includes('logo-nav-lossless.webp')) throw new Error('Optimized logo not selected');
+        if (!(await logo.getAttribute('src')).includes('logo-nav-lossless.png')) throw new Error('Optimized logo not selected');
         console.log(`Logo: identical decoded pixels at viewport ${width}`);
 
         const hero = await page.locator('.hero-background-image').evaluate(img => ({ src: img.currentSrc, loaded: img.complete && img.naturalWidth > 0 }));
